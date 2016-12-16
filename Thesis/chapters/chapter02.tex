@@ -1,0 +1,47 @@
+\chapter{Curbe Eliptice} 
+\section{Introducere}
+\label{sec:sec01}
+Folosirea curbelor eliptice in criptografie a fost propusa pentru prima oara in anul 1985 de Victor Miller(IBM) si, independent, de Neal Koblitz. Ideea de baza este folosirea grupului de puncte de pe o curba eliptica in locul grupului $(\mathbb{Z}/p\mathbb{Z})^{*}$. Printre aplicatiile practice ale curbelor eliptice se numara constructia criptosistemelor cu chei publice, construirea de generatoare pseudoaleatoare de biti, teoria codurilor, demonstratia Ultimei Teoreme a lui Fermat.
+\begin{dfn}
+Numim curba eliptica o multime de puncte $(x, y)$ care satisfac ecuatia Weierstrass:
+$$y^2 = x^3 + ax + b$$ da si Definitia generala
+\\impreuna cu un punct $O$, punctul de la infinit. $a, b$ sunt constante, iar discriminantul ecuatiei este diferit de zero ($4a^3+27b^2 \neq 0$ $\star$).
+\end{dfn}
+
+Aceast tip de curba se numeste curba nonsingulara, sau neteda. Se poate demostra usor ca $\star$ este o conditie necesara si suficienta pentru ca radacinile polinomului $x^3 + ax + b$ sa fie simple(ordinul lor de multiplicitate sa fie 1) in corpul $K$, peste care este definita curba eliptica.
+
+\section{Aritmetica curbelor eliptice}
+\label{sec:sec02}
+
+O curba eliptica formeaza impreuna cu operatia de adunare formeaza o structura de grup abelian. Fie 2 puncte, $P(x_{1}, y_1), Q(x_2, y_2)\in E$. Adunarea este definita conform unui set usor de reguli (vezi figura 2.2...). Notam cu $R(x_3, y_3) = P + Q$
+
+$\begin{cases} 
+    x_3 = \lambda^2 - x_1 - x_2 \\
+    y_3 =  \lambda (x_1-x_3) - y_1
+   \end{cases}$
+ \\cu 
+ \\$
+ \lambda = 
+ \begin{cases}
+ \frac{y_2 - y_1}{x_2 - x_1}, P \neq Q \\ 
+ \frac{3x^{2}_1 + a}{2y_1}, P = Q
+ \end{cases}$ \\
+ \\ FIGURA 2.2 ... \\
+Operatia de adunare pe o curba eliptica este corespondenta operatiei de inmultire
+in sistemele cu chei publice obisnuite, iar adunarea multipla este corespondenta
+exponentierii modulare din acestea.
+Desi regulile de calcul in grupul punctelor unei curbe eliptice par destul de complicate, aritmetica acestora poate fl implementata extrem de eflcient, calculele in acest grup flind realizate mult mai rapid decat cele din grupul $\mathbb{Z}/p\mathbb{Z}$
+\begin{ex}
+Exemplu adunare
+\end{ex}
+
+\subsection{Motivatie pentru algoritmi eficienti de exponentiere}
+\label{subsec:subsec01}
+Implementare operatiile de baza(curbe peste $z_p$ si curbe peste corpuri de caracteristica 2)
+
+\subsection{Inmultirea cu un scalar, metoda ferestrei glisante}
+\label{subsec:subsec02}
+
+
+
+
