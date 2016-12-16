@@ -1,0 +1,15 @@
+Improving the Big Mac Attack on Elliptic Curve Cryptography   http://link.springer.com/chapter/10.1007/978-3-662-49301-4_23
+
+
+Elliptic Curve Public Key Cryptosystems - book https://books.google.ro/books?hl=en&lr=&id=QE7hBwAAQBAJ&oi=fnd&pg=PR9&dq=elliptic+curve&ots=ZcjbBElBJn&sig=Xpm9V97zIxp4sAaVUxLDA1Oz2nY&redir_esc=y#v=onepage&q=elliptic%20curve&f=false
+
+
+
+
+
+
+
+
+
+
+
