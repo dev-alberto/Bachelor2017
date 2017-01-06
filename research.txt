@@ -1,0 +1,5 @@
+Explicit-Formulas Database
+
+http://www.hyperelliptic.org/EFD/
+
+https://en.wikibooks.org/wiki/Cryptography/Prime_Curve/Jacobian_Coordinates
