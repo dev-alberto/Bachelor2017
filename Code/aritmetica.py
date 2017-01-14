@@ -18,7 +18,7 @@ def is_on_curve(P, C):
 
 def add_cartesian(P1, P2, C):
     assert isinstance(P1, Point) and isinstance(P2, Point) and isinstance(C, Curve)
-    _lambda = 0
+    #_lambda = 0
     if P1 == P2:
         _lambda = ((3 * P1.x ** 2 + C.a) * inv(2 * P1.y, C.n)) % C.n
     else:
@@ -62,3 +62,40 @@ def add_jacobi(P1, P2, C):
     y3 = (r * (u1 * h**2 - x3) - s1 * h**3) % C.n
     z3 = (h * P1.z * P2.z) % C.n
     return x3, y3, z3, z3**2 % C.n, z3**3 % C.n
+
+
+###Multiplicarea cu un scalar in O(logn), in curba C, dP = P + P + ... + P###
+
+def scalar_multiplication(C, P, d):
+    assert isinstance(C, Curve) and isinstance(P, Point)
+    if d == 0:
+        return None #returnam punctul de la "infinit" daca d este 0
+    if d == 1:
+        return P
+    result = Point(None, None)
+    while d > 0:
+        if d % 2:
+            result = add_cartesian(result, P, C)
+        d //= 2
+        P = add_cartesian(P, P, C)
+    return result
+
+
+### Generarea w-NAF ####
+def w_NAF(d, w):
+    i = 0
+    res = []
+    while d >= 1:
+        if d % 2 == 0:
+            res.append(0)
+        else:
+            res.append(d % 2**w)
+            d -= res[i]
+        d //= 2
+        i += 1
+    return res[::-1]
+
+
+### JSF ###
+
+
