@@ -3,6 +3,7 @@
 
 from ECC import Point, Curve, Jacobi_Point
 from util import inv
+from math import fmod
 
 
 ####### Verificam daca punctul P apartine curbei #######
@@ -81,7 +82,7 @@ def scalar_multiplication(C, P, d):
     return result
 
 
-### Generarea w-NAF ####
+### Generarea w-NAF, articol Signed Binary Representations Revisited, pagina 5 ####
 def w_NAF(d, w):
     i = 0
     res = []
@@ -89,11 +90,33 @@ def w_NAF(d, w):
         if d % 2 == 0:
             res.append(0)
         else:
-            res.append(d % 2**w)
+            res.append(2 - d % 2 ** w)
             d -= res[i]
         d //= 2
         i += 1
     return res[::-1]
+
+
+### Left to right NAF scalar multiplication, Geometry, Algebra and Applications: From Mechanics to Cryptography, pagina 126 ###
+def left_to_right_scalar_mul(P, d, C):
+    """:return dP
+     :param P : punct de pe o curba eliptica
+     :param d : scalar"""
+
+    assert isinstance(P, Jacobi_Point) and isinstance(Curve, C)
+
+    signed_d = w_NAF(d, 2)
+
+    result = Jacobi_Point(None, None)
+
+    for i in signed_d:
+        result = point_double(result, C)
+        if i == 1:
+            result = add_jacobi(result, P, C)
+        if i == -1:
+            result = add_jacobi(result, P.inverse(), C)
+
+    return result
 
 
 ### JSF ###
