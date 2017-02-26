@@ -3,3 +3,7 @@ Explicit-Formulas Database
 http://www.hyperelliptic.org/EFD/
 
 https://en.wikibooks.org/wiki/Cryptography/Prime_Curve/Jacobian_Coordinates
+
+https://books.google.ro/books?id=8oWQDAAAQBAJ&pg=PA125&lpg=PA125&dq=non+adjacent+form+calculator&source=bl&ots=MkVztliKeC&sig=_An_vHuFgXPbuCo570kHGahybvY&hl=en&sa=X&ved=0ahUKEwiRy-Cjy_nRAhXMaxQKHcjACPQ4ChDoAQgwMAQ#v=onepage&q&f=false
+
+
