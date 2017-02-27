@@ -5,15 +5,15 @@ class Curve:
     """ O curba eliptica in forma Weierstrass"""
     def __init__(self, prime, b, a=-3, n=None, g=None, h=1):
         """a, b --> coeficientii curbei eliptice
-            p --> caracteristica corpului
+            p --> caracteristica corpului peste care este definita curba eliptica
             g --> punctul de baza
-            n --> ordinul subgrupului
-            h --> cofactor la subgrup
+            n --> ordinul curbei eliptice
+            h --> cofactor
             """
         self.a = a
         self.b = b
         self.prime = prime
-        self.g = g
+        self.g = Point(self, g)
         self.n = n
 
         if not isProbablePrime(prime):
