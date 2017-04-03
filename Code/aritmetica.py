@@ -67,7 +67,7 @@ def add_jacobi(P1, P2, C):
     return Jacobi_Point([x3, y3, z3, z3**2 % C.prime, z3**3 % C.prime], C)
 
 
-###Multiplicarea cu un scalar in O(logn), in curba C, dP = P + P + ... + P###
+###Multiplicarea cu un scalar in O(logn), in curba C, dP = P + P + ... + P; double and add algorithm###
 
 def scalar_multiplication(C, P, d):
   #  assert isinstance(C, Curve) and isinstance(P, Point)
@@ -102,7 +102,7 @@ def w_NAF(d, w):
 ### Left to right NAF scalar multiplication, Geometry, Algebra and Applications: From Mechanics to Cryptography, pagina 126 ###
 def left_to_right_scalar_mul(P, d, C):
     """:return dP
-     :param P : punct de pe o curba eliptica
+     :param P : punct de pe o curba eliptica, coordonate Jacobiene
      :param d : scalar"""
 
 #    assert isinstance(P, Jacobi_Point) and isinstance(Curve, C)
@@ -117,10 +117,115 @@ def left_to_right_scalar_mul(P, d, C):
             result = add_jacobi(result, P, C)
         if i == -1:
             result = add_jacobi(result, P.inverse(), C)
-
     return result
 
 
-### JSF ###
+### Right to left NAF scalar multiplication, signed representation on the fly, works with Affine Coordinates,
+# can be adapted easily for Jacabi coordinates. Algorithm 5 from Mechanics to Cryptography ###
+def right_to_left_scalar_mul(P, d, C):
+    """:return dP
+    :parameter d: scalar
+    :parameter P: punct de pe o curba eliptica, in coordonate afine"""
+
+    result = None
+
+    R = Point(C, list(P.get_point()))
+    #works also with R = P, which is weird
+
+    while d >= 1:
+        if d % 2 == 1:
+            u = 2 - (d % 4)
+            d = d - u
+            if u == 1:
+                result = add_cartesian(result, R, C)
+            else:
+                result = add_cartesian(result, R.inverse(), C)
+        d //= 2
+        R = add_cartesian(R, R, C)
+    return result
+
+def NAF(k):
+    s = 0
+    for i in range(len(k)):
+        s += k[i] * 2**(len(k)-i-1)
+    return s
+
+### Left to right sliding window NAF, Algorithm 6, Mechanics and Crypyto ###
+def sliding_window_left_to_right_scalar_mul(P, d, w, C):
+    """
+    :param P: punct de pe o curba eliptica
+    :param d: scalarul
+    :param C: curba eliptica
+    :return: punctul dP
+    """
+    d = w_NAF(d, w)
+    Q = None
+    i = 0
+    m = 2*((2**w - (-1)**w) // 3) - 1
+    _P = {}
+    for _i in range(1, m+1, 2):
+        _P[_i] = precom(_i, P, C)
+    #print(len(_P))
+    while i < len(d):
+        #print("***")
+        #print(d[i])
+        if d[i] == 0:
+            #print("sdaa")
+            Q = add_jacobi(Q, Q, C)
+            i += 1
+        else:
+            s = max(len(d) - i - w, 0)
+            s = len(d) - 1 - s
+            #print(s)
+            #print(d[s])
+            while d[s] == 0:
+                #print("ds = 0")
+                s -= 1
+            #print(d[i:s+1])
+            u = NAF(d[i:s+1])
+            #print(s, i)
+            #print(u)
+            for j in range(1, i-s + 2):
+                Q = add_jacobi(Q, Q, C)
+            if u > 0:
+                Q = add_jacobi(Q, _P[u], C)
+                #print("pozitiv")
+            if u < 0:
+                #print(u)
+                Q = add_jacobi(Q, _P[-u].inverse(), C)
+                #print("negativ")
+            #print(i, s)
+            i = s + 1
+    return Q
+
+
+def precom(k, P, C):
+    R = None
+    for i in range(k):
+        R = add_jacobi(R, P, C)
+    return R
+
+### Algorithm 7, Mechanics and Crypto ###
+def right_to_left_on_the_fly(P, k, w, C):
+    R = P
+    m = 2**(w-1) - 1
+    #indeces = [i for i in range(1, m+1, 2)]
+    Q = {}
+    for i in range(1, m+1, 2):
+        Q[i] = None
+    while k >= 1:
+        if k % 2 == 1:
+            t = k % 2**w
+            if t > 0:
+                Q[t] = add_jacobi(Q[t], R, C)
+            if t < 0:
+                Q[-t] = add_jacobi(Q[-t], R.inverse(), C)
+            k -= t
+        R = point_double(R, C)
+        k //= 2
+    for i in range(3, m+1, 2):
+        Q[1] = add_jacobi(Q[1], precom(i, Q[i], C), C)
+    return Q[1]
+
 
 

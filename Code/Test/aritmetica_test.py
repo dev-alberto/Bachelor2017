@@ -34,3 +34,20 @@ assert aritmetica.scalar_multiplication(curve, point1, 3) == Point(curve, [1, 43
 jacobi_res2 = aritmetica.left_to_right_scalar_mul(jacobi_point1, 3, curve)
 
 assert jacobi_res2.from_jacobi_to_cartesian() == Point(curve, [1, 43])
+
+
+### Right to left NAF Test ###
+cartesian_res = aritmetica.right_to_left_scalar_mul(point1, 4, curve)
+
+assert cartesian_res == Point(curve, [95, 66])
+
+#print(cartesian_res)
+
+### Sliding window, left to right ###
+sliding_left_res = aritmetica.sliding_window_left_to_right_scalar_mul(jacobi_point1, 12, 5, curve)
+print(sliding_left_res.from_jacobi_to_cartesian())
+
+
+### Sliding window, right to left ###
+sliding_right_res = aritmetica.right_to_left_on_the_fly(jacobi_point1, 12, 5, curve)
+print(sliding_right_res.from_jacobi_to_cartesian())

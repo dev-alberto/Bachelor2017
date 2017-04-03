@@ -13,7 +13,8 @@ class Curve:
         self.a = a
         self.b = b
         self.prime = prime
-        self.g = Point(self, g)
+        if g is not None:
+            self.g = Point(self, g)
         self.n = n
 
         if not isProbablePrime(prime):
