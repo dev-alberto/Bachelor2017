@@ -65,7 +65,40 @@ def getPrime(n):
     p = getrandbits(n)
     while not isProbablePrime(p):
         p = getrandbits(n)
-    return p
+    return
+
+
+### Generarea w-NAF, articol Signed Binary Representations Revisited, pagina 5 ####
+#TODO: fix mods bug to allow sliding wingow method
+def w_NAF(d, w):
+    i = 0
+    res = []
+    while d >= 1:
+        if d % 2 == 0:
+            res.append(0)
+        else:
+            #res.append(2 - d % 4)
+            res.append(mods(d, w))
+            d -= res[i]
+        d //= 2
+        i += 1
+    return res[::-1]
+
+
+def mods(a, w):
+
+    if a % 2**w < 2**(w-1):
+        return a % 2**w
+    else:
+        #print(2 ** (w-1))
+        #print(r)
+        return a % 2**w - 2**w
+
+def NAF(k):
+    s = 0
+    for i in range(len(k)):
+        s += k[i] * 2 ** (len(k) - i - 1)
+    return s
 
 
 #def prime_test(number):

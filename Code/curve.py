@@ -1,3 +1,4 @@
+from ECC import Curve
 CURVES = {
     # Bits : (p, order of E(GF(P)), parameter b, base point x, base point y)
     192: (0xfffffffffffffffffffffffffffffffeffffffffffffffff,
@@ -35,4 +36,10 @@ CURVES = {
 def get_curve(bits):
     if bits in CURVES:
         p, n, b, x, y = CURVES[bits]
-        return bits, p, n, b, x, y
+        return bits, p, b, n, x, y
+
+#print(get_curve(192))
+p192 = get_curve(192)
+
+P192 = Curve(p192[1], p192[2], n=p192[3], g=[p192[4], p192[5]])
+

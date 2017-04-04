@@ -6,7 +6,7 @@ from util import inv
 
 
 ####### Adunarea a 2 puncte in coordonate carteziene, dupa formula #######
-
+#added in Class
 def add_cartesian(P1, P2, C):
     #assert isinstance(P1, Point) and isinstance(P2, Point) and isinstance(C, Curve)
     #_lambda = 0
@@ -26,7 +26,7 @@ def add_cartesian(P1, P2, C):
 
 
 ####### Calculam 2P, unde P un punct in coordonate Jacobi #######
-
+#added in Class
 def point_double(P, C):
    # assert isinstance(P, Jacobi_Point) and isinstance(C, Curve)
     if P is None:
@@ -43,7 +43,7 @@ def point_double(P, C):
 
 # Adunarea a 2 puncte, coordonate Jacobi,
 # ne scapa de inversul modular de la adunarea clasica
-
+#added in Class
 def add_jacobi(P1, P2, C):
    # assert isinstance(P1, Jacobi_Point) and isinstance(P2, Jacobi_Point) and isinstance(C, Curve)
     if P1 is None:
@@ -68,7 +68,7 @@ def add_jacobi(P1, P2, C):
 
 
 ###Multiplicarea cu un scalar in O(logn), in curba C, dP = P + P + ... + P; double and add algorithm###
-
+#added in Class
 def scalar_multiplication(C, P, d):
   #  assert isinstance(C, Curve) and isinstance(P, Point)
     if d == 0:
@@ -150,6 +150,7 @@ def NAF(k):
         s += k[i] * 2**(len(k)-i-1)
     return s
 
+
 ### Left to right sliding window NAF, Algorithm 6, Mechanics and Crypyto ###
 def sliding_window_left_to_right_scalar_mul(P, d, w, C):
     """
@@ -186,6 +187,7 @@ def sliding_window_left_to_right_scalar_mul(P, d, w, C):
             #print(s, i)
             #print(u)
             for j in range(1, i-s + 2):
+                #--> modify here with point double
                 Q = add_jacobi(Q, Q, C)
             if u > 0:
                 Q = add_jacobi(Q, _P[u], C)
@@ -205,8 +207,16 @@ def precom(k, P, C):
         R = add_jacobi(R, P, C)
     return R
 
+
 ### Algorithm 7, Mechanics and Crypto ###
-def right_to_left_on_the_fly(P, k, w, C):
+def sliding_window_right_to_left_on_the_fly_scalar_mul(P, k, w, C):
+    """
+    :param P: Elliptic curve point
+    :param k: integer scalar
+    :param w: window width
+    :param C: elliptic curve
+    :return: kP
+    """
     R = P
     m = 2**(w-1) - 1
     #indeces = [i for i in range(1, m+1, 2)]
@@ -226,6 +236,4 @@ def right_to_left_on_the_fly(P, k, w, C):
     for i in range(3, m+1, 2):
         Q[1] = add_jacobi(Q[1], precom(i, Q[i], C), C)
     return Q[1]
-
-
 

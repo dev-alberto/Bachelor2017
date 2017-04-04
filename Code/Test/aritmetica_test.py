@@ -49,5 +49,5 @@ print(sliding_left_res.from_jacobi_to_cartesian())
 
 
 ### Sliding window, right to left ###
-sliding_right_res = aritmetica.right_to_left_on_the_fly(jacobi_point1, 12, 5, curve)
+sliding_right_res = aritmetica.sliding_window_right_to_left_on_the_fly_scalar_mul(jacobi_point1, 12, 5, curve)
 print(sliding_right_res.from_jacobi_to_cartesian())
