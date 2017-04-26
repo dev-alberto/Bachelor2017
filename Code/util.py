@@ -69,7 +69,6 @@ def getPrime(n):
 
 
 ### Generarea w-NAF, articol Signed Binary Representations Revisited, pagina 5 ####
-#TODO: fix mods bug to allow sliding wingow method
 def w_NAF(d, w):
     i = 0
     res = []

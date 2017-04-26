@@ -31,7 +31,8 @@ class Curve:
         return self.discriminant == other.discriminant and self.prime == other.prime
 
     def get_generator(self):
-        return self.g
+        if self.g is not None:
+            return self.g
 
     def generate_random_point(self):
         from random import randrange
@@ -40,6 +41,7 @@ class Curve:
         k = randrange(1, self.n)
 
 
+#TODO: use abc module for abstraction
 class AbstractPoint:
     def __str__(self):
         pass
