@@ -18,5 +18,6 @@ scalar_mul = ScalarMultiplication(generator)
 
 generator_times2 = scalar_mul.sliding_window_right_to_left_on_the_fly_scalar_mul(2)
 joint_mul = JointMultiplication(generator, generator_times2)
-print(joint_mul.brute_joint_multiplication(2, 3))
-print(joint_mul.JSF_Multiplication(2, 3))
+print(joint_mul.brute_joint_multiplication(1900, 5))
+print(joint_mul.JSF_Multiplication(1900, 5))
+print(joint_mul.interleaving_sliding_window(1900, 5, 4, 5))
