@@ -3,10 +3,9 @@ from util import w_NAF, NAF, mods
 
 
 class ScalarMultiplication:
-    def __init__(self, point, w=5):
+    def __init__(self, point):
         assert isinstance(point, AbstractPoint)
         self.point = point
-        self.w = w
 
     ###Multiplicarea cu un scalar in O(logn), in curba C, dP = P + P + ... + P; double and add algorithm###
     ## Algorithm 3.26 Right-to-left binary method for point multiplication ##
@@ -75,7 +74,7 @@ class ScalarMultiplication:
     def window_NAF_multiplication(self, d, w):
 
         d = w_NAF(d, w)
-        P = self.point
+        #P = self.point
        # print(d)
         _P = {}
         for i in range(1, 2**(w-1), 2):
@@ -83,7 +82,7 @@ class ScalarMultiplication:
         Q = None
         for i in range(0, len(d)):
             if Q is None:
-                print("None")
+                #print("None")
                 Q = None
             else:
                 Q = Q.point_double()
@@ -97,7 +96,7 @@ class ScalarMultiplication:
 
     ### Left to right sliding window NAF, Algorithm 6, Mechanics and Crypyto ###
     # #TODO: SOLVE BIG SCALAR BUG; Posible fix : Algorithm 3.38 Sliding window method for point multiplication
-    def sliding_window_left_to_right_scalar_mul(self, d):
+    def sliding_window_left_to_right_scalar_mul(self, d, w):
         """
         :param P: punct de pe o curba eliptica
         :param d: scalarul
@@ -112,7 +111,7 @@ class ScalarMultiplication:
         #print(d)
         Q = None
         i = 0
-        m = 2 * ((2 ** self.w - (-1)**self.w) // 3) - 1
+        m = 2 * ((2 ** w - (-1)**w) // 3) - 1
         _P = {}
         for _i in range(1, m + 1, 2):
             _P[_i] = self.binary_scalar_multiplication(_i)
@@ -128,7 +127,7 @@ class ScalarMultiplication:
                     Q = Q.point_double()
                 i += 1
             else:
-                s = max(len(d) - i - self.w, 0)
+                s = max(len(d) - i - w, 0)
                 s = len(d) - 1 - s
                 # print(s)
                 # print(d[s])
@@ -154,17 +153,17 @@ class ScalarMultiplication:
         return Q
 
     ### Algorithm 7, Mechanics and Crypto ###
-    def sliding_window_right_to_left_on_the_fly_scalar_mul(self, k):
+    def sliding_window_right_to_left_on_the_fly_scalar_mul(self, k, w):
 
         R = self.point
-        m = 2**(self.w-1) - 1
+        m = 2**(w-1) - 1
         Q = {}
         for i in range(1, m + 1, 2):
             Q[i] = None
         while k >= 1:
             if k % 2 == 1:
                 #t = k % 2**self.w
-                t = mods(k, self.w)
+                t = mods(k, w)
                 if t > 0:
                     Q[t] = R.add(Q[t])
                 if t < 0:

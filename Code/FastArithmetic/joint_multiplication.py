@@ -11,8 +11,8 @@ class JointMultiplication:
         self.multiplicator_point2 = ScalarMultiplication(point2)
 
     def brute_joint_multiplication(self, k, l):
-        result1 = self.multiplicator_point1.sliding_window_right_to_left_on_the_fly_scalar_mul(k)
-        result2 = self.multiplicator_point2.sliding_window_right_to_left_on_the_fly_scalar_mul(l)
+        result1 = self.multiplicator_point1.sliding_window_right_to_left_on_the_fly_scalar_mul(k, 4)
+        result2 = self.multiplicator_point2.sliding_window_right_to_left_on_the_fly_scalar_mul(l, 4)
         return result1.add(result2)
 
     @staticmethod

@@ -34,11 +34,29 @@ class Curve:
         if self.g is not None:
             return self.g
 
+    @staticmethod
+    def scalar_mul(gen, d):
+        """Method used in random point generation"""
+        result = None
+        R = gen
+        while d >= 1:
+            if d % 2 == 1:
+                u = 2 - (d % 4)
+                d = d - u
+                if u == 1:
+                    result = R.add(result)
+                else:
+                    result = R.inverse().add(result)
+            d //= 2
+            R = R.point_double()
+        return result
+
     def generate_random_point(self):
         from random import randrange
         if self.n is None or self.g is None:
             raise ValueError("*** Cannot generate random point, curve order must be specified")
-        k = randrange(1, self.n)
+        k = randrange(1, self.n-1)
+        return self.scalar_mul(self.g, k)
 
 
 #TODO: use abc module for abstraction
