@@ -103,6 +103,7 @@ class ScalarMultiplication:
         :param d: scalarul
         :param C: curba eliptica
         :return: punctul dP
+
         """
 
         #P = self.point

@@ -8,32 +8,32 @@
 \chapter{Structuri Algebrice de baza} 
 \section{Grupuri}
 \label{sec:sec01}
-
+In aceasta sectiune vom pune bazele matematice pentru urmatoarele capitole, facand astfel o introducere a unor concepte fundamentale din Teoria Grupurilor , a Corpurilor si in special despre Corpuri finite, care au o importanta deosebita pentru subiectul acestei licente.
 \begin{dfn}
-Un grup reprezinta o multime $S$ impreuna cu o operatie de compozitie $\cdot$ astfel incat sunt respectate urmatoarele reguli:
+Un \textit{grup} reprezinta o multime $S$ impreuna cu o operatie de compozitie $\cdot$ astfel incat sunt respectate urmatoarele reguli:
 \\ - legea $\cdot$ e asociativa $\rightarrow$ $\forall x, y, z\in S: (x\cdot y)\cdot z = x\cdot (y \cdot z)$
 \\ - existanta unui element neutru, unic $\rightarrow$ $\exists e\in S: x \cdot e = x, \forall x\in S$
 \\ - $\forall x\in S, \exists y\in S$, numit invers al elementului $x$, astfel incat $x\cdot y = y\cdot x = e$
 \end{dfn}
 
 \begin{dfn}
-Se numeste grup abelian, acel grup in care legea de compozitie $\cdot$ este de asemenea comutativa, adica pentru orice doua elemente
+Se numeste grup \textit{abelian}, acel grup in care legea de compozitie $\cdot$ este de asemenea comutativa, adica pentru orice doua elemente
 $x, y \in S$ avem $x \cdot y = y \cdot x$
 \end{dfn}
 
 \begin{dfn}
-Fie $G$ un grup si H o submultime a lui $G$. $H$ este un subgrup a lui $G$ daca sunt indeplinite conditiile:
+Fie $G$ un grup si H o submultime a lui $G$. $H$ este un \textit{subgrup} a lui $G$ daca sunt indeplinite conditiile:
 \\ -inchidere la operatia de compozitie $\rightarrow$ $\forall x, y \in H, x \cdot y \in H$
 \\ - daca $x \in H \Rightarrow x^{-1} \in H$
 \end{dfn}
 
 \begin{dfn}
-Se numeste ordin al grupului $G$, cardinalul multimii G, notat $|G|$. Pentru un element $g \in G$, se numeste ordin al lui $g$, cel mai
+Se numeste \textit{ordin} al grupului $G$, cardinalul multimii G, notat $|G|$. Pentru un element $g \in G$, se numeste ordin al lui $g$, notat prin $ord_G(g)$, cel mai
 mic intreg $n$ astfel incat $g^n = e$, unde $e$ este element netru al lui $G$. Altfel spunem ca ordinul lui $g$ este infinit.
 \end{dfn}
 
 \begin{dfn}
-Fie $G$ un grup si $g \in G$. Se numeste subgrup generat de $g$ multimea $\set{g^n\mid n\in \mathbb{Z}}$ si se noteaza $\langle g \rangle$. Daca $G = \langle g \rangle$ atunci $G$ se numeste grup ciclic iar $g$ generator pentru $G$.
+Fie $G$ un grup si $g \in G$. Se numeste subgrup generat de $g$ multimea $\set{g^n\mid n\in \mathbb{Z}}$ si se noteaza $\langle g \rangle$. $G = \langle g \rangle$ daca si numai daca $ord_G(g) = |G|$. Atunci $G$ se numeste grup ciclic iar $g$ generator pentru $G$.
 \end{dfn}
 
 
@@ -43,21 +43,21 @@ Fie $G$ un grup si $g \in G$. Se numeste subgrup generat de $g$ multimea $\set{g
 \label{sec:sec02}
 
 \begin{dfn}
-Un inel reprezinta un triplet $(R, +, \cdot)$, unde $R$ este o multime iar $+, \cdot$ reprezinta 2 legi de compozitie. Urmatoarele proprietati trebuiesc simultan indeplinite: 
+Un \textit{inel} reprezinta un triplet $(R, +, \cdot)$, unde $R$ este o multime iar $+, \cdot$ reprezinta 2 legi de compozitie. Urmatoarele proprietati trebuiesc simultan indeplinite: 
 \\ - $(R, +)$ reprezinta un grup abelian
 \\ - $x \cdot y = y \cdot x, \forall x,y\in R$ si de asemenea exista element neutru la inmultire, diferit de elementul neutru la adunare
-\\ - legea $\cdot$ este distributiva fata de $+$, adica $\forall x,y,z\in R, x\cdot (y + z) = x\cdot y + x\cdot z \land (y + z)\cdot x = y\cdot x + z\cdot x$ 
+\\ - legea $\cdot$ este distributiva fata de $+$, adica $\forall x,y,z\in R, x\cdot (y + z) = x\cdot y + x\cdot z$ si $(y + z)\cdot x = y\cdot x + z\cdot x$ 
 \end{dfn}
 
 \begin{dfn}
-Fie $R, R'$ doua inele cu operatiile $+, \times$ respectiv $\oplus, \otimes$. Un homomorfism de inele este o functie $\Psi : R\rightarrow R'$ care este definita pentru orice doua elemente $x, y\in R$ astfel:
+Fie $R, R'$ doua inele cu operatiile $+, \times$ respectiv $\oplus, \otimes$. Un \textit{homomorfism} de inele este o functie $\Psi : R\rightarrow R'$ care este definita pentru orice doua elemente $x, y\in R$ astfel:
 \\$\Psi (x+y) = \Psi (x) \oplus \Psi (y)$
 \\$\Psi (x\times y) = \Psi (x) \otimes \Psi (y)$
 \\$\Psi (1) = 1$
 \end{dfn}
 
 \begin{dfn}
-Fie $R$ un inel. $I$ Se numeste ideal (la stanga sau la dreapta) a lui $R$ daca $I\subseteq R, I \neq \emptyset$ si respecta:
+Fie $R$ un inel. $I$ Se numeste \textit{ideal} (la stanga sau la dreapta) a lui $R$ daca $I\subseteq R, I \neq \emptyset$ si respecta:
 \\ - $I$ este un subgrup pentru $(R, +)$
 \\ - $\forall x\in R, \forall y\in I \Rightarrow x\cdot y, y\cdot x \in I$
 \\ $I$ se numeste ideal bilateral daca este ideal la stanga si la dreapta.
@@ -72,10 +72,10 @@ Fie $\Psi$ un homomorfism de la $\mathbb{Z}$ la un inel $R$ definit astfel:
    -(1+...+1) & $de -n ori altfel $
    \end{cases}$
 \end{obs}
- Kernelul lui $\Psi$ este un ideal a lui $\mathbb{Z}$ si daca toti multipli de 1 sunt diferiti atunci $ker\Psi = {0}$. Altfel, daca $R$ este finit de exemplu, cativa multiplii vor fi $0$. Altfel spus, kernelul lui $\Psi$ este generat de un numar natural $m$
+ \textit{Nucleul} lui $\Psi$ este un ideal a lui $\mathbb{Z}$ si daca toti multipli de 1 sunt diferiti atunci $ker\Psi = {0}$. Altfel, daca $R$ este finit de exemplu, cativa multiplii vor fi $0$. Altfel spus, nucleul lui $\Psi$ este generat de un numar natural $m$
  
  \begin{dfn}
- Fie $R$ un inel si $\Psi$ definit ca mai sus. Kernelul lui $\Psi$ are forma $m\mathbb{Z}, m\in\mathbb{N}$. $m$ poarta denumirea de caracteristica a inelului $R$ si se noteaza $char(R)$
+ Fie $R$ un inel si $\Psi$ definit ca mai sus. Nucleul lui $\Psi$ are forma $m\mathbb{Z}, m\in\mathbb{N}$. $m$ poarta denumirea de \textit{caracteristica} a inelului $R$ si se noteaza $char(R)$
  \end{dfn}
  
  \begin{dfn}
@@ -83,7 +83,7 @@ Fie $\Psi$ un homomorfism de la $\mathbb{Z}$ la un inel $R$ definit astfel:
  \end{dfn}
  
  \begin{dfn}
- Fie $n\geq 1$. Notam cu $\phi (n) = |(\mathbb{Z}/n\mathbb{Z})^{*}|$. Functia $\phi$ se numeste functia lui Euler. Avem $\phi (n) = |\set{x\mid 1\leq x\leq n, gcd(x, n)=1}|$
+ Fie $n\geq 1$. Notam cu $\phi (n) = |(\mathbb{Z}/n\mathbb{Z})^{*}|$. Functia $\phi$ se numeste \textit{functia lui Euler}. Avem $\phi (n) = |\set{x\mid 1\leq x\leq n, gcd(x, n)=1}|$
  \end{dfn}
  
  \begin{teo}
@@ -94,7 +94,7 @@ Fie $\Psi$ un homomorfism de la $\mathbb{Z}$ la un inel $R$ definit astfel:
  \section{Corpuri}
 \label{sec:sec03}
 \begin{dfn}
-Un corp $K$ este un inel comutativ cu toate elementele diferite de $0$ inversabile.
+Un \textit{corp} $K$ este un inel comutativ cu toate elementele diferite de $0$ inversabile.
 \end{dfn}
 
 \begin{ex}
@@ -110,7 +110,11 @@ Fie $R$ un inel si I un ideal. Inelul factor $R/I$ este corp daca si numai daca 
 \end{prop}
 
 \begin{dfn}
-Fie $K, K'$ doua corpuri. Un homomorfism de corpuri este un homomorfism de inele intre $K$ si $K'$. Remarcam faptul ca o astfel de functie este tot timpul injectiva deoarece kernelul acesteia este $\set {0}$ 
+Fie $K, K'$ doua corpuri. Un homomorfism de corpuri este un homomorfism de inele intre $K$ si $K'$. Remarcam faptul ca o astfel de functie este tot timpul injectiva deoarece nucleul acesteia este $\set {0}$ 
+\end{dfn}
+
+\begin{dfn}
+Fie $L$ un corp. Un \textit{subcorp} a lui $L$ este o submultime $K$ a lui $L$ care isi pastreaza proprietatea de corp, operatiile aditive respectiv multiplicative fiind mostenite de la $L$. In aceasta situatie, corpul mare, $L$, se numeste o \textit{extensie} a corpului $K$.
 \end{dfn}
 \subsection{Corpuri Finite}
 \label{subsec:subsec01}
@@ -122,13 +126,12 @@ Un corp finit este un corp, conform definitiei 1.12, care are multimea elementel
 \end{dfn}
 
 \begin{teo}
-Fie $q$ ordinul unui corp finit $\mathbb{F}$. Exista si este unic(??? unic pana la un isomorfism) un astfel de corp, daca si numai daca $q=p^{m}$, unde $p$ este caracteristica corpului $\mathbb{F}$. Daca $m=1$, atunci corpul este prim, iar daca $p\geq 2$ este corp de extensie.
+Fie $q$ ordinul unui corp finit $\mathbb{F}$. Exista si este unic(pana la un isomorfism) un astfel de corp, daca si numai daca $q=p^{m}$, unde $p$ este caracteristica corpului $\mathbb{F}$. Daca $m=1$, atunci corpul este prim, iar daca $p\geq 2$ este corp de extensie.
 \end{teo}
 
 \begin{dfn}
-Corpuri binare au caracteristica 2 si deci ordinul $2^{m}$. O metoda de a construi $\mathbb{F}/2^{m}\mathbb{F}$ este considerarea fiecare element ca un polinom cu coefientio 0 sau 1 si cu gradul cel mult m-1. Avem astfel : 
+Corpuri binare au caracteristica 2 si deci ordinul $2^{m}$. O metoda de a construi $\mathbb{F}/2^{m}\mathbb{F}$ este considerarea fiecare element ca un polinom cu coeficienti 0 sau 1 si cu gradul cel mult m-1. Avem astfel : 
  $\mathbb{F}/2^{m}\mathbb{F} = \set {a_{m-1}z^{m-1} + a_{m-2}z^{m-2} + ... + a_{1}z + a_{0}\mid a_{i}\in {0,1}}$
- Aritmetica la nivel de curbe eliptice -->pt data viitoare
 \end{dfn}
 
 

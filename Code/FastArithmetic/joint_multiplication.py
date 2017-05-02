@@ -21,7 +21,6 @@ class JointMultiplication:
         d = [0 for i in range(2)]
         _l = [0 for i in range(2)]
         while (a + d[0] > 0) or (b + d[1] > 0):
-            #print("***")
             _l[0] = d[0] + a
             _l[1] = d[1] + b
             for i in range(2):
@@ -30,13 +29,9 @@ class JointMultiplication:
                 else:
                     u = 2 - _l[i] % 4
                     if (_l[i] % 8 == 5 or _l[i] % 8 == 3) and (_l[1-i] % 4 == 2):
-                        #print("sadas")
                         u = -u
                 _u[i].append(u)
-                #print(k)
             for i in range(2):
-                #   print(i)
-                #d[i] = (d[i] - _u[i][-1]) // 2
                 if 2 * d[i] == 1 + _u[i][-1]:
                     d[i] = 1 - d[i]
                 if i == 0:

@@ -1,0 +1,19 @@
+\chapter{Protocoale de securitate} 
+
+In acest capitol voi prezenta semnatura digitala bazata pe curbe eliptice \textit{ECDSA}, criptografie publica si protocoale de schimb de chei. De asemenea vom trece in revista suportul matematic pe care se bazeaza criptografia pe curbe eliptice, adica vom prezenta problema logaritmului discret, impreuna cu o comparatie a eficientei metodelor de atac (\textit{Pohlig-Hellman, Pollard's rho}).
+
+\section{Problema Logaritmului Discret Pentru Curbe Eliptice}
+\label{sec:sec01}
+
+\begin{dfn}
+(sursa: Yan, Quantum Computational Theory)
+Fie E o curba eliptica peste un corp finit $F_p$, data in forma Weierstrass simplificata, 
+$E: y^2 = x^3 + ax + b (mod p)$ si 2 puncte $S, T\in E(F_p)$. Problema logarimului discret consta in aflarea unui numar, $k = \log_T S \in \mathbb{Z}$, sau $k \equiv \log_T S (mod p)$ astfel incat $S = kT \in E(F_p)$ sau $S \equiv kT (mod p)$. 
+\end{dfn}
+
+Problema logaritmului discret pentru curbe eliptice(\textit{ECDLP}) este mai dificila decat problema clasica a logaritmului discret(\textit{DLP}). ECDLP este o generalizare a DLP, care extinde grupul multiplicativ $F^{*}_{p}$ la grupul $E(F_p)$.
+\\(sursa Menezez) Dificultatea acestei probleme sta la baza criptografiei pe curbe eliptice. Parametrii curbei eliptice trebuie alesi astfel incat sa evitam orice atac cunoscut asupra ECDLP. Un algoritm naiv este cautarea exaustiva (calculam $T, 2T, 3T, ...$ pana obtinem $S$). In cazul cel mai nefavorabil algoritmul parcurge $p$ pasi, iar cazul mediu $p/2$. Asadar putem evita acest atac alegand un $p$ suficient de mare, de exemplu $p\geq 2^{80}$. In cazul atacurilor Pohlig-Hellman si Pollard's rho, care au complexitatea $\mathcal{O}(\sqrt{\alpha})$, unde $\alpha$ este cel mai mare divizor prim a lui $p$. Pentru a contracara acest atac avem de asemenea nevoie sa alegem $p$ mare, de exemplu $p\geq 2^{160}$. Daca restul parametrilor sunt alesi pentru a evita si atacuri de tip izomorfic(Weil, Tate), ECDLP este o problema care nu poate fi rezolvata intr-un timp rezonabil cu tehnologia actuala.
+
+\begin{obs}
+Problema ECDLP nu este demostrata ca fiind o problema intractabila. Astfel, nu s-a aratat ca nu exista un algoritm eficient pentru rezolvarea logaritmului discret. O astfel de demonstratie ar implica $P\neq NP$, rezolvand astfel o problema fundamentala in informatica. Mai mult, nu exista dovezi teoretice solide care sa suporte intractabilitatea ECDLP, problema nefiind demonstrata NP-hard. Exista o probabilitate destul de mica ca ECDLP sa fie NP-hard, intrucat versinea de decizie a acestei probleme apartine atat NP cat si la co-NP.
+\end{obs}
