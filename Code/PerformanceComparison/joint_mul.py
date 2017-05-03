@@ -4,7 +4,7 @@ from random import randint
 from curve import P256
 
 
-class JointMultiplicationScalarTest:
+class JointMultiplicationScalarPerformanceTest:
     def __init__(self, iterations, curve, interval, jacobi=False):
         self.iterations = iterations
         self.curve = curve
@@ -41,7 +41,7 @@ class JointMultiplicationScalarTest:
         return time() - start
 
 
-# test = JointMultiplicationScalarTest(1000, P256, [2**256, 2**384], jacobi=True)
+# test = JointMultiplicationScalarPerformanceTest(1000, P256, [2**256, 2**384], jacobi=True)
 # #print(test.brute_force_test())
 # print(test.JSF_mul_test())
 # print(test.interleaving_sliding_window_test(3, 3))
