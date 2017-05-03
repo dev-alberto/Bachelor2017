@@ -93,6 +93,7 @@ def mods(a, w):
         #print(r)
         return a % 2**w - 2**w
 
+
 def NAF(k):
     s = 0
     for i in range(len(k)):

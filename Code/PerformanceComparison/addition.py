@@ -17,7 +17,7 @@ class AdditionPerformanceTest:
             P.add(Q)
         return time() - start
 
-    def apoint_double_test(self):
+    def point_double_test(self):
         start = time()
         for i in range(self.iterations):
             P = self.curve.generate_random_point()

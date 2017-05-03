@@ -116,17 +116,57 @@ Coordonatele Chudnovsky sunt obtinute din coordonatele Jacobi, adaugand niste re
 \end{dfn}
 
 \begin{obs}
-In implementare, am folosit $Z = 1$ pentru a simplifica calculele.
+Se poate folosi $Z = 1$ in implementari pentru a simplifica calculele.
 \end{obs}
 
 \section{Aritmetica curbelor eliptice}
 \label{sec:sec02}
+In aceasta sectiune vom prezenta operatiile din corpul finit format de punctele de pe o curba eliptica(adunarea,  inmultirea cu un scalar) precum si operatia de inmultire multipla cu scalari. La inceput vom oferi o privire de ansamblu asupra acestor operatii, oferind definitii, apoi vom intra in delalii in sectiunea 2.3, oferind inclusiv implementarea unor algoritmi eficienti pentru aceste operatii.
 
-Ne vom concentra eforturile in continuare asupra curbelor eliptice non-supersingulare de caracteristica diferita de 2 sau 3 ($K = F_p,p>3 $) reprenzentate prin coordonate afine.
 \begin{dfn}
-Adunarea a doua puncte de pe o curba eliptica este foarte intuitiva din punct de vedere geometric. Fie $P, Q$ doua puncte si $R$ suma lor. Rezultatul este obtinut astfel. Mai intai desenam o linie intre $P, Q$. Acesta linie intersecteaza curba intr-ul al treilea punct. Punctul $R$ este reflectia la axa $Ox$ a acestui punct. 
-Din punct de vedere algebric lucrurile stau destul de clar, adunarea fiind definita conform unor set de reguli. \\
-Fie 2 puncte, $P(x_{1}, y_1), Q(x_2, y_2)\in E(F_p)$. Notam cu $R(x_3, y_3) = P + Q$
+Adunarea a doua puncte de pe o curba eliptica este foarte intuitiva din punct de vedere geometric. Fie $P, Q$ doua puncte si $R$ suma lor. Rezultatul este obtinut astfel. Mai intai desenam o linie intre $P, Q$. Acesta linie intersecteaza curba intr-ul al treilea punct. Punctul $R$ este reflectia la axa $Ox$ a acestui punct(Figura 2.1a). Dublul unui punct $P(2P = R)$ este definit astfel. Desenam o tangenta la curba eliptica in P, aceasta intersectand curba intr-un punct secundar. Punctul $R$ este din nou reflexia la axa $Ox$(Figura 2.1b).  
+\end{dfn}
+
+\begin{obs}
+Formulele algebrice pentru adunarea a doua puncte difera in functie de sistemul de coordnate folosit, sau tipul de corp algebric peste care este definita curba eliptica(corp prim, binar sau de extensie).
+\end{obs}
+
+\begin{figure}[htp]
+\centering
+\includegraphics[width=13cm]{chapters/Addition.png}
+\caption{Adunarea si dublarea unui punct pe o curba eliptica}
+\label{fig:lion}
+\end{figure}
+
+\begin{dfn}
+O alta operatie fundamentala este cea a inmultirii unui punct $P$ de pe o curba eliptica, cu un scalar, $k\in \mathbb{Z}$. Exista multe metode de a face acest lucru, de la metoda brute force de a face k adunari repetate pana la metode mai rafinate, precum cea a ferestrei glisante, care inbunatatesc considerabil performanta operatiei. Vom discuta in sectiunile care urmeaza algoritmi eficienti de inmultire. 
+\end{dfn}
+
+\begin{dfn}
+O operatie asemanatoare celei de inmultire cu un scalar, este cea de inmultire multipla cu scalari. Fie doua puncte, $P, Q$ de pe o curba eliptica si doi scalari, $k, l\in \mathbb{Z}$. Dorim sa aflam rezultatul $kP + lQ$. Evident, precum la operatia de inmultire cu un scalar putem aplica o metoda directa, de a inmulti punctul $P$ cu scalarul $k$ respectiv punctul $Q$ cu scalarul $l$ si apoi facem o adunare de puncte. Acest lucru este insa ineficient, intrucat exista si aici metode mai rapide de a calcula acest lucru. Aceasta operatie de inmultire rapida este una extrem de folosita in criptografia pe curbe eliptice, aparand de exemplu, in cadrul unor protocoale criptografice, precum ECDSA, iar implementarea ineficienta e acesteia duce la mari probleme de performanta. 
+\end{dfn}
+
+\begin{obs}
+Operatia de adunare pe o curba eliptica este corespondenta operatiei de inmultire
+in sistemele cu chei publice obisnuite, iar adunarea multipla este corespondenta
+exponentierii modulare din acestea.
+Desi regulile de calcul in grupul punctelor unei curbe eliptice par destul de complicate, aritmetica acestora poate fl implementata extrem de eflcient, calculele in acest grup flind realizate mult mai rapid decat cele din grupul $Z_p$
+\end{obs}
+
+\section{Studiu Comparativ}
+\label{sec:sec03}
+In aceasta subsectiune voi aborda cele trei operatii de baza, adunarea, inmultirea cu un scalar si inmultirea multipla, prezentand la fiecare sectiune o analiza a eficientei metodei alese. Implementarea eficienta si corecta a acestor operatii reprezinta un prim pas foarte important spre dezvoltarea unor criptosisteme bazate pe curbe eliptice.
+\\ Pentru implementare am ales limbajul de programare Python, versiunea 3.5.2, iar hardware-ul folosit in tabelele de test este: Quad Core CPU, i7-4700HQ, 2.4 GHz, 64 bit OS, 16 GB RAM.
+
+\subsubsection{Arhitectura aplicatiei}
+\label{sec:sec01}
+arhitectura(Inclusiv grupul folosit, curbele eliptice Nist), diagrama UML cu clasele
+
+\subsection{Metode de adunarea a punctelor de pe o curba eliptica, comparatie}
+\label{subsec:subsec02}
+In aplicatie am implementat operatia de adunare pentru coordonate Afine si pentru coordonate Jacobiene. Vom oferi formulele de calcul pentru cele tipuri de adunare si apoi vom compara eficienta celor doua implementari.
+\begin{dfn}
+Pentru puncte reprezentate prin coordonate afine formulele de calcul sunt dupa cum urmeaza.Fie 2 puncte, $P(x_{1}, y_1), Q(x_2, y_2)\in E(F_p)$. Notam cu $R(x_3, y_3) = P + Q$. Formulele pentru adunarea a doua puncte pot fi demonstrate riguros matematic.
 
 $\begin{cases} 
     x_3 = \lambda^2 - x_1 - x_2 \\
@@ -141,33 +181,59 @@ $\begin{cases}
  \end{cases}$ \\
 \end{dfn}
 
-\begin{ex}
-Fie corpul $F_{29}$ si o curba eliptica $E: y^2 = x^3 + 4x + 20$. Aceasta curba contine 37 de puncte, inclusiv punctul de la infinit, asadar ordinul grupului abelian este 37. Un exemplu de adunare este: $(13, 6) + (24, 22) = (20, 26)$
-\end{ex}
+\begin{dem}
 
-\begin{dfn}
-O alta operatie fundamentala este cea a inmultirii unui punct $P$ de pe o curba eliptica, cu un scalar, $k\in \mathbb{Z}$. Exista multe metode de a face acest lucru, de la metoda brute force de a face k adunari repetate pana la metode mai rafinate, precum cea a ferestrei glisante, care inbunatatesc considerabil performanta operatiei. Vom discuta in sectiunile care urmeaza algoritmi eficienti de inmultire. 
-\end{dfn}
+\end{dem}
 
-\begin{dfn}
-O operatie asemanatoare celei de inmultire cu un scalar, este cea de inmultire multipla cu scalari. Fie doua puncte, $P, Q$ de pe o curba eliptica si doi scalari, $k, l\in \mathbb{Z}$. Dorim sa aflam rezultatul $kP + lQ$. Evident, precum la operatia de inmultire cu un scalar putem aplica o metoda directa, de a inmulti punctul $P$ cu scalarul $k$ respectiv punctul $Q$ cu scalarul $l$ si apoi facem o adunare de puncte. Acest lucru este insa ineficient, intrucat exista si aici metode mai rapide de a calcula acest lucru. Aceasta operatie de inmultire rapida este una extrem de folosita in criptografia pe curbe eliptice, aparand de exemplu, in cadrul unor protocoale criptografice, precum ECDSA, iar implementarea ineficienta e acesteia duce la mari probleme de performanta. 
-\end{dfn}
 
-\begin{obs}
-Operatia de adunare pe o curba eliptica este corespondenta operatiei de inmultire
-in sistemele cu chei publice obisnuite, iar adunarea multipla este corespondenta
-exponentierii modulare din acestea.
-Desi regulile de calcul in grupul punctelor unei curbe eliptice par destul de complicate, aritmetica acestora poate fl implementata extrem de eflcient, calculele in acest grup flind realizate mult mai rapid decat cele din grupul $\mathbb{Z}/p\mathbb{Z}$
-\end{obs}
 
-\subsection{Metode de adunarea a punctelor de pe o curba eliptica, comparatie}
-\label{subsec:subsec01}
-Va urma
+\begin{tabular}{ |p{3cm}||p{3cm}|p{3cm}|p{3cm}|  }
+ \hline
+ \multicolumn{4}{|c|}{Adunarea punctelor de pe curbe eliptice} \\
+ \hline
+ Curba NIST& Coordonate &Metoda &Timp de executie(secunde)\\
+ \hline
+ P192   & Afine    &Adunare& 5.22\\
+ P192&Afine  & Dublare & 5.19\\
+ P192 &Jacobiene & Adunare& 2.6\\
+ P192&Jacobiene & Dublare & 2.61\\
+ P224& Afine & Adunare & 6.66\\
+ P224& Jacobiene & Adunare   &3.32\\
+ P256& Afine  & Adunare& 8.47\\
+ P256& Jacobiene  & Adunare& 4.52\\
+ P384& Afine  & Adunare& 18.06\\
+ P384& Jacobiene  & Adunare& 8.96\\
+ \hline
+\end{tabular}
+
 \subsection{Inmultirea cu un scalar, comparatie}
-\label{subsec:subsec02}
-Va urma
-\subsection{Inmultirea multipla, comparatie}
 \label{subsec:subsec03}
+\begin{tabular}{ |p{5cm}||p{3cm}|p{3cm}|p{2cm}|p{1cm}|  }
+ \hline
+ \multicolumn{5}{|c|}{Curba P192} \\
+ \hline
+ Algortitm& Coordonate &Intervalul &Fereastra &Timp\\
+ \hline
+ Alg Binar & Afine  &$[2^{5},2^{32}]$& -\\
+ Alg Binar&Jacobiene  & $[2^{5},2^{32}]$ & -\\
+ Inmultire de st. la dr. & Jacobian & $[2^{5},2^{32}]$& -\\
+ Inmultire de st. la dr. & Afine & $[2^{128},2^{192}]$& -\\
+ Inmultire de st. la dr. & Jacobian & $[2^{128},2^{192}]$& -\\
+ Inmultire de dr. la st. &Afine & $[2^{128},2^{192}]$ & -\\
+ Inmultire de dr. la st. &Jacobiene & $[2^{5},2^{32}]$ & -\\
+ Inmultire de dr. la st. &Jacobiene & $[2^{128},2^{192}]$ & -\\
+ Metoda cu fereastra& Jacobiene & $[2^{5},2^{32}]$ & 3\\
+ Metoda cu fereastra& Jacobiene & $[2^{128},2^{192}]$ & 3\\
+ Metoda cu fereastra& Jacobiene & $[2^{128},2^{192}]$ & 4\\
+ Fereastra glisanta st. la dr.& Jacobiene  & $[2^{5},2^{32}]$& 3\\
+ Fereastra glisanta st. la dr.& Jacobiene  & $[2^{128},2^{192}]$& 3\\
+ Fereastra glisanta dr. la st.& Jacobiene  & $[2^{128},2^{192}]$& 3\\
+ Fereastra glisanta dr. la st.& Jacobiene  & $[2^{128},2^{192}]$& 4\\
+ Fereastra glisanta dr. la st.& Jacobiene  & $[2^{128},2^{192}]$& 5\\
+ \hline
+\end{tabular}
+\subsection{Inmultirea multipla, comparatie}
+\label{subsec:subsec04}
 Va urma
 
 
