@@ -95,7 +95,6 @@ class ScalarMultiplication:
 
 
     ### Left to right sliding window NAF, Algorithm 6, Mechanics and Crypyto ###
-    # #TODO: SOLVE BIG SCALAR BUG; Posible fix : Algorithm 3.38 Sliding window method for point multiplication
     def sliding_window_left_to_right_scalar_mul(self, d, w):
         """
         :param P: punct de pe o curba eliptica
@@ -127,29 +126,32 @@ class ScalarMultiplication:
                     Q = Q.point_double()
                 i += 1
             else:
-                s = max(len(d) - i - w, 0)
+                s = max(len(d) - i - w + 1, 0)
                 s = len(d) - 1 - s
                 # print(s)
                 # print(d[s])
                 while d[s] == 0:
                     # print("ds = 0")
                     s -= 1
-                #print(d[i:s+1])
+                # print(d[i:s+1])
                 u = NAF(d[i:s + 1])
                 # print(s, i)
                 # print(u)
                 for j in range(1, i - s + 2):
                     # --> modify here with point double
-                    Q = Q.point_double()
+                    if Q is not None:
+                        Q = Q.point_double()
+                    else:
+                        Q = None
                 if u > 0:
                     Q = _P[u].add(Q)
                     # print("pozitiv")
                 if u < 0:
-                    #print(u)
+                    # print(u)
                     Q = Q.add(_P[-u].inverse())
                     # print("negativ")
                 # print(i, s)
-                i = s+1
+                i = 1 + s
         return Q
 
     ### Algorithm 7, Mechanics and Crypto ###
