@@ -1,7 +1,8 @@
 from flask import Flask
 from flask import render_template
-from ECC import Curve, Point
-from aritmetica import add_cartesian
+
+from OldCode.ECC import Curve, Point
+from OldCode.aritmetica import add_cartesian
 
 app = Flask(__name__)
 

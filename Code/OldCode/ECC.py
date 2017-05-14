@@ -1,5 +1,7 @@
 from util import inv, isProbablePrime
 
+#THIS IS DEPRECATED AND WILL BE DELETED in DUE TIME
+
 
 class Curve:
     """ O curba eliptica in forma Weierstrass"""

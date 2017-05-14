@@ -1,18 +1,18 @@
 from math import floor
-from FastArithmetic.scalar_multiplication import ScalarMultiplication
 from util import w_NAF
+from DataStructures.interfaces import AbstractPoint
 
 
 class JointMultiplication:
     def __init__(self, point1, point2):
+        assert isinstance(point1, AbstractPoint)
+        assert isinstance(point2, AbstractPoint)
         self.point1 = point1
         self.point2 = point2
-        self.multiplicator_point1 = ScalarMultiplication(point1)
-        self.multiplicator_point2 = ScalarMultiplication(point2)
 
     def brute_joint_multiplication(self, k, l):
-        result1 = self.multiplicator_point1.sliding_window_right_to_left_on_the_fly_scalar_mul(k, 4)
-        result2 = self.multiplicator_point2.sliding_window_right_to_left_on_the_fly_scalar_mul(l, 4)
+        result1 = self.point1.right_to_left_scalar_mul(k)
+        result2 = self.point2.right_to_left_scalar_mul(l)
         return result1.add(result2)
 
     @staticmethod
@@ -40,6 +40,7 @@ class JointMultiplication:
                     b = floor(b/2)
         return list(reversed(_u[0])), list(reversed(_u[1]))
 
+    #TODO: fix very large scalars bug
     def JSF_Multiplication(self, k, l):
         """Add using Shamir Trick, variation of algorithm 3.48, Menezez Book"""
         jsf = self.JSF(k, l)
@@ -75,11 +76,9 @@ class JointMultiplication:
 
         #precom stage
         for i in range(1, 2**(w1 - 1), 2):
-            #_P[i] = self.multiplicator_point1.sliding_window_right_to_left_on_the_fly_scalar_mul(i)
-            _P[i] = self.multiplicator_point1.right_to_left_scalar_mul(i)
+            _P[i] = self.point1.right_to_left_scalar_mul(i)
         for j in range(1, 2**(w2 - 1), 2):
-            #_Q[j] = self.multiplicator_point2.sliding_window_right_to_left_on_the_fly_scalar_mul(j)
-            _Q[j] = self.multiplicator_point2.right_to_left_scalar_mul(j)
+            _Q[j] = self.point2.right_to_left_scalar_mul(j)
 
         #padding stage
         for i in range(_l - len(naf[0])):

@@ -1,9 +1,10 @@
 #Fie o curba eliptica y**2 = x**3 + ax + b mod n  (deci putem reprezenta o curba eliptica printr-un tuplu (a, b, n))
 #Vom reprezenta un punct P de pe curba eliptica in coordonate carteziene, folosind o tupla (x, y), x, y numere intregi pozitive
 
-from ECC import Point, Jacobi_Point
+from OldCode.ECC import Point, Jacobi_Point
 from util import inv
 
+#THIS IS DEPRECATED AND WILL BE DELETED in DUE TIME
 
 ####### Adunarea a 2 puncte in coordonate carteziene, dupa formula #######
 #added in Class

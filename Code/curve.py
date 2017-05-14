@@ -1,4 +1,4 @@
-from ECC import Curve
+from OldCode.ECC import Curve
 CURVES = {
     # Bits : (p, order of E(GF(P)), parameter b, base point x, base point y)
     192: (0xfffffffffffffffffffffffffffffffeffffffffffffffff,
@@ -38,17 +38,17 @@ def get_curve(bits):
         p, n, b, x, y = CURVES[bits]
         return bits, p, b, n, x, y
 
-#print(get_curve(192))
-p192 = get_curve(192)
-p224 = get_curve(224)
-p256 = get_curve(256)
-p384 = get_curve(384)
-p521 = get_curve(521)
-
-P192 = Curve(p192[1], p192[2], n=p192[3], g=[p192[4], p192[5]])
-P224 = Curve(p224[1], p224[2], n= p224[3], g=[p224[4], p224[5]])
-P256 = Curve(p256[1], p256[2], n=p256[3], g=[p256[4], p256[5]])
-P384 = Curve(p384[1], p384[2], n=p384[3], g=[p384[4], p384[5]])
-#P521 = Curve(p521[0], p521[2], n=p521[3], g=[p521[4], p521[5]])
+# #print(get_curve(192))
+# p192 = get_curve(192)
+# p224 = get_curve(224)
+# p256 = get_curve(256)
+# p384 = get_curve(384)
+# p521 = get_curve(521)
+#
+# P192 = Curve(p192[1], p192[2], n=p192[3], g=[p192[4], p192[5]])
+# P224 = Curve(p224[1], p224[2], n= p224[3], g=[p224[4], p224[5]])
+# P256 = Curve(p256[1], p256[2], n=p256[3], g=[p256[4], p256[5]])
+# P384 = Curve(p384[1], p384[2], n=p384[3], g=[p384[4], p384[5]])
+# #P521 = Curve(p521[0], p521[2], n=p521[3], g=[p521[4], p521[5]])
 
 

@@ -1,7 +1,6 @@
 from FastArithmetic.joint_multiplication import JointMultiplication
 from time import time
 from random import randint
-from curve import P256
 
 
 class JointMultiplicationScalarPerformanceTest:
@@ -12,7 +11,7 @@ class JointMultiplicationScalarPerformanceTest:
         P = self.curve.generate_random_point()
         Q = self.curve.generate_random_point()
         if jacobi:
-            self.joint_mul = JointMultiplication(P.transform(), Q.transform())
+            self.joint_mul = JointMultiplication(P.transform_to_Jacobi(), Q.transform_to_Jacobi())
         else:
             self.joint_mul = JointMultiplication(P, Q)
 

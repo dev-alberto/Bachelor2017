@@ -1,7 +1,7 @@
-from curve import P192, P224, P256, P384
 from FastArithmetic.scalar_multiplication import ScalarMultiplication
 from random import randint
 from time import time
+#from DataStructures.PrimeCurves import NistPrimeCurve
 
 
 class ScalarMuliplicationPerformanceTest:
@@ -10,7 +10,7 @@ class ScalarMuliplicationPerformanceTest:
         self.curve = curve
         self.interval = interval
         if jacobi:
-            self.scalar_mul = ScalarMultiplication(curve.generate_random_point().transform())
+            self.scalar_mul = ScalarMultiplication(curve.generate_random_point().transform_to_Jacobi())
         else:
             self.scalar_mul = ScalarMultiplication(curve.generate_random_point())
 
@@ -56,13 +56,14 @@ class ScalarMuliplicationPerformanceTest:
             self.scalar_mul.sliding_window_right_to_left_on_the_fly_scalar_mul(scalar, w)
         return time() - start
 
-
-# test = ScalarMuliplicationPerformanceTest(1000, P256, [2**256, 2**384])
+# P256 = NistPrimeCurve(384)
+#
+# test = ScalarMuliplicationPerformanceTest(1000, P256, [2**300, 2**384], jacobi=True)
 # print(test.binary_scalar_mul_test())
 # print(test.left_to_right_scalar_mul_test())
 # print(test.right_to_left_scalar_mul_test())
 # print(test.window_naf_mul_test(3))
-# #print(test.sliding_window_left_to_right_test(3))
+# print(test.sliding_window_left_to_right_test(3))
 # print(test.sliding_window_right_to_left_test(4))
 
 

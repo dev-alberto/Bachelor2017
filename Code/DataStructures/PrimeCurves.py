@@ -2,7 +2,7 @@ from DataStructures.interfaces import EllipticCurve
 from DataStructures.Points import AffinePoint
 from curve import get_curve
 from util import isProbablePrime
-from random import randrange
+from random import SystemRandom, randrange
 
 
 class PrimeCurves(EllipticCurve):
@@ -36,6 +36,7 @@ class NistPrimeCurve(PrimeCurves):
     def __init__(self, bits):
         params = get_curve(bits)
         self.bits = bits
+        self.cryptogen = SystemRandom()
         super().__init__(params[1], params[2], -3, n=params[3], g=[params[4], params[5]])
 
     def __str__(self):
@@ -47,3 +48,7 @@ class NistPrimeCurve(PrimeCurves):
     def generate_random_point(self):
         k = randrange(1, self.n-1)
         return self.g.right_to_left_scalar_mul(k)
+
+    def generate_secure_random(self):
+        k = self.cryptogen.randrange(1, self.n - 1)
+        return k, self.g.right_to_left_scalar_mul(k)

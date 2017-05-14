@@ -1,5 +1,5 @@
-from ECC import Curve, Point
-import aritmetica
+from OldCode import aritmetica
+from OldCode.ECC import Curve, Point
 
 curve = Curve(97, 3, a=2)
 point1 = Point(curve, [17, 10])

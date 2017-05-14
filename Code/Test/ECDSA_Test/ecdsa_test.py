@@ -1,6 +1,10 @@
-from ECDSA import ecdsa
+from ECDSA.ECDSA import *
 
 
-signature = ecdsa.signature_generation("message")
+priv, pub = GenerateKeyPair(192).generate_key()
 
-print(ecdsa.verify_signature(signature, "message"))
+sige = GenerateSignature(192, priv, "ecdsa").generate_signature()
+
+verify = VerifySignature(192, pub, sige, "ecdsa")
+
+print(verify.verify())

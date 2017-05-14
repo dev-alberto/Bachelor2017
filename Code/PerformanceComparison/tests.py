@@ -1,22 +1,30 @@
-from curve import P192, P224, P256, P384
+#from curve import P192, P224, P256, P384
 from PerformanceComparison.addition import AdditionPerformanceTest
 from PerformanceComparison.scalar_mul import ScalarMuliplicationPerformanceTest
 from PerformanceComparison.joint_mul import JointMultiplicationScalarPerformanceTest
+from DataStructures.PrimeCurves import NistPrimeCurve
 
-# add_affine_test192 = AdditionPerformanceTest(1000, P192)
-# add_affine_test224 = AdditionPerformanceTest(1000, P224)
-# add_affine_test256 = AdditionPerformanceTest(1000, P256)
-# add_affine_test384 = AdditionPerformanceTest(1000, P384)
-# add_jacobi_test192 = AdditionPerformanceTest(1000, P192, jacobi=True)
-# add_jacobi_test224 = AdditionPerformanceTest(1000, P224, jacobi=True)
-# add_jacobi_test256 = AdditionPerformanceTest(1000, P256, jacobi=True)
-# add_jacobi_test384 = AdditionPerformanceTest(1000, P384, jacobi=True)
-#
-# print("*** 192 ***")
-# print(add_affine_test192.addition_test())
-# print(add_affine_test192.point_double_test())
-# print(add_jacobi_test192.addition_test())
-# print(add_jacobi_test192.point_double_test())
+P192 = NistPrimeCurve(192)
+P224 = NistPrimeCurve(224)
+P256 = NistPrimeCurve(256)
+P384 = NistPrimeCurve(384)
+
+add_affine_test192 = AdditionPerformanceTest(1000, P192)
+add_affine_test224 = AdditionPerformanceTest(1000, P224)
+add_affine_test256 = AdditionPerformanceTest(1000, P256)
+add_affine_test384 = AdditionPerformanceTest(1000, P384)
+add_jacobi_test192 = AdditionPerformanceTest(1000, P192, jacobi=True)
+add_jacobi_test224 = AdditionPerformanceTest(1000, P224, jacobi=True)
+add_jacobi_test256 = AdditionPerformanceTest(1000, P256, jacobi=True)
+add_jacobi_test384 = AdditionPerformanceTest(1000, P384, jacobi=True)
+
+print("ADDITION")
+
+print("*** 192 ***")
+print(add_affine_test192.addition_test())
+print(add_affine_test192.point_double_test())
+print(add_jacobi_test192.addition_test())
+print(add_jacobi_test192.point_double_test())
 # print("*** 224 ***")
 # print(add_affine_test224.addition_test())
 # print(add_affine_test224.point_double_test())
@@ -32,23 +40,29 @@ from PerformanceComparison.joint_mul import JointMultiplicationScalarPerformance
 # print(add_affine_test384.point_double_test())
 # print(add_jacobi_test384.addition_test())
 # print(add_jacobi_test384.point_double_test())
-
-
-scalar_mul_affine_test192 = ScalarMuliplicationPerformanceTest(1000, P192, [2**5, 2**32])
-scalar_mul_affine_test192Big = ScalarMuliplicationPerformanceTest(1000, P192, [2**128, 2**192])
-scalar_mul_jacobi_test192 = ScalarMuliplicationPerformanceTest(1000, P192, [2**5, 2**32], jacobi=True)
-scalar_mul_jacobi_test192Big = ScalarMuliplicationPerformanceTest(1000, P192, [2**128, 2**192], jacobi=True)
-scalar_mul_jacobi_test224 = ScalarMuliplicationPerformanceTest(1000, P224, [2**5, 2**32], jacobi=True)
-scalar_mul_jacobi_test224Big = ScalarMuliplicationPerformanceTest(1000, P224, [2**150, 2**224], jacobi=True)
-scalar_mul_jacobi_test256 = ScalarMuliplicationPerformanceTest(1000, P256, [2**5, 2**32], jacobi=True)
-scalar_mul_jacobi_test256Big = ScalarMuliplicationPerformanceTest(1000, P256, [2**200, 2**256], jacobi=True)
-
-scalar_mul_affine_test384 = ScalarMuliplicationPerformanceTest(1000, P384, [2**5, 2**32])
-scalar_mul_affine_test384Big = ScalarMuliplicationPerformanceTest(1000, P384, [2**300, 2**384])
-scalar_mul_jacobi_test384 = ScalarMuliplicationPerformanceTest(1000, P384, [2**5, 2**32], jacobi=True)
-scalar_mul_jacobi_test384Big = ScalarMuliplicationPerformanceTest(1000, P384, [2**300, 2**384], jacobi=True)
-
-print("*** 192 ***")
+#
+# P192 = NistPrimeCurve(192)
+# P224 = NistPrimeCurve(224)
+# P256 = NistPrimeCurve(256)
+# P384 = NistPrimeCurve(384)
+#
+# scalar_mul_affine_test192 = ScalarMuliplicationPerformanceTest(1000, P192, [2**5, 2**32])
+# scalar_mul_affine_test192Big = ScalarMuliplicationPerformanceTest(1000, P192, [2**128, 2**192])
+# scalar_mul_jacobi_test192 = ScalarMuliplicationPerformanceTest(1000, P192, [2**5, 2**32], jacobi=True)
+# scalar_mul_jacobi_test192Big = ScalarMuliplicationPerformanceTest(1000, P192, [2**128, 2**192], jacobi=True)
+# scalar_mul_jacobi_test224 = ScalarMuliplicationPerformanceTest(1000, P224, [2**5, 2**32], jacobi=True)
+# scalar_mul_jacobi_test224Big = ScalarMuliplicationPerformanceTest(1000, P224, [2**150, 2**224], jacobi=True)
+# scalar_mul_jacobi_test256 = ScalarMuliplicationPerformanceTest(1000, P256, [2**5, 2**32], jacobi=True)
+# scalar_mul_jacobi_test256Big = ScalarMuliplicationPerformanceTest(1000, P256, [2**200, 2**256], jacobi=True)
+#
+# scalar_mul_affine_test384 = ScalarMuliplicationPerformanceTest(1000, P384, [2**5, 2**32])
+# scalar_mul_affine_test384Big = ScalarMuliplicationPerformanceTest(1000, P384, [2**300, 2**384])
+# scalar_mul_jacobi_test384 = ScalarMuliplicationPerformanceTest(1000, P384, [2**5, 2**32], jacobi=True)
+# scalar_mul_jacobi_test384Big = ScalarMuliplicationPerformanceTest(1000, P384, [2**300, 2**384], jacobi=True)
+#
+# print("SCALAR MUL")
+#
+# print("*** 192 ***")
 # print(scalar_mul_affine_test192.binary_scalar_mul_test())
 # print(scalar_mul_jacobi_test192.binary_scalar_mul_test())
 # print(scalar_mul_jacobi_test192Big.binary_scalar_mul_test())
@@ -61,14 +75,14 @@ print("*** 192 ***")
 # print(scalar_mul_jacobi_test192.window_naf_mul_test(3))
 # print(scalar_mul_jacobi_test192Big.window_naf_mul_test(3))
 # print(scalar_mul_jacobi_test192Big.window_naf_mul_test(4))
-print(scalar_mul_jacobi_test192.sliding_window_left_to_right_test(3))
-print(scalar_mul_jacobi_test192Big.sliding_window_left_to_right_test(3))
-print(scalar_mul_jacobi_test192Big.sliding_window_left_to_right_test(4))
-print(scalar_mul_jacobi_test192Big.sliding_window_right_to_left_test(3))
-print(scalar_mul_jacobi_test192Big.sliding_window_right_to_left_test(4))
-print(scalar_mul_jacobi_test192Big.sliding_window_right_to_left_test(5))
-print("****")
-
+# print(scalar_mul_jacobi_test192.sliding_window_left_to_right_test(3))
+# print(scalar_mul_jacobi_test192Big.sliding_window_left_to_right_test(3))
+# print(scalar_mul_jacobi_test192Big.sliding_window_left_to_right_test(4))
+# print(scalar_mul_jacobi_test192Big.sliding_window_right_to_left_test(3))
+# print(scalar_mul_jacobi_test192Big.sliding_window_right_to_left_test(4))
+# print(scalar_mul_jacobi_test192Big.sliding_window_right_to_left_test(5))
+# print("****")
+#
 # print("*** 384 ***")
 # print(scalar_mul_affine_test384.binary_scalar_mul_test())
 # print(scalar_mul_jacobi_test384.binary_scalar_mul_test())
@@ -101,15 +115,20 @@ print("****")
 #
 # joint_mul_jacobi_384 = JointMultiplicationScalarPerformanceTest(1000, P384, [2**5, 2**32], jacobi=True)
 # joint_mul_jacobi_384Big = JointMultiplicationScalarPerformanceTest(1000, P384, [2**128, 2**192], jacobi=True)
-
+#
+# print("JOINT MUL")
+#
 # print("*** 192 ***")
+# print("Brute")
 # print(joint_mul_affine_192.brute_force_test())
 # print(joint_mul_affine_192Big.brute_force_test())
 # print(joint_mul_jacobi_192.brute_force_test())
 # print(joint_mul_jacobi_192Big.brute_force_test())
+# print("JSF")
 # print(joint_mul_affine_192.JSF_mul_test())
 # print(joint_mul_jacobi_192.JSF_mul_test())
 # print(joint_mul_jacobi_192Big.JSF_mul_test())
+# print("Interleaving")
 # print(joint_mul_jacobi_192.interleaving_sliding_window_test(3, 4))
 # print(joint_mul_jacobi_192Big.interleaving_sliding_window_test(3, 3))
 # print(joint_mul_jacobi_192Big.interleaving_sliding_window_test(3, 4))
@@ -117,7 +136,7 @@ print("****")
 # print(joint_mul_jacobi_192Big.interleaving_sliding_window_test(4, 5))
 # print(joint_mul_jacobi_192Big.interleaving_sliding_window_test(5, 5))
 # print("***")
-
+#
 # print("*** 384 ***")
 # print(joint_mul_affine_384.brute_force_test())
 # print(joint_mul_affine_384Big.brute_force_test())

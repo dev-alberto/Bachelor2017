@@ -1,28 +1,11 @@
-from ECC import AbstractPoint
 from util import w_NAF, NAF, mods
+from DataStructures.interfaces import AbstractPoint
 
 
 class ScalarMultiplication:
     def __init__(self, point):
         assert isinstance(point, AbstractPoint)
         self.point = point
-
-    @staticmethod
-    def l_t_r(point, d):
-        signed_d = w_NAF(d, 2)
-
-        result = None
-
-        for i in signed_d:
-            if result is None:
-                result = None
-            else:
-                result = result.point_double()
-            if i == 1:
-                result = point.add(result)
-            if i == -1:
-                result = point.inverse().add(result)
-        return result
 
     ###Multiplicarea cu un scalar in O(logn), in curba C, dP = P + P + ... + P; double and add algorithm###
     ## Algorithm 3.26 Right-to-left binary method for point multiplication ##
@@ -163,5 +146,6 @@ class ScalarMultiplication:
             k //= 2
         for i in range(3, m + 1, 2):
             if Q[i] is not None:
-                Q[1] = self.l_t_r(Q[i], i).add(Q[1])
+                #Q[1] = self.l_t_r(Q[i], i).add(Q[1])
+                Q[1] = Q[i].right_to_left_scalar_mul(i).add(Q[1])
         return Q[1]

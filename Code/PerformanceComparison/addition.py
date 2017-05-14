@@ -1,6 +1,5 @@
-from curve import P192
 from time import time
-from DataStructures.PrimeCurves import NistPrimeCurve
+#from DataStructures.PrimeCurves import NistPrimeCurve
 
 
 class AdditionPerformanceTest:
@@ -25,8 +24,8 @@ class AdditionPerformanceTest:
             P.point_double()
         return time() - start
 
-P256 = NistPrimeCurve(192)
-
-test = AdditionPerformanceTest(100, P256)
-print(test.addition_test())
+# P192 = NistPrimeCurve(192)
+#
+# test = AdditionPerformanceTest(1000, P192, jacobi=True)
+# print(test.addition_test())
 # print(test.point_double_test())
