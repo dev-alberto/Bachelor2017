@@ -1,5 +1,6 @@
-from curve import P192, P224, P256, P384
+from curve import P192
 from time import time
+from DataStructures.PrimeCurves import NistPrimeCurve
 
 
 class AdditionPerformanceTest:
@@ -7,7 +8,7 @@ class AdditionPerformanceTest:
         self.iterations = iterations
         self.curve = curve
         if jacobi:
-            self.curve.g = self.curve.get_generator().transform()
+            self.curve.g = self.curve.g.transform_to_Jacobi()
 
     def addition_test(self):
         start = time()
@@ -24,7 +25,8 @@ class AdditionPerformanceTest:
             P.point_double()
         return time() - start
 
+P256 = NistPrimeCurve(192)
 
-# test = AdditionPerformanceTest(100, P256, jacobi=True)
-# print(test.addition_test())
+test = AdditionPerformanceTest(100, P256)
+print(test.addition_test())
 # print(test.point_double_test())

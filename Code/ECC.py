@@ -172,7 +172,7 @@ class Jacobi_Point(AbstractPoint):
         x3 = (r ** 2 - h ** 3 - 2 * u1 * h ** 2) % self.curve.prime
         y3 = (r * (u1 * h ** 2 - x3) - s1 * h ** 3) % self.curve.prime
         z3 = (h * self.z * other.z) % self.curve.prime
-        return Jacobi_Point([x3, y3, z3, z3 ** 2 % self.curve.prime, z3 ** 3 % self.curve.prime], self.curve)
+        return Jacobi_Point([x3, y3, z3, pow(z3, 2, self.curve.prime), pow(z3, 3, self.curve.prime)], self.curve)
 
     def point_double(self):
         if self is None:
@@ -184,7 +184,7 @@ class Jacobi_Point(AbstractPoint):
         _x = (m ** 2 - 2 * s) % self.curve.prime
         _y = (m * (s - _x) - 8 * self.y ** 4) % self.curve.prime
         _z = (2 * self.y * self.z) % self.curve.prime
-        return Jacobi_Point([_x, _y, _z, _z ** 2 % self.curve.prime, _z ** 3 % self.curve.prime], self.curve)
+        return Jacobi_Point([_x, _y, _z, pow(_z, 2, self.curve.prime), pow(_z, 3, self.curve.prime)], self.curve)
 
     # def binary_scalar_mul(self, d):
     #     P = Jacobi_Point([self.x, self.y, self.z, self.zz, self.zzz], self.curve)

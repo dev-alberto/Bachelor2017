@@ -5,7 +5,7 @@ from time import time
 
 
 class ScalarMuliplicationPerformanceTest:
-    def __init__(self, iterations, curve,interval, jacobi=False):
+    def __init__(self, iterations, curve, interval, jacobi=False):
         self.iterations = iterations
         self.curve = curve
         self.interval = interval
