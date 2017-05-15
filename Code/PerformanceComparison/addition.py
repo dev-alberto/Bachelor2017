@@ -1,13 +1,13 @@
 from time import time
 #from DataStructures.PrimeCurves import NistPrimeCurve
+from PerformanceComparison.PerformanceTestInterface import AbstractPerformanceTest
 
 
-class AdditionPerformanceTest:
+class AdditionPerformanceTest(AbstractPerformanceTest):
     def __init__(self, iterations, curve, jacobi=False):
-        self.iterations = iterations
-        self.curve = curve
         if jacobi:
             self.curve.g = self.curve.g.transform_to_Jacobi()
+        super().__init__(iterations, curve, None, jacobi=jacobi)
 
     def addition_test(self):
         start = time()

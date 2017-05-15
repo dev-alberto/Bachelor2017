@@ -1,4 +1,3 @@
-from math import floor
 from util import w_NAF
 from DataStructures.interfaces import AbstractPoint
 
@@ -35,15 +34,17 @@ class JointMultiplication:
                 if 2 * d[i] == 1 + _u[i][-1]:
                     d[i] = 1 - d[i]
                 if i == 0:
-                    a = floor(a/2)
+                    #a = floor(a/2)
+                    a //= 2
                 else:
-                    b = floor(b/2)
+                    #b = floor(b/2)
+                    b //= 2
         return list(reversed(_u[0])), list(reversed(_u[1]))
 
-    #TODO: fix very large scalars bug
     def JSF_Multiplication(self, k, l):
         """Add using Shamir Trick, variation of algorithm 3.48, Menezez Book"""
         jsf = self.JSF(k, l)
+        assert len(jsf[0]) == len(jsf[1])
 
         P = self.point1
         Q = self.point2

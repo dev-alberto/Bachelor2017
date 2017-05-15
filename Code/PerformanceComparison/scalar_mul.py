@@ -2,17 +2,16 @@ from FastArithmetic.scalar_multiplication import ScalarMultiplication
 from random import randint
 from time import time
 #from DataStructures.PrimeCurves import NistPrimeCurve
+from PerformanceComparison.PerformanceTestInterface import AbstractPerformanceTest
 
 
-class ScalarMuliplicationPerformanceTest:
+class ScalarMuliplicationPerformanceTest(AbstractPerformanceTest):
     def __init__(self, iterations, curve, interval, jacobi=False):
-        self.iterations = iterations
-        self.curve = curve
-        self.interval = interval
         if jacobi:
             self.scalar_mul = ScalarMultiplication(curve.generate_random_point().transform_to_Jacobi())
         else:
             self.scalar_mul = ScalarMultiplication(curve.generate_random_point())
+        super().__init__(iterations, curve, interval, jacobi=jacobi)
 
     def binary_scalar_mul_test(self):
         start = time()

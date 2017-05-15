@@ -1,19 +1,18 @@
 from FastArithmetic.joint_multiplication import JointMultiplication
 from time import time
 from random import randint
+from PerformanceComparison.PerformanceTestInterface import AbstractPerformanceTest
 
 
-class JointMultiplicationScalarPerformanceTest:
+class JointMultiplicationScalarPerformanceTest(AbstractPerformanceTest):
     def __init__(self, iterations, curve, interval, jacobi=False):
-        self.iterations = iterations
-        self.curve = curve
-        self.interval = interval
         P = self.curve.generate_random_point()
         Q = self.curve.generate_random_point()
         if jacobi:
             self.joint_mul = JointMultiplication(P.transform_to_Jacobi(), Q.transform_to_Jacobi())
         else:
             self.joint_mul = JointMultiplication(P, Q)
+        super().__init__(iterations, curve, interval, jacobi=jacobi)
 
     def brute_force_test(self):
         start = time()

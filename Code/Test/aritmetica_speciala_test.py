@@ -5,6 +5,7 @@ from DataStructures.PrimeCurves import NistPrimeCurve
 
 P192 = NistPrimeCurve(192)
 
+
 # generator = P192.get_generator()
 # generator = generator.transform()
 #
@@ -20,9 +21,13 @@ P192 = NistPrimeCurve(192)
 
 generator_times2 = P192.g.right_to_left_scalar_mul(2)
 joint_mul = JointMultiplication(P192.g, generator_times2)
-print(joint_mul.brute_joint_multiplication(50001213132111, 500012131878787878787878787))
-print(joint_mul.JSF_Multiplication(50001213132111, 500012131878787878787878787))
-print(joint_mul.interleaving_sliding_window(50001213132111, 500012131878787878787878787, 4, 5))
+
+print(joint_mul.brute_joint_multiplication(5000, 50001219992343243232))
+print(joint_mul.JSF_Multiplication(5000, 50001219992343243232))
+print(joint_mul.interleaving_sliding_window(5000, 50001219992343243232, 4, 5))
+
+
+
 
 
 # P192 = NistPrimeCurve(384)
