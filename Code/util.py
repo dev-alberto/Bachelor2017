@@ -84,6 +84,20 @@ def w_NAF(d, w):
     return res[::-1]
 
 
+def naf(d):
+    i = 0
+    res = []
+    while d >= 1:
+        if d % 2 == 0:
+            res.append(0)
+        else:
+            res.append(2 - d % 4)
+            d -= res[i]
+        d //= 2
+        i += 1
+    return res[::-1]
+
+
 def mods(a, w):
 
     if a % 2**w < 2**(w-1):
