@@ -1,7 +1,7 @@
 \chapter{Curbe Eliptice} 
 \section{Introducere}
 \label{sec:sec01}
-Folosirea curbelor eliptice in criptografie a fost propusa pentru prima oara in anul 1985 de Victor Miller(IBM) si, independent, de Neal Koblitz. Ideea de baza este folosirea grupului de puncte de pe o curba eliptica in locul grupului $(\mathbb{Z}/p\mathbb{Z})^{*}$. Printre aplicatiile practice ale curbelor eliptice se numara constructia criptosistemelor cu chei publice, construirea de generatoare pseudoaleatoare de biti, teoria codurilor, teste de primalitate, etc.
+Folosirea curbelor eliptice in criptografie a fost propusa pentru prima oara in anul 1985 de Victor Miller(IBM) si, independent, de Neal Koblitz. Ideea de baza este folosirea grupului de puncte de pe o curba eliptica in locul grupului $(\mathbb{Z}/p\mathbb{Z})^{*}$. Printre aplicatiile curbelor eliptice se numara constructia criptosistemelor cu chei publice, construirea de generatoare pseudoaleatoare de biti (poate mai cauti ceva aici).
 \begin{dfn}
 [sursa Guide to elliptic curves menezez]O \textit{curba eliptica} $E$ peste un corp $K$ este definita prin ecuatia:
 $$E : y^2 + a_1xy + a_3y = x^3 + a_2x^{2} + a_4x + a_6$$ 
@@ -57,14 +57,14 @@ O astfel de curba este \textit{supersingulara} si are discriminantul $\Delta = -
 \end{dfn}
 
 \begin{obs}
-Noi vom lucra cu forma simplificata a ecuatiei Weierstrass pe tot parcursul urmatoarelor capitole.
+Vom lucra cu forma simplificata a ecuatiei Weierstrass pe tot parcursul urmatoarelor capitole.
 \end{obs}
 
 \subsection{Constructia curbelor eliptice}
 \label{subsec:subsec01}
 
 \begin{dfn}
-Fie $E$ o curba eliptica peste un corp $K = F_q$. Multimea de puncte $E(F_q)$ impreuna cu operatia de adunare formeaza o structura de grup abelian, cu punctul de la infinit fiind identitatea din grup. Acest grup este folosit in criptografia bazata pe curbe eliptice.
+Fie $E$ o curba eliptica peste un corp $K = F_q$. Multimea de puncte $E(F_q)$ impreuna cu operatia de adunare formeaza o structura de grup abelian, cu punctul de la infinit fiind elementul neutru din grup. Acest grup este folosit in criptografia bazata pe curbe eliptice.
 \end{dfn}
 
 \begin{dfn}
@@ -89,7 +89,7 @@ Fie $E$ o curba eliptica peste corpul $F_q$ si fie ordinul acesteia $\# E(F_q)= 
 \end{teo}
 Urmatoarea teorema descrie structura grupului pentru o curba eliptica. Vom nota un grup ciclic de ordin n, cu $Z_n$.
 \begin{teo}
-Fie E o curba eliptica definita peste $F_q$. Atunci $E(F_q)$ este izomorfic cu $Z_{n_1} \oplus Z_{n_2}$, unde $n_1, n_2\in Z$, unici determinati, cu $n_2$ care divide atat $n_1$ cat si $q-1$. Daca $n_2=1$, spunem ca $E(F_q)$ este grup ciclic.
+Fie E o curba eliptica definita peste $F_q$. Atunci grupul $E(F_q)$ este izomorfic cu $Z_{n_1} \oplus Z_{n_2}$, unde $n_1, n_2\in Z$, unici determinati, cu $n_2$ care divide atat $n_1$ cat si $q-1$. Daca $n_2=1$, spunem ca $E(F_q)$ este grup ciclic.
 \end{teo}
 
 \subsection{Reprezentari ale punctelor de pe o curba eliptica}
@@ -155,7 +155,7 @@ Desi regulile de calcul in grupul punctelor unei curbe eliptice par destul de co
 
 \section{Studiu Comparativ}
 \label{sec:sec03}
-In aceasta subsectiune voi aborda cele trei operatii de baza, adunarea, inmultirea cu un scalar si inmultirea multipla, prezentand la fiecare sectiune o analiza a eficientei metodei alese. Implementarea eficienta si corecta a acestor operatii reprezinta un prim pas foarte important spre dezvoltarea unor criptosisteme bazate pe curbe eliptice.
+In aceasta subsectiune vom aborda cele trei operatii de baza, adunarea, inmultirea cu un scalar si inmultirea multipla, prezentand la fiecare sectiune o analiza a eficientei metodei alese. Implementarea eficienta si corecta a acestor operatii reprezinta un prim pas foarte important spre dezvoltarea unor criptosisteme bazate pe curbe eliptice.
 \\ Pentru implementare am ales limbajul de programare Python, versiunea 3.5.2, iar hardware-ul folosit in tabelele de test este: Quad Core CPU, i7-4700HQ, 2.4 GHz, 64 bit OS, 16 GB RAM.
 
 \subsubsection{Arhitectura aplicatiei}
@@ -173,7 +173,7 @@ arhitectura(Inclusiv grupul folosit, curbele eliptice Nist), diagrama UML cu cla
 \label{subsec:subsec02}
 In aplicatie am implementat operatia de adunare pentru coordonate Afine si pentru coordonate Jacobiene. Vom oferi formulele de calcul pentru cele tipuri de adunare si apoi vom compara eficienta celor doua implementari.
 \begin{dfn}
-Pentru puncte reprezentate prin coordonate afine formulele de calcul sunt dupa cum urmeaza.Fie 2 puncte, $P(x_{1}, y_1), Q(x_2, y_2)\in E(F_p)$. Notam cu $R(x_3, y_3) = P + Q$. Formulele pentru adunarea a doua puncte pot fi demonstrate matematic destul de usor, pornind de la ideea ca $P, Q$ si reflexia rezultatului la axa $Ox$ se afla pe aceasi dreapta, respectiv pe aceasi curba eliptica.
+Pentru puncte reprezentate prin coordonate afine formulele de calcul sunt dupa cum urmeaza.Fie doua puncte, $P(x_{1}, y_1), Q(x_2, y_2)\in E(F_p)$. Notam cu $R(x_3, y_3) = P + Q$. Formulele pentru adunarea a doua puncte pot fi demonstrate matematic destul de usor, pornind de la ideea ca $P, Q$ si simetricul rezultatului fata de axa $Ox$ se afla pe aceasi dreapta, respectiv pe aceasi curba eliptica.
 
 $\begin{cases} 
     x_3 = \lambda^2 - x_1 - x_2 \\
@@ -500,11 +500,11 @@ def sliding_window_right_to_left_on_the_fly_scalar_mul(self, k, w):
     return Q[1]
 \end{lstlisting}
 
-Pentru teste am decis sa aleg diferite intervale pentru marimea scalarului. Fiecare test sunt rulate 1000 de iteratii cu scalari alesi random in intervalul $5-32$ biti respectiv $128-198$ si $300-384$ pentru curbele $P192$ si $P384$. Se observa eficienta metodelor cu fereastra pentru numere mari, inmultirea folosind reprezentarea cu semn clasica fiind un algoritm foarte eficient pentru scalari mici. De asemenea nu se observa o inbunatatirea a eficientei algoritmilor daca procesam de la stanga la dreapta sau de la dreapta la stanga sau la fereastra glisanta cand facem calculul $w-NAF$-ului in aceasi bucla while in care calculam rezultatul.
+Pentru teste am decis sa aleg diferite intervale pentru marimea scalarului. Pentru fiecare test sunt rulate 1000 de iteratii cu scalari alesi random in intervalul $5-32$ biti respectiv $128-198$ si $300-384$ pentru curbele $P192$ si respectiv $P384$. Se observa eficienta metodelor cu fereastra pentru numere mari, algoritmul de inmultire care foloseste reprezentarea cu semn fiind foarte eficient pentru numere mici. De asemenea nu se observa o inbunatatirea a eficientei algoritmilor daca procesam de la stanga la dreapta sau de la dreapta la stanga sau la fereastra glisanta, cand facem calculul $w-NAF$-ului in aceasi bucla while in care calculam rezultatul.
 
-Pentru scalari mari, cele mai bune rezultate au fost obtinute cu o fereastra glisanta de latime 4, algoritmul pierzandu-si eficienta pentru ferestre de latime mai mare din cauza costului mare din punct de vedere computational al precalculului.
+Pentru scalari mari, cele mai bune rezultate au fost obtinute cu o fereastra glisanta de latime 4, algoritmul pierzand din eficienta pentru ferestre de latime mai mare din cauza costului mare din punct de vedere computational al precalculului. 
 
-De asemenea putem observa beneficiul impresionant adus de folosirea coordonatelor Jacobiene, acestea aducand inbunatatiri impresionante de performanta, algoritmii fiind de aproximativ cinci ori mai rapizi in aceste coordonate.
+De asemenea putem observa beneficiul impresionant adus de folosirea coordonatelor Jacobiene, acestea aducand inbunatatiri consistente de performanta, algoritmii fiind de aproximativ cinci ori mai rapizi in aceste coordonate. 
 
 
 \begin{tabular}{ |p{5cm}||p{3cm}|p{3cm}|p{2cm}|p{1cm}|  }

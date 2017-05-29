@@ -86,7 +86,7 @@ class ScalarMultiplication:
         return Q
 
 
-    ### Left to right sliding window NAF, Algorithm 6, Mechanics and Crypyto ### --> posibil sa fie de la dreapta la stanga, ups... 
+    ### Left to right sliding window NAF, Algorithm 6, Mechanics and Crypyto ### --> posibil sa fie de la dreapta la stanga, ups...
     def sliding_window_left_to_right_scalar_mul(self, d, w):
         """
         :param P: punct de pe o curba eliptica
