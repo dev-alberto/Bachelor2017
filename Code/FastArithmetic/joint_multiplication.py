@@ -3,11 +3,32 @@ from DataStructures.interfaces import AbstractPoint
 
 
 class JointMultiplication:
-    def __init__(self, point1, point2):
+
+    def __init__(self, point1, point2, w1, w2):
         assert isinstance(point1, AbstractPoint)
         assert isinstance(point2, AbstractPoint)
+
         self.point1 = point1
         self.point2 = point2
+
+        self.w1 = w1
+        self.w2 = w2
+
+        self._P = {}
+        self._Q = {}
+
+        # precom stage
+        for i in range(1, 2 ** (w1 - 1), 2):
+            self._P[i] = self.point1.right_to_left_scalar_mul(i)
+        for j in range(1, 2 ** (w2 - 1), 2):
+            self._Q[j] = self.point2.right_to_left_scalar_mul(j)
+
+        self.precom = (
+            (None, self.point2, self.point2.inverse()),
+            (self.point1, self.point1.add(self.point2), self.point1.add(self.point2.inverse())),
+            (self.point1.inverse(), self.point2.add(self.point1.inverse()), self.point1.inverse().add(self.point2.inverse()))
+        )
+
 
     def brute_joint_multiplication(self, k, l):
         result1 = self.point1.right_to_left_scalar_mul(k)
@@ -44,42 +65,33 @@ class JointMultiplication:
     def JSF_Multiplication(self, k, l):
         """Add using Shamir Trick, variation of algorithm 3.48, Menezez Book"""
         jsf = self.JSF(k, l)
-        assert len(jsf[0]) == len(jsf[1])
-
-        P = self.point1
-        Q = self.point2
 
         R = None
 
-        precom = (
-                  (None, Q, Q.inverse()),
-                  (P, P.add(Q), P.add(Q.inverse())),
-                  (P.inverse(), Q.add(P.inverse()), P.inverse().add(Q.inverse()))
-        )
-
         for i, j in zip(jsf[0], jsf[1]):
+
             if R is None:
                 R = None
             else:
                 R = R.point_double()
             if i or j:
-                R = precom[i][j].add(R)
+                R = self.precom[i][j].add(R)
         return R
 
-    def interleaving_sliding_window(self, k, l, w1, w2):
+    def interleaving_sliding_window(self, k, l):
         """Algorithm 3.5.1 menezez, 'Interleaving with NAF' """
 
-        _P = {}
-        _Q = {}
+        #_P = {}
+       # _Q = {}
         R = None
-        naf = [w_NAF(k, w1), w_NAF(l, w2)]
+        naf = [w_NAF(k, self.w1), w_NAF(l, self.w2)]
         _l = max([len(naf[0]), len(naf[1])])
 
         #precom stage
-        for i in range(1, 2**(w1 - 1), 2):
-            _P[i] = self.point1.right_to_left_scalar_mul(i)
-        for j in range(1, 2**(w2 - 1), 2):
-            _Q[j] = self.point2.right_to_left_scalar_mul(j)
+       # for i in range(1, 2**(w1 - 1), 2):
+       #     _P[i] = self.point1.right_to_left_scalar_mul(i)
+      #  for j in range(1, 2**(w2 - 1), 2):
+       #     _Q[j] = self.point2.right_to_left_scalar_mul(j)
 
         #padding stage
         for i in range(_l - len(naf[0])):
@@ -96,12 +108,12 @@ class JointMultiplication:
                 if naf[j][i] != 0:
                     if naf[j][i] > 0:
                         if j == 0:
-                            R = _P[naf[j][i]].add(R)
+                            R = self._P[naf[j][i]].add(R)
                         else:
-                            R = _Q[naf[j][i]].add(R)
+                            R = self._Q[naf[j][i]].add(R)
                     else:
                         if j == 0:
-                            R = _P[-naf[j][i]].inverse().add(R)
+                            R = self._P[-naf[j][i]].inverse().add(R)
                         else:
-                            R = _Q[-naf[j][i]].inverse().add(R)
+                            R = self._Q[-naf[j][i]].inverse().add(R)
         return R

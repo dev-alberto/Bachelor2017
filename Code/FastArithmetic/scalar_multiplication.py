@@ -3,9 +3,21 @@ from DataStructures.interfaces import AbstractPoint
 
 
 class ScalarMultiplication:
-    def __init__(self, point):
+    def __init__(self, point, w):
         assert isinstance(point, AbstractPoint)
         self.point = point
+
+        #precom stage
+        self.w = w
+        m = 2 * ((2 ** w - (-1) ** w) // 3) - 1
+
+        self.window_naf_precom = {}
+        self._P = {}
+        for i in range(1, 2**(w-1), 2):
+            self.window_naf_precom[i] = self.right_to_left_scalar_mul(i)
+
+        for _i in range(1, m + 1, 2):
+            self._P[_i] = self.left_to_right_scalar_mul(_i)
 
     ###Multiplicarea cu un scalar in O(logn), in curba C, dP = P + P + ... + P; double and add algorithm###
     ## Algorithm 3.26 Right-to-left binary method for point multiplication ##
@@ -67,11 +79,11 @@ class ScalarMultiplication:
         return result
 
     #Algorithm 3.36 Window NAF method for point multiplication, Menezez
-    def window_NAF_multiplication(self, d, w):
-        d = w_NAF(d, w)
-        _P = {}
-        for i in range(1, 2**(w-1), 2):
-            _P[i] = self.right_to_left_scalar_mul(i)
+    def window_NAF_multiplication(self, d):
+        d = w_NAF(d, self.w)
+        #_P = {}
+        #for i in range(1, 2**(w-1), 2):
+           # _P[i] = self.right_to_left_scalar_mul(i)
         Q = None
         for i in range(0, len(d)):
             if Q is None:
@@ -80,14 +92,14 @@ class ScalarMultiplication:
                 Q = Q.point_double()
             if d[i] != 0:
                 if d[i] > 0:
-                    Q = _P[d[i]].add(Q)
+                    Q = self.window_naf_precom[d[i]].add(Q)
                 else:
-                    Q = _P[-d[i]].inverse().add(Q)
+                    Q = self.window_naf_precom[-d[i]].inverse().add(Q)
         return Q
 
 
     ### Left to right sliding window NAF, Algorithm 6, Mechanics and Crypyto ### --> posibil sa fie de la dreapta la stanga, ups...
-    def sliding_window_left_to_right_scalar_mul(self, d, w):
+    def sliding_window_left_to_right_scalar_mul(self, d):
         """
         :param P: punct de pe o curba eliptica
         :param d: scalarul
@@ -95,13 +107,13 @@ class ScalarMultiplication:
         :return: punctul dP
 
         """
-        d = w_NAF(d, w)
+        d = w_NAF(d, self.w)
         Q = None
         i = 0
-        m = 2 * ((2 ** w - (-1)**w) // 3) - 1
-        _P = {}
-        for _i in range(1, m + 1, 2):
-            _P[_i] = self.left_to_right_scalar_mul(_i)
+        #m = 2 * ((2 ** w - (-1)**w) // 3) - 1
+        #_P = {}
+        #for _i in range(1, m + 1, 2):
+            #_P[_i] = self.left_to_right_scalar_mul(_i)
         while i < len(d):
             if d[i] == 0:
                 if Q is None:
@@ -110,7 +122,7 @@ class ScalarMultiplication:
                     Q = Q.point_double()
                 i += 1
             else:
-                s = max(len(d) - i - w + 1, 0)
+                s = max(len(d) - i - self.w + 1, 0)
                 s = len(d) - 1 - s
                 while d[s] == 0:
                     s -= 1
@@ -121,22 +133,22 @@ class ScalarMultiplication:
                     else:
                         Q = None
                 if u > 0:
-                    Q = _P[u].add(Q)
+                    Q = self._P[u].add(Q)
                 if u < 0:
-                    Q = Q.add(_P[-u].inverse())
+                    Q = Q.add(self._P[-u].inverse())
                 i = 1 + s
         return Q
 
     ### Algorithm 7, Mechanics and Crypto ###
-    def sliding_window_right_to_left_on_the_fly_scalar_mul(self, k, w):
+    def sliding_window_right_to_left_on_the_fly_scalar_mul(self, k):
         R = self.point
-        m = 2**(w-1) - 1
+        m = 2**(self.w-1) - 1
         Q = {}
         for i in range(1, m + 1, 2):
             Q[i] = None
         while k >= 1:
             if k % 2 == 1:
-                t = mods(k, w)
+                t = mods(k, self.w)
                 if t > 0:
                     Q[t] = R.add(Q[t])
                 if t < 0:

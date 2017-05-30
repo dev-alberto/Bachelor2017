@@ -59,8 +59,8 @@ class VerifySignature:
         u2 = (self.sig[0] * w) % self.curve.n
 
         # pasul 6 --> calculam punctul de pe curba eliptica P = u1 x G + u2 x Q_a  ----> Trebuie optimizat -- Nu mai trebuie
-        muliplier = JointMultiplication(self.curve.g, self.pubKey)
-        p = muliplier.interleaving_sliding_window(u1, u2, 4, 4)
+        muliplier = JointMultiplication(self.curve.g, self.pubKey, 4, 4)
+        p = muliplier.interleaving_sliding_window(u1, u2)
         # pasul 7 --> check signature
         if self.sig[0] == p.get_X():
             return True

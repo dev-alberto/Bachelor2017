@@ -52,3 +52,8 @@ class NistPrimeCurve(PrimeCurves):
     def generate_secure_random(self):
         k = self.cryptogen.randrange(1, self.n - 1)
         return k, self.g.right_to_left_scalar_mul(k)
+
+P192 = NistPrimeCurve(192)
+P224 = NistPrimeCurve(224)
+P256 = NistPrimeCurve(256)
+P384 = NistPrimeCurve(384)
