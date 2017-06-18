@@ -1,4 +1,4 @@
-\chapter{Protocoale de securitate} 
+\chapter{Aplicatii in Criptografie} 
 
 In acest capitol voi prezenta semnatura digitala bazata pe curbe eliptice \textit{ECDSA}, criptografie publica si protocoale de schimb de chei. De asemenea vom trece in revista suportul matematic pe care se bazeaza criptografia pe curbe eliptice, adica vom prezenta problema logaritmului discret, impreuna cu o comparatie a eficientei metodelor de atac (\textit{Pohlig-Hellman, Pollard's rho}).
 
@@ -17,3 +17,8 @@ Problema logaritmului discret pentru curbe eliptice(\textit{ECDLP}) este mai dif
 \begin{obs}
 Problema ECDLP nu este demostrata ca fiind o problema intractabila. Astfel, nu s-a aratat ca nu exista un algoritm eficient pentru rezolvarea logaritmului discret. O astfel de demonstratie ar implica $P\neq NP$, rezolvand astfel o problema fundamentala in informatica. Mai mult, nu exista dovezi teoretice solide care sa suporte intractabilitatea ECDLP, problema nefiind demonstrata NP-hard. Exista o probabilitate destul de mica ca ECDLP sa fie NP-hard, intrucat versinea de decizie a acestei probleme apartine atat NP cat si la co-NP.
 \end{obs}
+
+
+Folosirea curbelor eliptice in criptografie a fost propusa pentru prima oara in anul 1985 de Victor Miller(IBM) si, independent, de Neal Koblitz. Ideea de baza este folosirea grupului de puncte de pe o curba eliptica in locul grupului $(\mathbb{Z}/p\mathbb{Z})^{*}$. Printre aplicatiile curbelor eliptice se numara constructia criptosistemelor cu chei publice, construirea de generatoare pseudoaleatoare de biti, semnaturi digitale, sisteme bazate pe identitate.
+
+\section{ECDSA}

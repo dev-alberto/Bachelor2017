@@ -32,8 +32,10 @@ class JointMultiplication:
 
     def brute_joint_multiplication(self, k, l):
         result1 = self.point1.right_to_left_scalar_mul(k)
+        print(result1)
         result2 = self.point2.right_to_left_scalar_mul(l)
-        return result1.add(result2)
+        print(result2)
+        return result1  .add(result2)
 
     @staticmethod
     def JSF(a, b):
@@ -66,6 +68,8 @@ class JointMultiplication:
         """Add using Shamir Trick, variation of algorithm 3.48, Menezez Book"""
         jsf = self.JSF(k, l)
 
+        #print(jsf)
+
         R = None
 
         for i, j in zip(jsf[0], jsf[1]):
@@ -85,6 +89,7 @@ class JointMultiplication:
        # _Q = {}
         R = None
         naf = [w_NAF(k, self.w1), w_NAF(l, self.w2)]
+        #print(naf)
         _l = max([len(naf[0]), len(naf[1])])
 
         #precom stage

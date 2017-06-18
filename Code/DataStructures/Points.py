@@ -19,7 +19,7 @@ class AffinePoint(AbstractPoint):
             return self
 
         if self == other:
-            _lambda = ((3 * self.coordinates[0] ** 2 + self.curve.a) * inv(2 * self.coordinates[1], self.curve.prime)) % self.curve.prime
+            _lambda = ( (3 * self.coordinates[0] ** 2 + self.curve.a) * inv(2 * self.coordinates[1], self.curve.prime)) % self.curve.prime
         else:
             _lambda = ((other.coordinates[1] - self.coordinates[1]) * inv(other.coordinates[0] - self.coordinates[0], self.curve.prime)) % self.curve.prime
         x3 = (_lambda ** 2 - self.coordinates[0] - other.coordinates[0]) % self.curve.prime

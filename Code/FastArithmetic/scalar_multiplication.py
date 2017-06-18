@@ -19,6 +19,9 @@ class ScalarMultiplication:
         for _i in range(1, m + 1, 2):
             self._P[_i] = self.left_to_right_scalar_mul(_i)
 
+        #print("Precom")
+        #print(self.window_naf_precom)
+
     ###Multiplicarea cu un scalar in O(logn), in curba C, dP = P + P + ... + P; double and add algorithm###
     ## Algorithm 3.26 Right-to-left binary method for point multiplication ##
     def binary_scalar_multiplication(self, d):
@@ -81,6 +84,7 @@ class ScalarMultiplication:
     #Algorithm 3.36 Window NAF method for point multiplication, Menezez
     def window_NAF_multiplication(self, d):
         d = w_NAF(d, self.w)
+        print(d)
         #_P = {}
         #for i in range(1, 2**(w-1), 2):
            # _P[i] = self.right_to_left_scalar_mul(i)
@@ -108,6 +112,7 @@ class ScalarMultiplication:
 
         """
         d = w_NAF(d, self.w)
+        #print(d)
         Q = None
         i = 0
         #m = 2 * ((2 ** w - (-1)**w) // 3) - 1
@@ -115,6 +120,7 @@ class ScalarMultiplication:
         #for _i in range(1, m + 1, 2):
             #_P[_i] = self.left_to_right_scalar_mul(_i)
         while i < len(d):
+           # print("Iteratie Noua")
             if d[i] == 0:
                 if Q is None:
                     Q = None
@@ -124,9 +130,11 @@ class ScalarMultiplication:
             else:
                 s = max(len(d) - i - self.w + 1, 0)
                 s = len(d) - 1 - s
+                #print("s is " + str(s))
                 while d[s] == 0:
                     s -= 1
                 u = NAF(d[i:s + 1])
+                #print("u is " + str(u))
                 for j in range(1, i - s + 2):
                     if Q is not None:
                         Q = Q.point_double()

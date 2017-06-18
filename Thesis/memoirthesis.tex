@@ -152,6 +152,7 @@
 \usepackage{import}
 
 % Add other packages needed for chapters here. For example:
+\usepackage[utf8]{inputenc}
 \usepackage{lipsum}					%Needed to create dummy text
 \usepackage{amsfonts} 					%Calls Amer. Math. Soc. (AMS) fonts
 \usepackage[centertags]{amsmath}			%Writes maths centred down
@@ -162,11 +163,7 @@
 \usepackage{layouts}					%Layout diagrams
 \usepackage{graphicx}					%Calls figure environment
 \usepackage{longtable,rotating}			%Long tab environments including rotation. 
-\usepackage[applemac]{inputenc}			%Needed to encode non-english characters 
-									%directly for mac
-\usepackage{colortbl}					%Makes coloured tables
-\usepackage{wasysym}					%More math symbols
-\usepackage{mathrsfs}					%Even more math symbols
+
 \usepackage{float}						%Helps to place figures, tables, etc. 
 \usepackage{verbatim}					%Permits pre-formated text insertion
 \usepackage{upgreek }					%Calls other kind of greek alphabet
@@ -177,7 +174,7 @@
 \usepackage{etex}						%eTeXÕs extended support for counters
 \usepackage{fixltx2e}					%Eliminates some in felicities of the 
 									%original LaTeX kernel
-\usepackage[spanish,english]{babel}		%For languages characters and hyphenation
+\usepackage[english, romanian]{babel}		%For languages characters and hyphenation
 \usepackage{color}                    				%Creates coloured text and background
 \usepackage[colorlinks=true,
 		     allcolors=black]{hyperref}              %Creates hyperlinks in cross references
@@ -377,6 +374,7 @@
 \import{chapters/chapter01/}{chap01.tex}
 \import{chapters/}{chapter02.tex}
 \import{chapters/}{chapter03.tex}
+\import{chapters/}{chapter04.tex}
 \clearemptydoublepage
 %
 %
