@@ -168,8 +168,9 @@
 \usepackage{verbatim}					%Permits pre-formated text insertion
 \usepackage{upgreek }					%Calls other kind of greek alphabet
 \usepackage{latexsym}					%Extra symbols
-\usepackage[square,numbers,
-		     sort&compress]{natbib}		%Calls bibliography commands 
+%\usepackage[square,numbers,
+%		     sort&compress]{natbib}		%Calls bibliography commands 
+\usepackage[sorting=none]{biblatex}
 \usepackage{url}						%Supports url commands
 \usepackage{etex}						%eTeXÕs extended support for counters
 \usepackage{fixltx2e}					%Eliminates some in felicities of the 
@@ -294,21 +295,21 @@
 % Theorem styles used in my thesis
 %
 \theoremstyle{plain}
-\newtheorem{teo}{Teorema}[chapter]
+\newtheorem{teo}{Teoremă}[chapter]
 \theoremstyle{plain}
-\newtheorem{prop}{Propozitie}[chapter]
+\newtheorem{prop}{Propoziție}[chapter]
 \theoremstyle{plain}
 \theoremstyle{definition}
-\newtheorem{dfn}{Definitie}[chapter]
+\newtheorem{dfn}{Definiție}[chapter]
 \theoremstyle{plain}
-\newtheorem{lema}{Lema}[chapter]
+\newtheorem{lema}{Lemă}[chapter]
 \theoremstyle{plain}
 \newtheorem{cor}{Corolar}[chapter]
 \theoremstyle{plain}
-\newtheorem{res}{Resultat}[chapter]
-\newtheorem{obs}{Observatie}[chapter]
+\newtheorem{res}{Rezultat}[chapter]
+\newtheorem{obs}{Observație}[chapter]
 \newtheorem{ex}{Exemplu}[chapter]
-\newtheorem{dem}{Demonstratie}[chapter]
+\newtheorem{dem}{Demonstrație}[chapter]
 %
 % Hyphenation for some words
 %
@@ -319,6 +320,7 @@
 \hyphenation{sol-va-bi-li-ty}
 %
 %
+\addbibresource{thesisbiblio.bib}
 \begin{document}
 % UoB guidlines:
 %
@@ -343,28 +345,30 @@
 \input{frontmatter/title}
 \clearemptydoublepage
 %
-\input{frontmatter/abstract}
-\clearemptydoublepage
+%\input{frontmatter/abstract}
+%\clearemptydoublepage
 %
-\input{frontmatter/dedication}
-\clearemptydoublepage
+%\input{frontmatter/dedication}
+%\clearemptydoublepage
 %
 \input{frontmatter/declaration}
-\clearemptydoublepage
+%\clearemptydoublepage
 %
+\input{frontmatter/abstract}
+
 \renewcommand{\contentsname}{Table of Contents}
 \maxtocdepth{subsection}
 \tableofcontents*
 \addtocontents{toc}{\par\nobreak \mbox{}\hfill{\bf Page}\par\nobreak}
-\clearemptydoublepage
+%\clearemptydoublepage
 %
-\listoftables
-\addtocontents{lot}{\par\nobreak\textbf{{\scshape Table} \hfill Page}\par\nobreak}
-\clearemptydoublepage
+%\listoftables
+%\addtocontents{lot}{\par\nobreak\textbf{{\scshape Table} \hfill Page}\par\nobreak}
+%\clearemptydoublepage
 %
-\listoffigures
-\addtocontents{lof}{\par\nobreak\textbf{{\scshape Figure} \hfill Page}\par\nobreak}
-\clearemptydoublepage
+%\listoffigures
+%\addtocontents{lof}{\par\nobreak\textbf{{\scshape Figure} \hfill Page}\par\nobreak}
+%\clearemptydoublepage
 %
 %
 % The bulk of the document is delegated to these chapter files in
@@ -376,20 +380,22 @@
 \import{chapters/}{chapter03.tex}
 \import{chapters/}{chapter04.tex}
 \clearemptydoublepage
+\printbibliography[heading=none]
 %
 %
 % And the appendix goes here
-\appendix
-\import{chapters/appendices/}{app0A.tex}
-\clearemptydoublepage
+%\appendix
+%\import{chapters/appendices/}{app0A.tex}
+%\clearemptydoublepage
 %
 % Apparently the guidelines don't say anything about citations or
 % bibliography styles so I guess we can use anything.
-\backmatter
-\bibliographystyle{siam}
-\refstepcounter{chapter}
-\bibliography{thesisbiblio}
-\clearemptydoublepage
+%\backmatter
+%\bibliographystyle{siam}
+%\refstepcounter{chapter}
+%\bibliography{thesisbiblio.bib}
+
+%\clearemptydoublepage
 %
 % Add index
 %\printindex

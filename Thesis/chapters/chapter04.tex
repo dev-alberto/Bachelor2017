@@ -1,11 +1,11 @@
 \chapter{Implementare, teste}
 
-In aceasta subsectiune vom aborda cele trei operatii de baza, adunarea, inmultirea cu un scalar si inmultirea multipla, prezentand la fiecare sectiune o analiza a eficientei metodei alese. Implementarea eficienta si corecta a acestor operatii reprezinta un prim pas foarte important spre dezvoltarea unor criptosisteme bazate pe curbe eliptice.
+În aceast capitol vom prezenta aplicația, începând de la arhitectură, continuând apoi spre funcționalitatea oferită. Idea este să punem in aplicare conceptele teoretice de la capitolele anterioare, punând accent pe algoritmii de la secțiunea Aritmetica Eficienta, capitolul 2. Implementarea eficientă si corectă a acestor operații reprezintă un prim pas foarte important spre dezvoltarea de aplicații criptografice folosite în lumea reală, precum ECDSA.
 \\ Pentru implementare am ales limbajul de programare Python, versiunea 3.5.2, iar hardware-ul folosit in tabelele de test este: Quad Core CPU, i7-4700HQ, 2.4 GHz, 64 bit OS, 16 GB RAM.
- 
 
-\section{Arhitectura Aplicatiiei}
-arhitectura(Inclusiv grupul folosit, curbele eliptice Nist), diagrama UML cu clasele
+\section{Arhitectura Aplicației}
+%arhitectura(Inclusiv grupul folosit, curbele eliptice Nist), diagrama UML cu clasele
+Prezentare
 
 \begin{figure}[htp]
 \centering
@@ -14,8 +14,11 @@ arhitectura(Inclusiv grupul folosit, curbele eliptice Nist), diagrama UML cu cla
 \label{fig:lion}
 \end{figure}
 
-\section{Adunarea punctelor de pe o curba eliptica}
+\section{Aritmetică}
 \label{subsec:subsec02}
+Prezentare
+
+\subsection{Operația de Adunare}
 In aplicatie am implementat operatia de adunare pentru coordonate Afine si pentru coordonate Jacobiene. Vom oferi formulele de calcul pentru cele tipuri de adunare si apoi vom compara eficienta celor doua implementari.
 
 Operatiile de adunare si dublare a unui punct de pe o curba eliptica sunt operatii care au o importanta deosebita intrucat sunt folosite in fiecare algoritm de la sectiunile urmatoare(inmultire cu un scalar si inmultire multipla).
@@ -86,32 +89,11 @@ def point_double(self):
 
 In continuare, vom face o comparatie intre cele doua metode de adunare, cea cu coordonate afine si cea in coordonate Jacobiene. In teste am am generat random doua numere pe o curba eliptica si le-am adunat. Am cronometrat 1000 de iteratii la fiecare test. Se poate observa per total ca adunarea in coordonate Jacobiene este de doua ori mai rapida decat cea in coordonate afine.
 
-\begin{tabular}{ |p{3cm}||p{3cm}|p{3cm}|p{3cm}|  }
- \hline
- \multicolumn{4}{|c|}{Adunarea punctelor de pe curbe eliptice} \\
- \hline
- Curba NIST& Coordonate &Metoda &Timp de executie(secunde)\\
- \hline
- P192   & Afine    &Adunare& 5.22\\
- P192&Afine  & Dublare & 5.19\\
- P192 &Jacobiene & Adunare& 2.6\\
- P192&Jacobiene & Dublare & 2.61\\
- P224& Afine & Adunare & 6.66\\
- P224& Jacobiene & Adunare   &3.32\\
- P256& Afine  & Adunare& 8.47\\
- P256& Jacobiene  & Adunare& 4.52\\
- P384& Afine  & Adunare& 18.06\\
- P384& Jacobiene  & Adunare& 8.96\\
- \hline
-\end{tabular}
-
-\section{Inmultirea cu un scalar}
-\label{subsec:subsec03}
-
+\subsection{Înmulțirea cu un scalar}
 
 Putem aborda metoda problema multiplicarii cu un scalar in diferite feluri, de la cele mai ineficiente metode(apelararea functiei de adunare de cate ori este nevoie) pana la metode sofisticate si eficiente, cum ar fi inmultirea cu fereastra glisanta.
 
-\subsection{Metoda Binara}
+\subsubsection{Metoda Binara}
 
 Prima metoda pe care am implementat-o este cea binara. Algoritmul consta in procesarea binara a scalarului de la cel mai nesimnificativ bit la cel mai semnificativ(de la dreapta la stanga deci). Exista si o varianta a algoritmului de la stanga la dreapta, echivalenta. Ideea este adaugam la resultat punctul P(cel care dorim sa il inmultim cu yn scalar) de fiecare data cand avem punctul P si sa dublam P-ul dupa fiecare bit parcurs.
 
@@ -131,7 +113,7 @@ def binary_scalar_multiplication(self, d):
     return result
 \end{lstlisting}
 
-\subsection{Reprezentari cu semn}
+\subsubsection{Reprezentari cu semn}
 
 Un avantaj major al curbelor eliptice, este faptul ca in grupul format de punctele de pe o astfel de curba, operatia de invers este foarte eficienta. Astfel, daca consideram 2 puncte $P, Q$ intr-un astfel de grup, putem calcula $P + Q$ si $P - Q$ cu acelasi cost computational. Aceasta observatie este foarte importanta in eficientizarea algoritmilor de inmultire cu un scalar. Calculul inversului avand un cost neglijabil din punct de vedere computational, nu este necesar sa ne limitam la $\set{0, 1}$ in reprezentarea unui scalar. Introducem astfel conceptul de reprezentare cu semn.
 
@@ -206,7 +188,7 @@ def right_to_left_scalar_mul(self, d):
     return result
 \end{lstlisting}
 
-\subsection{Metoda cu fereastra}
+\subsubsection{Metoda cu fereastra}
 Algoritmii care se folososesc de reprezentarea cu semn a scalarului pot fi inbunatatiti daca avem disponibila mai multa memorie. Vom procesa $w$ cifre din scalar la o iteratie, unde $w$ reprezinta latimea ferestrei.
 
 \begin{dfn}
@@ -252,7 +234,7 @@ def window_NAF_multiplication(self, d, w):
     return Q
 \end{lstlisting}
 
-\subsection{Metoda cu fereastra glisanta}
+\subsubsection{Metoda cu fereastra glisanta}
 Pentru a eficientiza metoda cu fereastra fixa prezentata mai sus, vom procesa folosi o asa zisa "fereastra glisanta" asupra cifrelor din $w-NAF$ cu scopul de a face un compromis intre numarul de adunari si dublari. Primul algoritm apeleaza functia pt $w-NAF$ si gliseaza o fereastra de latime $w$ peste reprezentare cu semn a scalarului astfel incat valoarea in fereastra sa fie impara(pentru a reduce numarul de precalculari). Idea de la al doilea algoritm este sa calculam $w-NAF$ in aceasi bucla in care facem calculul propiu zis al multiplicarii.
 
 \begin{lstlisting}
@@ -320,59 +302,7 @@ Pentru scalari mari, cele mai bune rezultate au fost obtinute cu o fereastra gli
 De asemenea putem observa beneficiul impresionant adus de folosirea coordonatelor Jacobiene, acestea aducand inbunatatiri consistente de performanta, algoritmii fiind de aproximativ cinci ori mai rapizi in aceste coordonate. 
 
 
-\begin{tabular}{ |p{5cm}||p{3cm}|p{3cm}|p{2cm}|p{1cm}|  }
- \hline
- \multicolumn{5}{|c|}{Curba P192} \\
- \hline
- Algortitm& Coordonate &Intervalul &Fereastra &Timp\\
- \hline
- Alg Binar & Afine  &$[2^{5},2^{32}]$& - & 2.48\\
- Alg Binar&Jacobiene  & $[2^{5},2^{32}]$ & - & 0.6\\
- Alg Binar&Jacobiene  & $[2^{128},2^{192}]$ & - & 3.88\\
- Inmultire de st. la dr. & Jacobian & $[2^{5},2^{32}]$& - & 0.39\\
- Inmultire de st. la dr. & Afine & $[2^{128},2^{192}]$& - & 14.04\\
- Inmultire de st. la dr. & Jacobian & $[2^{128},2^{192}]$& - & 2.49\\
- Inmultire de dr. la st. &Afine & $[2^{128},2^{192}]$ & - & 14.33\\
- Inmultire de dr. la st. &Jacobiene & $[2^{5},2^{32}]$ & - & 0.41\\
- Inmultire de dr. la st. &Jacobiene & $[2^{128},2^{192}]$ & - & 2.52\\
- Metoda cu fereastra& Jacobiene & $[2^{5},2^{32}]$ & 3 & 0.42\\
- Metoda cu fereastra& Jacobiene & $[2^{128},2^{192}]$ & 3 & 2.38\\
- Metoda cu fereastra& Jacobiene & $[2^{128},2^{192}]$ & 4 & 2.32\\
- Fereastra glisanta st. la dr.& Jacobiene  & $[2^{5},2^{32}]$& 3 & 0.51\\
- Fereastra glisanta st. la dr.& Jacobiene  & $[2^{128},2^{192}]$& 3 & 2.68\\
-  Fereastra glisanta st. la dr.& Jacobiene  & $[2^{128},2^{192}]$& 4 & 2.04\\
- Fereastra glisanta dr. la st.& Jacobiene  & $[2^{128},2^{192}]$& 3 & 2.47\\
- Fereastra glisanta dr. la st.& Jacobiene  & $[2^{128},2^{192}]$& 4 & 2.41\\
- Fereastra glisanta dr. la st.& Jacobiene  & $[2^{128},2^{192}]$& 5 & 2.58\\
- \hline
-\end{tabular}
 
-\begin{tabular}{ |p{5cm}||p{3cm}|p{3cm}|p{2cm}|p{1cm}|  }
- \hline
- \multicolumn{5}{|c|}{Curba P384} \\
- \hline
- Algortitm& Coordonate &Intervalul &Fereastra &Timp\\
- \hline
- Alg Binar & Afine  &$[2^{5},2^{32}]$& - & 5.5\\
- Alg Binar&Jacobiene  & $[2^{5},2^{32}]$ & - & 1.12\\
- Alg Binar&Jacobiene  & $[2^{300},2^{384}]$ & - & 13.98\\
- Inmultire de st. la dr. & Jacobian & $[2^{5},2^{32}]$& - & 0.66\\
- Inmultire de st. la dr. & Afine & $[2^{300},2^{384}]$& - & 59.62\\
- Inmultire de st. la dr. & Jacobian & $[2^{128},2^{192}]$& - & 8.33\\
- Inmultire de dr. la st. &Afine & $[2^{300},2^{384}]$ & - & 59.58\\
- Inmultire de dr. la st. &Jacobiene & $[2^{5},2^{32}]$ & - & 0.69\\
- Inmultire de dr. la st. &Jacobiene & $[2^{300},2^{384}]$ & - & 8.69\\
- Metoda cu fereastra& Jacobiene & $[2^{5},2^{32}]$ & 3 & 0.68\\
- Metoda cu fereastra& Jacobiene & $[2^{300},2^{384}]$ & 3 & 8.2\\
- Metoda cu fereastra& Jacobiene & $[2^{300},2^{384}]$ & 4 & 7.89\\
- Fereastra glisanta st. la dr.& Jacobiene  & $[2^{5},2^{32}]$& 3 & 0.85\\
- Fereastra glisanta st. la dr.& Jacobiene  & $[2^{300},2^{384}]$& 3 & 8.73\\
-  Fereastra glisanta st. la dr.& Jacobiene  & $[2^{300},2^{384}]$& 4 & 6.46\\
- Fereastra glisanta dr. la st.& Jacobiene  & $[2^{300},2^{384}]$& 3 & 8.17\\
- Fereastra glisanta dr. la st.& Jacobiene  & $[2^{300},2^{384}]$& 4 & 7.93\\
- Fereastra glisanta dr. la st.& Jacobiene  & $[2^{300},2^{384}]$& 5 & 8.33\\
- \hline
-\end{tabular}	
 
 \subsection{Inmultirea multipla}
 \label{subsec:subsec04}
@@ -454,11 +384,88 @@ def interleaving_sliding_window(self, k, l, w1, w2):
 
 \end{lstlisting}
 
+\section{ECDSA}
+
+\section{Eficiența implementării, Studiu Comparativ}
+
+\begin{tabular}{ |p{3cm}||p{3cm}|p{3cm}|p{3cm}|  }
+ \hline
+ \multicolumn{4}{|c|}{Adunarea punctelor de pe curbe eliptice} \\
+ \hline
+ Curba NIST& Coordonate &Metoda &Timp de executie(secunde)\\
+ \hline
+ P192   & Afine    &Adunare& 5.22\\
+ P192&Afine  & Dublare & 5.19\\
+ P192 &Jacobiene & Adunare& 2.6\\
+ P192&Jacobiene & Dublare & 2.61\\
+ P224& Afine & Adunare & 6.66\\
+ P224& Jacobiene & Adunare   &3.32\\
+ P256& Afine  & Adunare& 8.47\\
+ P256& Jacobiene  & Adunare& 4.52\\
+ P384& Afine  & Adunare& 18.06\\
+ P384& Jacobiene  & Adunare& 8.96\\
+ \hline
+\end{tabular}
+
 \begin{tabular}{ |p{5cm}||p{3cm}|p{3cm}|p{2cm}|p{1cm}|  }
  \hline
  \multicolumn{5}{|c|}{Curba P192} \\
  \hline
-  Algortitm& Coordonate &Intervalul &Ferestre &Timp\\
+ Algoritm& Coordonate &Intervalul &Fereastra &Timp\\
+ \hline
+ Alg Binar & Afine  &$[2^{5},2^{32}]$& - & 2.48\\
+ Alg Binar&Jacobiene  & $[2^{5},2^{32}]$ & - & 0.6\\
+ Alg Binar&Jacobiene  & $[2^{128},2^{192}]$ & - & 3.88\\
+ Inmultire de st. la dr. & Jacobian & $[2^{5},2^{32}]$& - & 0.39\\
+ Inmultire de st. la dr. & Afine & $[2^{128},2^{192}]$& - & 14.04\\
+ Inmultire de st. la dr. & Jacobian & $[2^{128},2^{192}]$& - & 2.49\\
+ Inmultire de dr. la st. &Afine & $[2^{128},2^{192}]$ & - & 14.33\\
+ Inmultire de dr. la st. &Jacobiene & $[2^{5},2^{32}]$ & - & 0.41\\
+ Inmultire de dr. la st. &Jacobiene & $[2^{128},2^{192}]$ & - & 2.52\\
+ Metoda cu fereastra& Jacobiene & $[2^{5},2^{32}]$ & 3 & 0.42\\
+ Metoda cu fereastra& Jacobiene & $[2^{128},2^{192}]$ & 3 & 2.38\\
+ Metoda cu fereastra& Jacobiene & $[2^{128},2^{192}]$ & 4 & 2.32\\
+ Fereastra glisanta st. la dr.& Jacobiene  & $[2^{5},2^{32}]$& 3 & 0.51\\
+ Fereastra glisanta st. la dr.& Jacobiene  & $[2^{128},2^{192}]$& 3 & 2.68\\
+  Fereastra glisanta st. la dr.& Jacobiene  & $[2^{128},2^{192}]$& 4 & 2.04\\
+ Fereastra glisanta dr. la st.& Jacobiene  & $[2^{128},2^{192}]$& 3 & 2.47\\
+ Fereastra glisanta dr. la st.& Jacobiene  & $[2^{128},2^{192}]$& 4 & 2.41\\
+ Fereastra glisanta dr. la st.& Jacobiene  & $[2^{128},2^{192}]$& 5 & 2.58\\
+ \hline
+\end{tabular}
+
+\begin{tabular}{ |p{5cm}||p{3cm}|p{3cm}|p{2cm}|p{1cm}|  }
+ \hline
+ \multicolumn{5}{|c|}{Curba P384} \\
+ \hline
+ Algoritm& Coordonate &Intervalul &Fereastra &Timp\\
+ \hline
+ Alg Binar & Afine  &$[2^{5},2^{32}]$& - & 5.5\\
+ Alg Binar&Jacobiene  & $[2^{5},2^{32}]$ & - & 1.12\\
+ Alg Binar&Jacobiene  & $[2^{300},2^{384}]$ & - & 13.98\\
+ Inmultire de st. la dr. & Jacobian & $[2^{5},2^{32}]$& - & 0.66\\
+ Inmultire de st. la dr. & Afine & $[2^{300},2^{384}]$& - & 59.62\\
+ Inmultire de st. la dr. & Jacobian & $[2^{128},2^{192}]$& - & 8.33\\
+ Inmultire de dr. la st. &Afine & $[2^{300},2^{384}]$ & - & 59.58\\
+ Inmultire de dr. la st. &Jacobiene & $[2^{5},2^{32}]$ & - & 0.69\\
+ Inmultire de dr. la st. &Jacobiene & $[2^{300},2^{384}]$ & - & 8.69\\
+ Metoda cu fereastra& Jacobiene & $[2^{5},2^{32}]$ & 3 & 0.68\\
+ Metoda cu fereastra& Jacobiene & $[2^{300},2^{384}]$ & 3 & 8.2\\
+ Metoda cu fereastra& Jacobiene & $[2^{300},2^{384}]$ & 4 & 7.89\\
+ Fereastra glisanta st. la dr.& Jacobiene  & $[2^{5},2^{32}]$& 3 & 0.85\\
+ Fereastra glisanta st. la dr.& Jacobiene  & $[2^{300},2^{384}]$& 3 & 8.73\\
+  Fereastra glisanta st. la dr.& Jacobiene  & $[2^{300},2^{384}]$& 4 & 6.46\\
+ Fereastra glisanta dr. la st.& Jacobiene  & $[2^{300},2^{384}]$& 3 & 8.17\\
+ Fereastra glisanta dr. la st.& Jacobiene  & $[2^{300},2^{384}]$& 4 & 7.93\\
+ Fereastra glisanta dr. la st.& Jacobiene  & $[2^{300},2^{384}]$& 5 & 8.33\\
+ \hline
+\end{tabular}	
+
+\begin{tabular}{ |p{5cm}||p{3cm}|p{3cm}|p{2cm}|p{1cm}|  }
+ \hline
+ \multicolumn{5}{|c|}{Curba P192} \\
+ \hline
+  Algoritm& Coordonate &Intervalul &Ferestre &Timp\\
  \hline
  Alg Brut & Afine  &$[2^{5},2^{32}]$& - & 4.85\\
  Alg Brut & Afine  &$[2^{128},2^{198}]$& - & 26.18 \\
@@ -480,7 +487,7 @@ def interleaving_sliding_window(self, k, l, w1, w2):
  \hline
  \multicolumn{5}{|c|}{Curba P384} \\
   \hline
-  Algortitm& Coordonate &Intervalul &Ferestre &Timp\\
+  Algoritm& Coordonate &Intervalul &Ferestre &Timp\\
  \hline
  Alg Brut & Afine  &$[2^{5},2^{32}]$& - & 10.81\\
  Alg Brut & Afine  &$[2^{128},2^{198}]$& - & 54.17 \\
@@ -497,3 +504,6 @@ def interleaving_sliding_window(self, k, l, w1, w2):
  Interleaving & Jacobiene  &$[2^{128},2^{198}]$& 5, 5 & 5.83	 \\
  \hline
 \end{tabular}
+
+\section{Testare}
+Unit teste, sper sa am timp.. 

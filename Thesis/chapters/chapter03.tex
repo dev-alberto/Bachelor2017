@@ -1,24 +1,111 @@
-\chapter{Aplicatii in Criptografie} 
+\chapter{Aplicații în Criptografie} 
 
-In acest capitol voi prezenta semnatura digitala bazata pe curbe eliptice \textit{ECDSA}, criptografie publica si protocoale de schimb de chei. De asemenea vom trece in revista suportul matematic pe care se bazeaza criptografia pe curbe eliptice, adica vom prezenta problema logaritmului discret, impreuna cu o comparatie a eficientei metodelor de atac (\textit{Pohlig-Hellman, Pollard's rho}).
+În acest capitol vom prezenta o imagine de ansamblu asupra aplicațiilor din lumea reală ale curbelor eliptice, motivând in același timp suportul matematic pe care aceastea se bazează, prin descrierea problemei logaritmului discret. Printre aplicațiile curbelor eliptice se numară construcția criptosistemelor cu chei publice, construirea de generatoare pseudoaleatoare de biți, semnaturi digitale, sisteme bazate pe identitate. Ne vom concentra pe protocolul de schimbul de chei, Diffie-Hellman, bazat pe curbe eliptice(\textit{ECDH}) și protocolul de semnătură digitală, \textit{ECDSA}.
 
 \section{Problema Logaritmului Discret Pentru Curbe Eliptice}
 \label{sec:sec01}
 
 \begin{dfn}
-(sursa: Yan, Quantum Computational Theory)
-Fie E o curba eliptica peste un corp finit $F_p$, data in forma Weierstrass simplificata, 
-$E: y^2 = x^3 + ax + b (mod p)$ si 2 puncte $S, T\in E(F_p)$. Problema logarimului discret consta in aflarea unui numar, $k = \log_T S \in \mathbb{Z}$, sau $k \equiv \log_T S (mod p)$ astfel incat $S = kT \in E(F_p)$ sau $S \equiv kT (mod p)$. 
+\cite{ecdlp1} Fie E o curbă eliptică peste un corp finit $F_p$, dată in formă Weierstrass simplificată, 
+$E: y^2 = x^3 + ax + b (mod p)$ si 2 puncte $S, T\in E(F_p)$. Problema logarimului discret constă în aflarea unui număr, $k = \log_T S \in \mathbb{Z}$, sau $k \equiv \log_T S (mod p)$ astfel încât $S = kT \in E(F_p)$ sau $S \equiv kT (mod p)$. 
 \end{dfn}
 
-Problema logaritmului discret pentru curbe eliptice(\textit{ECDLP}) este mai dificila decat problema clasica a logaritmului discret(\textit{DLP}). ECDLP este o generalizare a DLP, care extinde grupul multiplicativ $F^{*}_{p}$ la grupul $E(F_p)$.
-\\(sursa Menezez) Dificultatea acestei probleme sta la baza criptografiei pe curbe eliptice. Parametrii curbei eliptice trebuie alesi astfel incat sa evitam orice atac cunoscut asupra ECDLP. Un algoritm naiv este cautarea exaustiva (calculam $T, 2T, 3T, ...$ pana obtinem $S$). In cazul cel mai nefavorabil algoritmul parcurge $p$ pasi, iar cazul mediu $p/2$. Asadar putem evita acest atac alegand un $p$ suficient de mare, de exemplu $p\geq 2^{80}$. In cazul atacurilor Pohlig-Hellman si Pollard's rho, care au complexitatea $\mathcal{O}(\sqrt{\alpha})$, unde $\alpha$ este cel mai mare divizor prim a lui $p$. Pentru a contracara acest atac avem de asemenea nevoie sa alegem $p$ mare, de exemplu $p\geq 2^{160}$. Daca restul parametrilor sunt alesi pentru a evita si atacuri de tip izomorfic(Weil, Tate), ECDLP este o problema care nu poate fi rezolvata intr-un timp rezonabil cu tehnologia actuala.
+Problema logaritmului discret pentru curbe eliptice(\textit{ECDLP}) alese bine, este mai dificilă decât problema clasică a logaritmului discret(\textit{DLP}) pentru grupuri multiplicative peste un corp finit.
+ Dificultatea acestei probleme stă la baza criptografiei pe curbe eliptice. Parametrii curbei eliptice trebuie aleși astfel încat să evităm orice atac cunoscut asupra ECDLP. Un algoritm naiv este căutarea exaustivă (calculăm $T, 2T, 3T, ...$ până obținem $S$). În cazul cel mai nefavorabil algoritmul parcurge $p$ pași, iar în cazul mediu $p/2$. Așadar putem evita acest atac alegând un $p$ suficient de mare, de exemplu $p\geq 2^{80}$. În cazul atacurilor Pohlig-Hellman si Pollard's rho, care au complexitatea $\mathcal{O}(\sqrt{\alpha})$, unde $\alpha$ este cel mai mare divizor prim a lui $p$. Pentru a contracara acest atac avem de asemenea nevoie să alegem $p$ mare, de exemplu $p\geq 2^{160}$. Dacă restul parametrilor sunt aleși pentru a evita si atacuri de tip izomorfic(Weil, Tate), ECDLP este o problemă care nu poate fi rezolvată într-un timp rezonabil cu tehnologia actuală. \cite{ecdlp2}
+
+%\begin{obs}
+%Problema ECDLP nu este demostrata ca fiind o problema intractabila. Astfel, nu s-a aratat ca nu exista un algoritm eficient pentru rezolvarea logaritmului discret. O astfel de demonstratie ar implica $P\neq NP$, rezolvand astfel o problema fundamentala in informatica. Mai mult, nu exista dovezi teoretice solide care sa suporte intractabilitatea ECDLP, problema nefiind demonstrata NP-hard. Exista o probabilitate destul de mica ca ECDLP sa fie NP-hard, intrucat versinea de decizie a acestei probleme apartine atat NP cat si la co-NP.
+%\end{obs}
+
+\section{ECDH}
+
+Diffie-Hellman pe curbe eliptice este un protocol care dă posibilitatea stabilirii unui secret comun între doua entități. Acest secret poate fi o cheie sau poate fi folosit pentru a deriva o cheie, care ulterior poate fi folosită într-un protocol simetric de criptografie. \\
+Vom numi cele două entități care participă la comunicare Alice și Bob. Conform \cite{ecdlp3}, \textit{ECDH} se desfășoară în următoarele etape:
+
+\begin{itemize}
+\item Se stabilesc parametrii curbei eliptice, punctul generator. De obicei aici, curbele alese pentru protocol, sunt cele care au fost verificate de către o autoritate de încredere, precum \textit{NIST}.
+\item Alice alege un număr natural, random, în intervalul $[1, n-1]$, unde $n$ este ordinul subgrupului generat de punctul generator, $G$. Apoi calculeaza $Q_A = aG$ si trimite $Q_A$ lui Bob. Similar, Bob alege $b\in [1, n-1]$ si trimite lui Alice $Q_B = bG$.
+\item Atât Alice cât si Bob, calculează $abG$, care reprezintă secretul între cele două entități.
+\end{itemize}
 
 \begin{obs}
-Problema ECDLP nu este demostrata ca fiind o problema intractabila. Astfel, nu s-a aratat ca nu exista un algoritm eficient pentru rezolvarea logaritmului discret. O astfel de demonstratie ar implica $P\neq NP$, rezolvand astfel o problema fundamentala in informatica. Mai mult, nu exista dovezi teoretice solide care sa suporte intractabilitatea ECDLP, problema nefiind demonstrata NP-hard. Exista o probabilitate destul de mica ca ECDLP sa fie NP-hard, intrucat versinea de decizie a acestei probleme apartine atat NP cat si la co-NP.
+Pentru ca un atacator să afle $abG$, trebuie sa afle $a$, din $aG$ sau $b$, din $bG$. Din asta observăm că siguranța acestui protocol este garantată de dificultatea problemei logaritmului discret. 
 \end{obs}
 
-
-Folosirea curbelor eliptice in criptografie a fost propusa pentru prima oara in anul 1985 de Victor Miller(IBM) si, independent, de Neal Koblitz. Ideea de baza este folosirea grupului de puncte de pe o curba eliptica in locul grupului $(\mathbb{Z}/p\mathbb{Z})^{*}$. Printre aplicatiile curbelor eliptice se numara constructia criptosistemelor cu chei publice, construirea de generatoare pseudoaleatoare de biti, semnaturi digitale, sisteme bazate pe identitate.
+\begin{ex}1
+Fie curba eliptică NIST P192. Alice alege un număr random 
+$$a= 4114691071888516598872686863459422089156924236587110051027$$
+Aceasta calculează $Q_A = (3576689912069306634996719528847333570212949190268988897341,$ \\ $2577620781095527148389100426144080789286031064305720917544)$ și trimite la Bob rezultatul. Analog, Bob calculează $Q_B = bG$, unde este ales random, 
+\\ $b = 3350281580565627922550490942568402436195033088753006169393$. Alice primește: 
+$$Q_B = (5237452004119114225824580697958296588006171898236471778302,$$ $$5239066786042179057430024496995536348905285581132510721784)$$
+Ambele entități dețin acum secretul comun:
+$$abG = (3889091514766761083889527264369850820381968816940879440305, $$ $$4004201504544591016017764551744695759122710025389314034700)$$
+\end{ex}
 
 \section{ECDSA}
+
+Aproape toate criptosistemele cu cheie publică, clasice, au un analog pe curbe eliptice. Astfel avem \textit{ECDSA}, analogul pentru \textit{DSA} (\textit{Digital Signatura Algorithm}), propus in anul 1992 de către Scott Vanstone \cite{ecdsa1}. \textit{ECDSA} a fost acceptat ca standard ISO în anul 1998, ANSI în anul 1999, ca standard IEEE și NIST în anul 2000. \\
+Acest protocol asigură următoarele servicii criptografice:
+\begin{itemize}
+\item integritatea datelor: asigură faptul că datele nu pot fi modificate neautorizat
+\item autentificarea originii datelor: asigură faptul că sursa datelor este cea cunoscută
+\item non-repudierea: asigură faptul că o entitate nu poate nega acțiunile pe care le-a făcut în cadrul protocolului
+\end{itemize}
+Există trei etape in cadrul \textit{ECDSA}: generarea cheilor, semnarea mesajului, verificarea mesajului. Urmează în continuare trei definiții, fiecare detaliind câte o etapă din acest protocol. Vom numi Alice si Bob enitățile care participa la comunicare. Alice dorește să trimită un mesaj semnat la Bob. Acesta va verifica semnatura. Fie $E$ o curbă eliptică peste corpul $F_p$ si un punct $G\in E$ de ordin $n$.
+
+\begin{dfn}
+
+Alice generează perechea cheie publică, cheie privată, astfel:
+\begin{itemize}
+\item Alege un număr natural $x\in [1, n-1]$
+\item Calculeaza $Q = xG$
+\item Q devine public, x rămâne secret. Perechea cheie publică, cheie privată este $(Q, x)$
+\end{itemize}
+
+\end{dfn}
+
+\begin{dfn}
+
+Alice generează o semnătură pentru mesajul $m$, astfel:
+\begin{itemize}
+\item Alege un număr natural $k\in [1, n-1]$
+\item Calculează $kP = (x1, y1)$ si $r \equiv x1$ mod $n$. Dacă $r=0$, atunci ne întoarcem la primul pas
+\item Calculează $k^{-1}$ mod $n$
+\item Calculează $s \equiv k^{-1}(H(m) + xr)$ mod $n$. $H(m)$ reprezintă hash-ul mesajului $m$. Dacă $s = 0$ ne întoarcem la primul pas.
+\end{itemize}
+Perechea $(r, s)$ reprezintă semnătura mesajului $m$
+
+\end{dfn}
+\begin{dfn}
+
+Bob dorește sa verifice semnătura $(r, s)$ pentru mesajul $m$. Următorii pași sunt necesari verificării:
+\begin{itemize}
+\item Verifică apartenența punctului $Q$, cheia publică, la curba $E$
+\item Verificarea faptului că $r, s$ apartin intervalului $[1, n-1]$
+\item Calculează $H(m)$, unde $H$ este aceași funcție hash folosită la semnare
+\item Calculează $w = s^{-1}$ mod $n$
+\item Calculează $u_1 = H(m)w$ mod $n$ si $u_2 = rw$ mod $n$
+\item Calculează punctul $(x_1, y_1) = u_1G + u_2Q$
+\item Verifică dacă $r\equiv x_1$
+\end{itemize}
+Dacă oricare dintre verificări returnează fals, atunci semnătura este invalidă.
+
+\end{dfn}
+
+\begin{ex}
+Fie curba eliptică NIST P192. Alice dorește să semneze mesajul "ECDSA Test" și Bob dorește să verifice semnătura generată de Alice pentru acest mesaj. Vom folosi algoritmul de hash, \textit{SHA-256}. \\
+Fie  $k= 4625097095239057140588402855395245031027973496939430959487$ ales random în intervalul $[1,6277101735386680763835789423176059013767194773182842284081]$.
+Calculăm $k^{-1} = 4710413267373252408099540974110494037363888547813696222366$ și obținem semnătura 
+$$(269903256494575296285992502697291655679199370592893271310,$$ $$699408792794960665825042281503387585867271893408733500400)$$
+Acum Bob dorește sa verice această semnătură folosind cheia publică:
+$$ (269903256494575296285992502697291655679199370592893271310, $$ $$2643207341070101961263344757054732948306561800541827620664)$$
+Primul doi pași sunt îndepliniți apoi calculează: 
+$$w = 714843452363798735796354036598666200526458427179804068702$$, 
+$$ u_1 = 3633317631989915989067429594252245985031715088503959053275$$
+$$ u_2 = 2970936840042406432399184033378025194469637021946843353374 $$
+$$(x_1, x_2) = (269903256494575296285992502697291655679199370592893271310,$$ $$2643207341070101961263344757054732948306561800541827620664)$$
+Verifică apoi $x_1 \equiv r$ mod $n$ si semnătura este intr-adevăr autentică.
+\end{ex}
+
+
+

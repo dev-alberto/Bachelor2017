@@ -1,10 +1,20 @@
 from ECDSA.ECDSA import *
 
 
-priv, pub = GenerateKeyPair(192).generate_key()
+keypair = GenerateKeyPair(192).generate_key()
 
-sige = GenerateSignature(192, priv, "ecdsa").generate_signature()
+print("Private Key")
+print(keypair[0])
 
-verify = VerifySignature(192, pub, sige, "ecdsa")
+print("Public key")
+print(keypair[1])
+
+sige = GenerateSignature(192, keypair, "ECDSA Test").generate_signature()
+
+print("Signature")
+
+print(sige)
+
+verify = VerifySignature(192, keypair[1], sige, "ECDSA Test")
 
 print(verify.verify())

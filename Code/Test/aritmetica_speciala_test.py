@@ -3,21 +3,24 @@ from FastArithmetic.joint_multiplication import JointMultiplication
 from DataStructures.Points import JacobiPoint
 from DataStructures.PrimeCurves import NistPrimeCurve
 
+from random import randint
+
 P192 = NistPrimeCurve(192)
 
 
 # generator = P192.get_generator()
 # generator = generator.transform()
 #
-scalar = 21212525555874
+scalar1 = randint(1, P192.n-1)
+print(scalar1)
+scalar2 = randint(1, P192.n - 1)
+print(scalar2)
+ab = scalar1 * scalar2
 
-scalar_mul = ScalarMultiplication(P192.g)
-print(scalar_mul.binary_scalar_multiplication(scalar))
-print(scalar_mul.left_to_right_scalar_mul(scalar))
-print(scalar_mul.right_to_left_scalar_mul(scalar))
-print(scalar_mul.window_NAF_multiplication(scalar, 3))
-print(scalar_mul.sliding_window_left_to_right_scalar_mul(scalar, 5))
-print(scalar_mul.sliding_window_right_to_left_on_the_fly_scalar_mul(scalar, 5))
+scalar_mul = ScalarMultiplication(P192.g, 4)
+print(scalar_mul.sliding_window_left_to_right_scalar_mul(scalar1))
+print(scalar_mul.sliding_window_left_to_right_scalar_mul(scalar2))
+print(scalar_mul.sliding_window_left_to_right_scalar_mul(ab))
 
 # generator_times2 = P192.g.right_to_left_scalar_mul(2)
 # joint_mul = JointMultiplication(P192.g, generator_times2)
