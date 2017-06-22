@@ -28,21 +28,6 @@ class AbstractPoint(metaclass=ABCMeta):
     def inverse(self):
         pass
 
-    def right_to_left_scalar_mul(self, d):
-        result = None
-        R = self
-        while d >= 1:
-            if d % 2 == 1:
-                u = 2 - (d % 4)
-                d -= u
-                if u == 1:
-                    result = R.add(result)
-                else:
-                    result = R.inverse().add(result)
-            d //= 2
-            R = R.point_double()
-        return result
-
 
 class EllipticCurve(metaclass=ABCMeta):
 

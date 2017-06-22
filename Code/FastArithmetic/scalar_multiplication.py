@@ -1,4 +1,4 @@
-from util import w_NAF, NAF, mods
+from util import w_NAF, NAF, mods, right_to_left_scalar_mul
 from DataStructures.interfaces import AbstractPoint
 
 
@@ -169,3 +169,43 @@ class ScalarMultiplication:
                 #Q[1] = self.l_t_r(Q[i], i).add(Q[1])
                 Q[1] = Q[i].right_to_left_scalar_mul(i).add(Q[1])
         return Q[1]
+
+
+class FastScalarMultiplier:
+    def __init__(self, point, w=4):
+        self.w = w
+        # precom stage
+        self._P = {}
+        m = 2 * ((2 ** w - (-1) ** w) // 3) - 1
+        for _i in range(1, m + 1, 2):
+            self._P[_i] = right_to_left_scalar_mul(point, _i)
+
+    def sliding_window_left_to_right_scalar_mul(self, d):
+        d = w_NAF(d, self.w)
+        Q = None
+        i = 0
+        while i < len(d):
+            if d[i] == 0:
+                if Q is None:
+                    Q = None
+                else:
+                    Q = Q.point_double()
+                i += 1
+            else:
+                s = max(len(d) - i - self.w + 1, 0)
+                s = len(d) - 1 - s
+                while d[s] == 0:
+                    s -= 1
+                u = NAF(d[i:s + 1])
+                for j in range(1, i - s + 2):
+                    if Q is not None:
+                        Q = Q.point_double()
+                    else:
+                        Q = None
+                if u > 0:
+                    Q = self._P[u].add(Q)
+                if u < 0:
+                    Q = Q.add(self._P[-u].inverse())
+                i = 1 + s
+        return Q
+

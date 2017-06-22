@@ -84,6 +84,22 @@ def w_NAF(d, w):
     return res[::-1]
 
 
+def right_to_left_scalar_mul(point, d):
+    """Used for precomputation stage"""
+    result = None
+    while d >= 1:
+        if d % 2 == 1:
+            u = 2 - (d % 4)
+            d -= u
+            if u == 1:
+                result = point.add(result)
+            else:
+                result = point.inverse().add(result)
+        d //= 2
+        point = point.point_double()
+    return result
+
+
 def naf(d):
     i = 0
     res = []

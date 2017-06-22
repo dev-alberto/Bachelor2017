@@ -1,7 +1,7 @@
 from DataStructures.PrimeCurves import NistPrimeCurve
 from ECDSA.Message import FormatMessage
 from util import inv
-from FastArithmetic.joint_multiplication import JointMultiplication
+from FastArithmetic.joint_multiplication import FastJointMultiplier
 
 
 class GenerateKeyPair:
@@ -9,12 +9,13 @@ class GenerateKeyPair:
         self.curve = NistPrimeCurve(bits)
 
     def generate_key(self):
-        keypair = self.curve.generate_secure_random()
+        keypair = self.curve.generate_random()
         #assert keypair[1].get_X() != 0
         #return self.curve.generate_secure_random()
         while keypair[1].get_X() == 0:
-            keypair = self.curve.generate_secure_random()
+            keypair = self.curve.generate_random()
         return keypair
+
 
 class GenerateSignature:
     def __init__(self, bits, keypair, message):
@@ -87,7 +88,7 @@ class VerifySignature:
         #print("u_2 is " + str(u2))
 
         # pasul 6 --> calculam punctul de pe curba eliptica P = u1 x G + u2 x Q_a  ----> Trebuie optimizat -- Nu mai trebuie
-        muliplier = JointMultiplication(self.curve.g, self.pubKey, 4, 4)
+        muliplier = FastJointMultiplier(self.curve.g, self.pubKey)
         p = muliplier.interleaving_sliding_window(u1, u2)
         #print("(x1, y1) is " + str(p))
 
