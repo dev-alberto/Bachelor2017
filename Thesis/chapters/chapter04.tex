@@ -5,46 +5,42 @@
 
 \section{Arhitectura Aplicației}
 %arhitectura(Inclusiv grupul folosit, curbele eliptice Nist), diagrama UML cu clasele
-Prezentare
+În această aplicație s-a urmărit scrierea unui cod cât mai flexibil și concis, care să permită manipularea și aprofundarea conceptelor abstracte, matematice, discutate în secțiunile predente. Scopul final al aplicației a fost implementarea protocolul \textit{ECDSA} și un studiu comparativ al performanței algoritmilor discutati in Capitolul 2, Secțiunea Aritmetică Eficientă. \\
+Deși limbajul folosit suportă atât paradigma de programare orientată pe obiecte, cât si cea procedurală, în această aplicație am ales structurarea aproape completă a codului în clase, fiecare cu roluri bine definite, pe cât posibil în concordanță cu principiile \textit{SOLID}\cite{solid}, fară însă a face compromisuri în ceea ce privește flexibilitatea si simplitatea codului. Diagrama \textit{UML}\cite{uml} din figura 4.1 surprinde toate clasele din aplicație si relațiile dintre acestea. Se observă folosirea unor clase abstracte, deși nu există suport nativ pentru ele în Python. Acestea au fost folosite pentru a reduce multe din reduntanțele care apăreau în cod și pentru a oferi un sablon pentru anumite funcționalități care pot fi introduse în aplicație. Abstractizarea claselor în Python se face cu ajutorul pachetului \textit{abcMeta}\cite{abcMeta}.\\
+Funcționalitatea oferită de protocolul ECDSA, adică generarea cheilor, semnarea mesajului si verificarea semnăturii este încapsulată în 3 clase: \textit{GenerateKeyPair}, \textit{GenerateSignature}, \textit{VerifySignature}. Algoritmii care vor apărea în Studiul Comparativ sunt implementați în clasele \textit{ScalarMultiplication} și \textit{JointMultiplication}. În continuare, voi prezenta structurile de date care stau la baza aplicației.
 
 \begin{figure}[htp]
 \centering
 \includegraphics[width=17.5cm]{chapters/Arhitectura.png}
-\caption{Arhitectura Aplicatiei}
+\caption{Arhitectura Aplicației}
 \label{fig:lion}
 \end{figure}
 
+\subsection{Structuri de date}
+
+În aplicație a fost necesară modelarea a două entități fundamentale, curba eliptică și punctul de pe o curbă eliptică. Pentru ambele concepte am creat clase abstracte, întrucât există multe tipuri de curbe eliptice, iar punctele pot avea și ele mai multe reprezentări.
+
+\subsubsection{Curba Eliptică}
+Am ales sa modelez conceptele de curbă eliptică peste un corp prim(clasa concretă \textit{PrimeCurves}) și extensia acesteia care modelează curbele NIST peste corpuri prime, \textit{NistPrimeCurve}. Clasa abstractă pentru o curbă eliptică este special modelată vag, din cauza multitudinii de tipuri de curbe existente, cu proprietăți specifice foarte speciale. Clasa \textit{PrimeCurves} modelează orice curbă definită peste un corp prim si în afara parametrilor care definesc curba si a supraîncărcării operatorilor de egalitate si de reprezentare string a obiectului, am decis să nu adaug metode speciale. Curbele Nist, definite peste corpuri prime si modelate în clasa \textit{NistPrimeCurve} au parametrii cunoscuți, definiți în \cite{nist}.
+
+\subsubsection{Punctele de pe o curbă eliptică}
+
+Am modelat punctele reprezentate in coordonate afine (\textit{AffinePoint}) și punctele în coordonate jacobiene (\textit{JacobiPoint}).
+Design-ul punctelor a fost conceput în așa fel încat fiecare punct să conțină metode pentru operațiile de grup pentru curbe eliptice: adunare, dublare, invers. De asemenea, fiecare punct, are coordonate si aparține unei curbe, lucru reflectat în constructorul clasei \textit{AbstractPoint}. Am luat decizia să nu adaug in clasele pentru puncte metode de înmulțire cu un scalar sau de înmulțire multiplă deoarece cei mai eficienți algoritmi necesită precalcularea unor valori, acest lucru adaugând un overhead clasei punct. Astfel, cel mai eficient algoritm de înmultire a fost separat într-o clasă, care se ocupă special de această operație La fel am procedat și cu operația de înmulțire multiplă. \\
+
+Abstractizarea acestor concepte ajută la eventuala extindere a aplicației și la evitarea codului duplicat. Prin extinderea claselor abstracte, putem adauga suport pentru alte tipuri de curbe eliptice, precum cele definite peste corpuri binare, curbe Edwards, sau suport pentru diferite tipuri de coordonate și operațiile speciale aferente.
+
+
 \section{Aritmetică}
 \label{subsec:subsec02}
-Prezentare
+În această secțiune vom aborda operațiile de grup pentru curbe eliptice, adunare, dublare, invers și operațiile speciale, înmulțirea cu un scalar și înmulțirea multiplă. Cele din urmă au fost explicate în capitolul doi, secțiunea Aritmetică Eficientă. Aici ne vom concentra pe implementarea acestora și rolul acestora în Studiul Comparativ, respectiv în protocolul ECDSA. \\
 
-\subsection{Operația de Adunare}
-In aplicatie am implementat operatia de adunare pentru coordonate Afine si pentru coordonate Jacobiene. Vom oferi formulele de calcul pentru cele tipuri de adunare si apoi vom compara eficienta celor doua implementari.
+Justifici clasele ScalarMultiplier, zici ca prezinti  atat aritmetica de grup cat si cea speciala... 
 
-Operatiile de adunare si dublare a unui punct de pe o curba eliptica sunt operatii care au o importanta deosebita intrucat sunt folosite in fiecare algoritm de la sectiunile urmatoare(inmultire cu un scalar si inmultire multipla).
-In coordonate afine algoritmul de adunare este clar, algoritmul fiind o simpla aplicare a formulelor de mai sus. Operatia cea mai costisitoare din algoritmul de mai jos e cea de invers modular(in calculul lui $\lambda$). Aceasta operatie se face cu ajutorul algoritmului lui Euclid Extins.
+\subsection{Operații de Grup}
+În aplicatie am implementat operațiile care țin de grupul punctelor de pe o curbă eliptică în cele doua clase concrete pentru puncte, cele pentru coordonate afine si pentru coordonate jacobiene. Algoritmii de adunare constau în aplicarea unor formule, cele pentru coordonate afine fiind explicitate în Capitolul 2, Secțiunea Grupul Punctelor de pe o curba eliptică. Formulele de adunare și dublare a unui punct pentru coordonate Jacobiene sunt conform acestei surse \cite{jacobian}.
 
-\begin{lstlisting} 
-def add(self, other):
-	if self is None:
-		return other
-	if other is None:
-		return self
-
-	if self == other:
-		_lambda = ((3 * self.x ** 2 + self.elliptic_curve.a) 
-                   * inv(2 * self.y,self.elliptic_curve.prime)) % 
-                   self.elliptic_curve.prime
-	else:
-		_lambda = ((other.y - self.y) * 
-                  inv(other.x - self.x, self.elliptic_curve.prime)) %
-                  self.elliptic_curve.prime
-	x3 = (_lambda ** 2 - self.x - other.x) % self.elliptic_curve.prime
-	y3 = (_lambda * (self.x - x3) - self.y) % self.elliptic_curve.prime
-	return Point(self.elliptic_curve, [x3, y3])
-\end{lstlisting}
-
-Ideea de la urmatorii doi algoritmi  este sa folosim un set de coordonate redundante(coordonate Jacobiene) pentru a evita calculul inversului modular.
+Operațiile care țin de structura de grup au o importanță deosebită, întrucât sunt folosite în fiecare algoritm de înmulțire cu scalar și implicit de înmulțire multiplă. Din acest motiv, ne dorim o implementare cât mai eficientă, orice înbunătățire la acest nivel aducând sporuri de performanță peste tot în aplicație. În coordonate afine, apare algoritmul lui Euclid Extins în calculul unor inverși modulari, astfel justificând folosirea coordonatelor jacobiene, care prin introducerea unui set de redundanțe în reprezentarea unui punct, elimină nevoia de a calcula inverși modulari. În continuare vom prezenta implementarea adunării și dublării unui punct în coordonate jacobiene. 
 
 \begin{lstlisting}
 def add(self, other):
@@ -87,21 +83,26 @@ def point_double(self):
 	   pow(_z, 3, self.curve.prime)], self.curve)
 \end{lstlisting}
 
-In continuare, vom face o comparatie intre cele doua metode de adunare, cea cu coordonate afine si cea in coordonate Jacobiene. In teste am am generat random doua numere pe o curba eliptica si le-am adunat. Am cronometrat 1000 de iteratii la fiecare test. Se poate observa per total ca adunarea in coordonate Jacobiene este de doua ori mai rapida decat cea in coordonate afine.
+Atât în coordonate afine, cât și în cele jacobiene, inversul unui punct este foarte simplu de calculat, prin negarea componentei a doua din reprezentarea punctului. Singurul dezavantaj al folosirii coordonatelor jacobiene îl constituie operația de trecere înapoi în coordonate afine, operație care necesită calcului a doi inverși modulari.
+
+\begin{lstlisting}
+def transform_to_affine(self):
+       return AffinePoint([self.coordinates[0] * inv(self.coordinates[2] ** 2, 	    self.curve.prime) % self.curve.prime, (self.coordinates[1] * inv(self.coordinates[2] ** 3  3, self.curve.prime)) % self.curve.prime], self.curve)
+\end{lstlisting}
 
 \subsection{Înmulțirea cu un scalar}
 
-Putem aborda metoda problema multiplicarii cu un scalar in diferite feluri, de la cele mai ineficiente metode(apelararea functiei de adunare de cate ori este nevoie) pana la metode sofisticate si eficiente, cum ar fi inmultirea cu fereastra glisanta.
+Putem aborda problema înmulțirii cu un scalar în diferite feluri, de la cele mai ineficiente metode(apelararea functiei de adunare de cate ori este nevoie) până la metode sofisticate și eficiente, cum ar fi înmulțirea cu fereastră glisantă.
 
-\subsubsection{Metoda Binara}
+\subsubsection{Metoda Binară}
 
-Prima metoda pe care am implementat-o este cea binara. Algoritmul consta in procesarea binara a scalarului de la cel mai nesimnificativ bit la cel mai semnificativ(de la dreapta la stanga deci). Exista si o varianta a algoritmului de la stanga la dreapta, echivalenta. Ideea este adaugam la resultat punctul P(cel care dorim sa il inmultim cu yn scalar) de fiecare data cand avem punctul P si sa dublam P-ul dupa fiecare bit parcurs.
+Prima metodă pe care am implementat-o este cea binară. Algoritmul constă în procesarea reprezentării binare a scalarului de la cel mai nesimnificativ bit la cel mai semnificativ.
 
 \begin{lstlisting}
 def binary_scalar_multiplication(self, d):
     P = self.point
     if d == 0:
-        return None  # returnam punctul de la "infinit" daca d este 0
+        return None
     if d == 1:
         return P
     result = None
@@ -113,28 +114,13 @@ def binary_scalar_multiplication(self, d):
     return result
 \end{lstlisting}
 
-\subsubsection{Reprezentari cu semn}
+În variabila \textit{result}, ținem rezultatul după fiecare iterație, iar în variabila $P$ ținem o copie punctului care dorim să îl înmulțim. Astfel, după fiecare bit parcurs dublăm $P$ și când întâlnim un bit de $1$ adunăm la rezultat $P$. La final returnăm variabila \textit{result}.
 
-Un avantaj major al curbelor eliptice, este faptul ca in grupul format de punctele de pe o astfel de curba, operatia de invers este foarte eficienta. Astfel, daca consideram 2 puncte $P, Q$ intr-un astfel de grup, putem calcula $P + Q$ si $P - Q$ cu acelasi cost computational. Aceasta observatie este foarte importanta in eficientizarea algoritmilor de inmultire cu un scalar. Calculul inversului avand un cost neglijabil din punct de vedere computational, nu este necesar sa ne limitam la $\set{0, 1}$ in reprezentarea unui scalar. Introducem astfel conceptul de reprezentare cu semn.
+\subsubsection{Reprezentări cu semn}
 
-\begin{dfn}
-[Sursa: Solinas] Fie $n\in\mathbb{N}$. O reprezentare a lui cu semn poate fi notata astfel: $n = <u_{l-1}u_{l-2}...u_1u_0>$, unde $u_i\in\set{0, -1, 1}$. Astfel $n = \sum_{i=0}^{l-1} u_i 2^{i}$. Exista o infinitate de astfel de reprezentari.
-\end{dfn}
-\begin{dfn}
-Reprezentarea cu semn optima pentru operatia de inmultire cu un scalar este asa numita NAF, sau Non Adjacent Form. Aceasta are proprietatea ca nu exista doua elemente consecutive din reprezentarea cu semn diferite de 0.
-\end{dfn}
+Un avantaj major al grupului punctelor de pe o curbă eliptică îl reprezintă calculul foarte ușor din punct de vedere computațional al inversului. Astfel, putem să apelăm la reprezentările cu semn pentru scalar, acestea optimizând calculul de înmulțire cu un scalar. Cea mai eficientă astfel de reprezentare este $NAF$. \\
 
-\begin{teo}
-NAF-ul are urmatoarele proprietati:
-\begin{itemize}
-  \item Orice numar natural are un NAF
-  \item NAF-ul unui numar este unic
-  \item Lungimea NAF-ului unui numar natural este cu cel mult o unitate mai mare decat expansiunea binara a numarului 
-  \item NAF-ul are distanta Hamming minima dintre toate reprezentarile cu semn
-\end{itemize}
-\end{teo}
-
-In continuare voi prezenta un algoritm eficient pentru calculul reprezentarii NAF.
+În continuare voi prezenta un algoritm pentru calculul reprezentării $NAF$. \\
 
 \begin{lstlisting}
 def naf(d):
@@ -151,7 +137,9 @@ def naf(d):
     return res[::-1]
 \end{lstlisting}
 
-Avand la dispozitie metoda pentru aflarea reprezentarii cu semn a unui numar natural, putem eficientiza metoda binara. Algoritmul de la stanga la dreapta pentru calculul lui $dP$, unde d este scalarul si $P$ este un punct de pe o curba eliptica, apeleaza functia pentru reprezentare cu semn. Parcurgem aceasta reprezentare si la fiecare bit de 0 dublam rezultatul, la bitul de 1 adunam punctul $P$ sa la bitul $-1$ scadem $P$.
+Cifrele care formează reprezentarea  $NAF$ sunt generate de resturile împărțirii repetate a scalarului la $2$. Această împărțire este una cu semn, resturile putând fii $\set{0, 1, -1}$. Când, în bucla \textit{while}, scalarul $d$ este impar și trebuie sa alegem între $r\in\set{-1, 1}$, alegem în așa fel încât $\frac{d-r}{2}$ să fie par, astfel făcând ca următoarea cifră din $NAF$ să fie $0$.
+
+Având la dispoziție metoda pentru aflarea reprezentării cu semn a unui numar natural, putem eficientiza metoda binară. Algoritmul de la stânga la dreapta pentru calculul lui $dP$, unde d este scalarul si $P$ este un punct de pe o curba eliptica, apelează funcția pentru reprezentare cu semn. Parcurgem aceasta, dublând cantitatea din variabila \textit{result} după fiecare bit parcurs, iar la bitul de 1 adunăm punctul $P$, la bitul $-1$ scadem $P$ din rezultat. Urmează implementarea acestui algoritm.
 
 \begin{lstlisting}
 def left_to_right_scalar_mul(self, d):
@@ -169,7 +157,7 @@ def left_to_right_scalar_mul(self, d):
     return result
 \end{lstlisting}
 
-Algoritmul de la dreapta la stanga functioneaza in acelasi mod, singura diferenta fiind faptul ca NAF-ul este calculat in aceasi bucla while in care calculam rezultatul final. In acea bucla descompunem scalarul, tinem bit-ul curent intr-o variabila si in functie de valoarea acestuia modificam rezultatul. 
+Algoritmul de la dreapta la stânga funcționează în același mod, singura diferență fiind faptul că NAF-ul este calculat în aceași buclă while în care calculăm rezultatul final. În acea buclă descompunem scalarul, ținem bit-ul curent într-o variabilă, $u$, iar apoi în funcție de valoarea acestuia modificăm rezultatul. Cei doi algoritmi au aceași complexitate asimtotică.
 
 \begin{lstlisting}
 def right_to_left_scalar_mul(self, d):
@@ -188,14 +176,10 @@ def right_to_left_scalar_mul(self, d):
     return result
 \end{lstlisting}
 
-\subsubsection{Metoda cu fereastra}
-Algoritmii care se folososesc de reprezentarea cu semn a scalarului pot fi inbunatatiti daca avem disponibila mai multa memorie. Vom procesa $w$ cifre din scalar la o iteratie, unde $w$ reprezinta latimea ferestrei.
+\subsubsection{Metoda cu fereastră}
 
-\begin{dfn}
-Fie $w\geq 2$ un numar natural. Numim o reprezentare NAF de latime $w$ pentru un scalar $n\in\mathbb{N}$, notata cu $w-NAF$, un sir de numere $n = <u_{l-1}u_{l-2}...u_1u_0>$ astfel incat $|u_i| < 2^{w-1}$ si $n = \sum_{0}^{l-1}u_i2^i$ astfel incat cel mult una din $w$ cifre consecutive din sir este diferita de 0.
-\end{dfn}
-
-Un algoritm eficient pentru calculul $w-NAF$ va fi prezentat in continuare. Functia mods este modulo cu semn, adica pentru un scalar $d$, avem $d$ mods $2^w=u$, unde u este un numar intreg care satisface $u\equiv d$ mod $2^w$ si $-2^{w-1}\leq u\leq 2^{w-1}$.
+Metoda cu fereastră poate fi privită ca o generalizare a metodei cu semn, aceasta aducând plusuri de performanță în schimbul folosirii unui plus de memorie. Această metodă se folosește de reprezentarea $w-NAF$ a scalarului.
+Un algoritm eficient pentru calculul $w-NAF$ va fi prezentat în continuare. Funcția mods este modulo cu semn, adica pentru un scalar $d$, avem $d$ mods $2^w=u$, unde u este un numar intreg care satisface $u\equiv d$ mod $2^w$ si $-2^{w-1}\leq u\leq 2^{w-1}$.
 
 \begin{lstlisting}
 def w_NAF(d, w):
@@ -212,14 +196,13 @@ def w_NAF(d, w):
     return res[::-1]
 \end{lstlisting}
 
-Metoda cu fereseatra reprezinta o generalizare a algoritmului de inmultire precedent, aducand un plus de performanta prin scaderea numarului de adunari necesare in calculul multiplului unui punct oarecare $P$ de pe o curba eliptica. Aici vom folosi $w-NAF$ in loc de $NAF$. In algoritm vom precalcula si stoca valorile pentru $iP$ si $i\in\set{1, 2^{w-1}}$. Astfel cand parcurgem $w-NAF$ -ul numarului in functie de cifra gasita vom aduna sau scadea din rezultat valoarile potrivite din multimea de valori precalculate.
+Se observă că cifrele din $w-NAF$ sunt de fapt restul împărțirii cu semn a scalarului la $2$, rest care aparține intervalului $[-2^{w-1}, 2^{w-1}-1]$. Astfel, daca scalarul $d$ este impar și $r = d$ mods $2^w$, atunci $\frac{d-r}{2}$ este divizibil cu $2^{w-1}$, asigurând astfel ca următoarele $w-1$ cifre din reprezentare sunt $0$.
+ 
+Metoda cu fereastră aduce un plus de performanță prin reducerea numărului de adunări necesare în calculul multiplului unui punct oarecare $P$ de pe o curbă eliptică. Aici vom folosi reprezentarea $w-NAF$ in loc de $NAF$. Vom precalcula și stoca valorile pentru $iP$ si $i\in\set{1, 2^{w-1}}$. Astfel, când parcurgem $w-NAF$ -ul numarului, în funcție de cifra gasită vom aduna sau scădea din rezultat valorile potrivite din multimea de valori precalculate, dublând variabila acumulator la fiecare iterație.
 
 \begin{lstlisting}
 def window_NAF_multiplication(self, d, w):
     d = w_NAF(d, w)
-    _P = {}
-    for i in range(1, 2**(w-1), 2):
-        _P[i] = self.right_to_left_scalar_mul(i)
     Q = None
     for i in range(0, len(d)):
         if Q is None:
@@ -228,24 +211,50 @@ def window_NAF_multiplication(self, d, w):
             Q = Q.point_double()
         if d[i] != 0:
             if d[i] > 0:
-                Q = _P[d[i]].add(Q)
+                Q = P[d[i]].add(Q)
             else:
-                Q = _P[-d[i]].inverse().add(Q)
+                Q = P[-d[i]].inverse().add(Q)
     return Q
 \end{lstlisting}
 
-\subsubsection{Metoda cu fereastra glisanta}
-Pentru a eficientiza metoda cu fereastra fixa prezentata mai sus, vom procesa folosi o asa zisa "fereastra glisanta" asupra cifrelor din $w-NAF$ cu scopul de a face un compromis intre numarul de adunari si dublari. Primul algoritm apeleaza functia pt $w-NAF$ si gliseaza o fereastra de latime $w$ peste reprezentare cu semn a scalarului astfel incat valoarea in fereastra sa fie impara(pentru a reduce numarul de precalculari). Idea de la al doilea algoritm este sa calculam $w-NAF$ in aceasi bucla in care facem calculul propiu zis al multiplicarii.
+Valorile precalculate sunt stocate într-un dicționar \textit{P}. Dicționarul în Python este o structură de date de tip \textit{Hash Map}. Am ales să stochez astfel, din cauză că această structură de date oferă lookup-uri foarte rapide, în $\mathcal{O}(1)$ amortizat.
+
+O versiune ușor modificată a algoritmului precedent este propusă în \cite{sliding2}. Acesta este un algoritm de la dreapta la stânga, care calculează $w-NAF$ pentru scalar în aceași buclă în care este calculat și rezultatul. Valorile diferite de zero din reprezentare sunt stocate intr-un Hash Map si rezultatul este calculat la final, prin adunarea valorilor stocate și returnat.
 
 \begin{lstlisting}
-def sliding_window_right_to_left_scalar_mul(self, d, w):
+def window_NAF_on_the_fly_scalar_mul(self, k, w):
+    R = self.point
+    m = 2**(w-1) - 1
+    Q = {}
+    for i in range(1, m + 1, 2):
+        Q[i] = None
+    while k >= 1:
+        if k % 2 == 1:
+            t = mods(k, w)
+            if t > 0:
+                Q[t] = R.add(Q[t])
+            if t < 0:
+                Q[-t] = R.inverse().add(Q[-t])
+            k -= t
+        R = R.point_double()
+        k //= 2
+    for i in range(3, m + 1, 2):
+        if Q[i] is not None:
+            Q[1] = Q[i].right_to_left_scalar_mul(i).add(Q[1])
+    return Q[1]
+\end{lstlisting}.
+
+\subsubsection{Metoda cu fereastră glisantă}
+
+Diferența dintre metoda prezentată anterior și aceasta constă în faptul că aceasta din urmă ne permite să sărim peste zerourile din reprezentarea $w-NAF$ a scalarului. Pentru această metodă vom implementa o versiune ușor modificată față de cea originală, propusă de către \cite{sliding}.
+
+Algoritmul apelează funcția pentru $w-NAF$ si parcurge în bucla while această reprezentare. Când găsim prima cifră diferită de zero, o procesăm, adăugam la rezultat valoarea corespunzătoare din dicționarul de valori precalculate, apoi "glisăm" fereastra peste cifrele care sunt zero.
+
+\begin{lstlisting}
+def sliding_window_left_to_right_scalar_mul(self, d, w):
     d = w_NAF(d, w)
     Q = None
     i = 0
-    m = 2 * ((2 ** w - (-1)**w) // 3) - 1
-    _P = {}
-    for _i in range(1, m + 1, 2):
-        _P[_i] = self.left_to_right_scalar_mul(_i)
     while i < len(d):
         if d[i] == 0:
             if Q is None:
@@ -272,47 +281,19 @@ def sliding_window_right_to_left_scalar_mul(self, d, w):
     return Q
 \end{lstlisting}
 
-\begin{lstlisting}
-def sliding_window_right_to_left_on_the_fly_scalar_mul(self, k, w):
-    R = self.point
-    m = 2**(w-1) - 1
-    Q = {}
-    for i in range(1, m + 1, 2):
-        Q[i] = None
-    while k >= 1:
-        if k % 2 == 1:
-            t = mods(k, w)
-            if t > 0:
-                Q[t] = R.add(Q[t])
-            if t < 0:
-                Q[-t] = R.inverse().add(Q[-t])
-            k -= t
-        R = R.point_double()
-        k //= 2
-    for i in range(3, m + 1, 2):
-        if Q[i] is not None:
-            Q[1] = Q[i].right_to_left_scalar_mul(i).add(Q[1])
-    return Q[1]
-\end{lstlisting}
-
-Pentru teste am decis sa aleg diferite intervale pentru marimea scalarului. Pentru fiecare test sunt rulate 1000 de iteratii cu scalari alesi random in intervalul $5-32$ biti respectiv $128-198$ si $300-384$ pentru curbele $P192$ si respectiv $P384$. Se observa eficienta metodelor cu fereastra pentru numere mari, algoritmul de inmultire care foloseste reprezentarea cu semn fiind foarte eficient pentru numere mici. De asemenea nu se observa o inbunatatirea a eficientei algoritmilor daca procesam de la stanga la dreapta sau de la dreapta la stanga sau la fereastra glisanta, cand facem calculul $w-NAF$-ului in aceasi bucla while in care calculam rezultatul.
-
-Pentru scalari mari, cele mai bune rezultate au fost obtinute cu o fereastra glisanta de latime 4, algoritmul pierzand din eficienta pentru ferestre de latime mai mare din cauza costului mare din punct de vedere computational al precalculului. 
-
-De asemenea putem observa beneficiul impresionant adus de folosirea coordonatelor Jacobiene, acestea aducand inbunatatiri consistente de performanta, algoritmii fiind de aproximativ cinci ori mai rapizi in aceste coordonate. 
-
-
-
-
-\subsection{Inmultirea multipla}
+\subsection{Înmulțirea multiplă}
 \label{subsec:subsec04}
+
+\subsection{Metoda Naivă}
 
 \begin{lstlisting}
 def brute_joint_multiplication(self, k, l):
-    result1 = self.point1.right_to_left_scalar_mul(k)
-    result2 = self.point2.right_to_left_scalar_mul(l)
+    result1 = self.multiplier1.sliding_window_left_to_right_scalar_mul(k)
+    result2 = self.multiplier2.sliding_window_left_to_right_scalar_mul(l)
     return result1.add(result2)
-\end{lstlisting}	
+\end{lstlisting}
+
+\subsubsection{Metoda cu Joint Sparse Form}
 
 \begin{lstlisting}
 def JSF_Multiplication(self, k, l):
@@ -340,6 +321,8 @@ def JSF_Multiplication(self, k, l):
             R = precom[i][j].add(R)
         return R
 \end{lstlisting}
+
+\subsubsection{Metoda cu fereastră glisantă intercalată}
 
 \begin{lstlisting}
 def interleaving_sliding_window(self, k, l, w1, w2):
@@ -388,6 +371,11 @@ def interleaving_sliding_window(self, k, l, w1, w2):
 
 \section{Eficiența implementării, Studiu Comparativ}
 
+Nu uita sa faci un tabel cu ECDSA, eficient/ineficient... 
+
+
+In continuare, vom face o comparatie intre cele doua metode de adunare, cea cu coordonate afine si cea in coordonate Jacobiene. In teste am am generat random doua numere pe o curba eliptica si le-am adunat. Am cronometrat 1000 de iteratii la fiecare test. Se poate observa per total ca adunarea in coordonate Jacobiene este de doua ori mai rapida decat cea in coordonate afine.
+
 \begin{tabular}{ |p{3cm}||p{3cm}|p{3cm}|p{3cm}|  }
  \hline
  \multicolumn{4}{|c|}{Adunarea punctelor de pe curbe eliptice} \\
@@ -406,6 +394,13 @@ def interleaving_sliding_window(self, k, l, w1, w2):
  P384& Jacobiene  & Adunare& 8.96\\
  \hline
 \end{tabular}
+
+Pentru teste am decis sa aleg diferite intervale pentru marimea scalarului. Pentru fiecare test sunt rulate 1000 de iteratii cu scalari alesi random in intervalul $5-32$ biti respectiv $128-198$ si $300-384$ pentru curbele $P192$ si respectiv $P384$. Se observa eficienta metodelor cu fereastra pentru numere mari, algoritmul de inmultire care foloseste reprezentarea cu semn fiind foarte eficient pentru numere mici. De asemenea nu se observa o inbunatatirea a eficientei algoritmilor daca procesam de la stanga la dreapta sau de la dreapta la stanga sau la fereastra glisanta, cand facem calculul $w-NAF$-ului in aceasi bucla while in care calculam rezultatul.
+
+Pentru scalari mari, cele mai bune rezultate au fost obtinute cu o fereastra glisanta de latime 4, algoritmul pierzand din eficienta pentru ferestre de latime mai mare din cauza costului mare din punct de vedere computational al precalculului. 
+
+De asemenea putem observa beneficiul impresionant adus de folosirea coordonatelor Jacobiene, acestea aducand inbunatatiri consistente de performanta, algoritmii fiind de aproximativ cinci ori mai rapizi in aceste coordonate. 
+
 
 \begin{tabular}{ |p{5cm}||p{3cm}|p{3cm}|p{2cm}|p{1cm}|  }
  \hline

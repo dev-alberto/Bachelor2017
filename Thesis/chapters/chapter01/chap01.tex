@@ -1,47 +1,42 @@
-%
-% File: chap01.tex
-% Author: Victor F. Brena-Medina
-% Description: Introduction chapter where the biology goes.
-%
 \let\textcircled=\pgftextcircled
 
-\chapter{Structuri Algebrice de baza} 
+\chapter{Structuri Algebrice de bază} 
 \section{Grupuri}
 \label{sec:sec01}
-In aceasta sectiune vom pune bazele matematice pentru urmatoarele capitole, facand astfel o introducere a unor concepte fundamentale din Teoria Grupurilor , a Corpurilor si in special despre Corpuri finite, care au o importanta deosebita pentru tema acestei licente.
+În această secțiune vom pune bazele matematice pentru urmatoarele capitole, făcând astfel o introducere a unor concepte fundamentale din Teoria Grupurilor, a Corpurilor și în special despre Corpuri finite, care au o importanță deosebită pentru tema acestei licențe.
 \begin{dfn}
-Un \textit{grup} reprezinta o multime $S$ impreuna cu o operatie de compozitie $\cdot$ astfel incat sunt respectate urmatoarele reguli:
-\\ - legea $\cdot$ este \textit{asociativa} $\rightarrow$ $\forall x, y, z\in S: (x\cdot y)\cdot z = x\cdot (y \cdot z)$
-\\ - existenta unui element \textit{neutru}, unic $\rightarrow$ $\exists e\in S: x \cdot e = x, \forall x\in S$
-\\ - $\forall x\in S, \exists y\in S$, numit \textit{invers} al elementului $x$, astfel incat $x\cdot y = y\cdot x = e$
+Un \textit{grup} reprezintă o mulțime $S$ împreună cu o operație de compoziție $\cdot$ astfel încât sunt respectate următoarele reguli:
+\\ - legea $\cdot$ este \textit{asociativă} $\rightarrow$ $\forall x, y, z\in S: (x\cdot y)\cdot z = x\cdot (y \cdot z)$
+\\ - existența unui element \textit{neutru}, unic $\rightarrow$ $\exists e\in S: x \cdot e = x, \forall x\in S$
+\\ - $\forall x\in S, \exists y\in S$, numit \textit{invers} al elementului $x$, astfel încat $x\cdot y = y\cdot x = e$
 \end{dfn}
 
 \begin{dfn}
-Se numeste grup \textit{abelian}, acel grup in care legea de compozitie $\cdot$ este de asemenea comutativa, adica pentru orice doua elemente
+Se numește grup \textit{abelian}, acel grup în care legea de compoziție $\cdot$ este de asemenea comutativă, adică pentru orice două elemente
 $x, y \in S$ avem $x \cdot y = y \cdot x$
 \end{dfn}
 
 \begin{dfn}
-Fie $G$ un grup si H o submultime a lui $G$. $H$ este un \textit{subgrup} a lui $G$ daca sunt indeplinite conditiile:
-\\ -inchidere la operatia de compozitie $\rightarrow$ $\forall x, y \in H, x \cdot y \in H$
-\\ - daca $x \in H \Rightarrow x^{-1} \in H, e \in H$
+Fie $G$ un grup și H o submulțime a lui $G$. $H$ este un \textit{subgrup} a lui $G$ dacă sunt îndeplinite condițiile:
+\\ -închidere la operația de compoziție $\rightarrow$ $\forall x, y \in H, x \cdot y \in H$
+\\ - dacă $x \in H \Rightarrow x^{-1} \in H, e \in H$
 \end{dfn}
 
 \begin{dfn}
-Se numeste \textit{ordin} al grupului $G$, cardinalul multimii G, notat $|G|$. Pentru un element $g \in G$, se numeste \textit{ordin} al lui $g$, notat prin $ord_G(g)$, cel mai
-mic numar natural nenul $n$, astfel incat $g^n = e$, unde $e$ este element netru al lui $G$. Daca nu exista un astfel de numar, spunem ca ordinul lui $g$ este infinit.
+Se numește \textit{ordin} al grupului $G$, cardinalul mulțimii G, notat $|G|$. Pentru un element $g \in G$, se numește \textit{ordin} al lui $g$, notat prin $ord_G(g)$, cel mai
+mic număr natural nenul $n$, astfel încat $g^n = e$, unde $e$ este element neutru al lui $G$. Dacă nu există un astfel de număr, spunem că ordinul lui $g$ este infinit.
 \end{dfn}
 
 \begin{dfn}
-Fie $G$ un grup si $g \in G$. Se numeste subgrup generat de $g$ multimea $\set{g^n\mid n\in \mathbb{Z}}$ si se noteaza $\langle g \rangle$. In cazul in care G este grup finit(contine un numar finit de elemente), $G = \langle g \rangle$ daca si numai daca $ord_G(g) = |G|$. Atunci $G$ se numeste grup \textit{ciclic} iar $g$ \textit{generator} pentru $G$.
+Fie $G$ un grup și $g \in G$. Se numește subgrup generat de $g$ mulțimea $\set{g^n\mid n\in \mathbb{Z}}$ și se notează $\langle g \rangle$. În cazul în care G este grup finit(conține un număr finit de elemente), $G = \langle g \rangle$ dacă și numai dacă $ord_G(g) = |G|$. Atunci $G$ se numește grup \textit{ciclic} iar $g$ \textit{generator} pentru $G$.
 \end{dfn}
 
  \begin{dfn}
- Fie $n\geq 1$. Notam cu $\phi (n) = |(\mathbb{Z}/n\mathbb{Z})^{*}|$. Functia $\phi$ se numeste \textit{functia lui Euler}. Avem $\phi (n) = |\set{x\mid 1\leq x\leq n, gcd(x, n)=1}|$
+ Fie $n\geq 1$. Notăm cu $\phi (n) = |(\mathbb{Z}/n\mathbb{Z})^{*}|$. Funcția $\phi$ se numește \textit{funcția lui Euler}. Avem $\phi (n) = |\set{x\mid 1\leq x\leq n, gcd(x, n)=1}|$
  \end{dfn}
  
  \begin{teo}
- Fie $n, x$ doua numere intregi astfel incat $gcd(n,x)=1$. Atunci este adevarata relatia:
+ Fie $n, x$ două numere întregi astfel incât $gcd(n,x)=1$. Atunci este adevarată relația:
   $x^{\phi(n)}\equiv 1 (mod n)$
  \end{teo}
 
@@ -51,26 +46,26 @@ Fie $G$ un grup si $g \in G$. Se numeste subgrup generat de $g$ multimea $\set{g
 \label{sec:sec02}
 
 \begin{dfn}
-Un \textit{inel} reprezinta un triplet $(R, +, \cdot)$, unde $R$ este o multime iar $+$ si $\cdot$ reprezinta doua legi de compozitie. Urmatoarele proprietati trebuiesc simultan indeplinite: 
-\\ - $(R, +)$ reprezinta un grup abelian
-\\ - $x \cdot y = y \cdot x, \forall x,y\in R$ si de asemenea exista element neutru la inmultire, diferit de elementul neutru la adunare
-\\ - legea $\cdot$ este \textit{distributiva} fata de $+$, adica $\forall x,y,z\in R, x\cdot (y + z) = x\cdot y + x\cdot z$ si $(y + z)\cdot x = y\cdot x + z\cdot x$ 
+Un \textit{inel} reprezintă un triplet $(R, +, \cdot)$, unde $R$ este o mulțime iar $+$ și $\cdot$ reprezintă două legi de compoziție. Următoarele proprietăți trebuiesc simultan îndeplinite: 
+\\ - $(R, +)$ reprezintă un grup abelian
+\\ - $x \cdot y = y \cdot x, \forall x,y\in R$ și de asemenea există element neutru la înmulțire, diferit de elementul neutru la adunare
+\\ - legea $\cdot$ este \textit{distributivă} față de $+$, adică $\forall x,y,z\in R, x\cdot (y + z) = x\cdot y + x\cdot z$ și $(y + z)\cdot x = y\cdot x + z\cdot x$ 
 \end{dfn}
 
 \begin{dfn}
-Fie $R, R'$ doua inele cu operatiile $+, \times$ respectiv $\oplus, \otimes$. Un \textit{homomorfism} de inele este o functie $\Psi : R\rightarrow R'$ care este definita pentru orice doua elemente $x, y\in R$ astfel:
+Fie $R, R'$ două inele cu operațiile $+, \times$ respectiv $\oplus, \otimes$. Un \textit{homomorfism} de inele este o funcție $\Psi : R\rightarrow R'$ care este definită pentru orice două elemente $x, y\in R$ astfel:
 \\ - $\Psi (x+y) = \Psi (x) \oplus \Psi (y)$
 \\ - $\Psi (x\times y) = \Psi (x) \otimes \Psi (y)$
 \\ - $\Psi (1_R) = 1_{R'}$
 \end{dfn}
 
 \begin{dfn}
-Fie $R$ un inel. $I$ Se numeste \textit{ideal} (la stanga sau la dreapta) a lui $R$ daca $I\subseteq R, I \neq \emptyset$ si respecta:
+Fie $R$ un inel. $I$ Se numește \textit{ideal} (la stânga sau la dreapta) a lui $R$ dacă $I\subseteq R, I \neq \emptyset$ și respectă:
 \\ - $I$ este un subgrup pentru $(R, +)$
 \\ - $\forall x\in R, \forall y\in I \Rightarrow x\cdot y, y\cdot x \in I$
-\\ $I$ se numeste ideal \textit{bilateral} daca este ideal la stanga si la dreapta.
-\\ Idealul $I\subsetneq R$ este \textit{prim} daca $\forall x, y\in R$ cu $x\cdot y\in I$ avem $x\in I \lor y \in I$
-\\Idealul $J\subsetneq R$ este \textit{maximal} daca pentru oricare alt ideal $J$ avem $J=I \lor J=R$
+\\ $I$ se numește ideal \textit{bilateral} dacă este ideal la stânga și la dreapta.
+\\ Idealul $I\subsetneq R$ este \textit{prim} dacă $\forall x, y\in R$ cu $x\cdot y\in I$ avem $x\in I \lor y \in I$
+\\Idealul $J\subsetneq R$ este \textit{maximal} dacă pentru oricare alt ideal $J$, avem $J=I \lor J=R$
 \end{dfn}
 
 \begin{obs}
@@ -80,10 +75,10 @@ Fie $\Psi$ un homomorfism de la $\mathbb{Z}$ la un inel $R$ definit astfel:
    -(1+\cdots+1) & $de -n ori altfel $
    \end{cases}$
 \end{obs}
- \textit{Nucleul} lui $\Psi$ este un ideal a lui $\mathbb{Z}$ si daca toti multipli de 1 sunt diferiti atunci $ker\Psi = {0}$. Altfel, daca $R$ este finit de exemplu, cativa multiplii vor fi $0$. Altfel spus, nucleul lui $\Psi$ este generat de un numar natural $m$
+ \textit{Nucleul} lui $\Psi$ este un ideal a lui $\mathbb{Z}$ și dacă toți multiplii de 1 sunt diferiți, atunci $ker\Psi = {0}$. Altfel, dacă $R$ este finit, de exemplu, câțiva multiplii vor fi $0$. Altfel spus, nucleul lui $\Psi$ este generat de un numar natural $m$
  
  \begin{dfn}
- Fie $R$ un inel si $\Psi$ definit ca mai sus. Nucleul lui $\Psi$ are forma $m\mathbb{Z}, m\in\mathbb{N}$. Elementul poarta denumirea de \textit{caracteristica} a inelului $R$ si se noteaza $char(R)$
+ Fie $R$ un inel și $\Psi$ definit ca mai sus. Nucleul lui $\Psi$ are forma $m\mathbb{Z}, m\in\mathbb{N}$. Elementul poartă denumirea de \textit{caracteristică} a inelului $R$ și se notează $char(R)$
  \end{dfn}
  
  \begin{dfn}
@@ -97,47 +92,46 @@ Un \textit{corp} $K$ este un inel comutativ cu toate elementele diferite de $0$ 
 \end{dfn}
 
 \begin{ex}
-Multimea numerelor rationale $\mathbb{Q}$ impreuna cu operatiile obisnuite de adunare si inmultire este un corp. Pentru orice numar prim $p$, $Z_p$, impreuna cu operatiile modulo p, este corp.  
+Mulțimea numerelor raționale $\mathbb{Q}$ împreună cu operațiile obișnuite de adunare si înmulțire este un corp. Pentru orice număr prim $p$, $Z_p$, împreună cu operațiile modulo p, este corp.  
 \end{ex}
 
 \begin{prop}
-Caracteristica unui corp este $0$ sau $p$, un numar prim
+Caracteristica unui corp este $0$ sau $p$, un număr prim.
 \end{prop}
 
 \begin{prop}
-Fie $R$ un inel si I un ideal. Inelul factor $R/I$ este corp daca si numai daca $I$ este maximal.
+Fie $R$ un inel și I un ideal. Inelul factor $R/I$ este corp dacă și numai dacă $I$ este maximal.
 \end{prop}
 
 \begin{dfn}
-Fie $K, K'$ doua corpuri. Un homomorfism de corpuri este un homomorfism de inele intre $K$ si $K'$. Remarcam faptul ca o astfel de functie este tot timpul injectiva deoarece nucleul acesteia este $\set {0}$ 
+Fie $K, K'$ două corpuri. Un homomorfism de corpuri este un homomorfism de inele între $K$ si $K'$. Remarcăm faptul că o astfel de funcție este tot timpul injectivă, deoarece nucleul acesteia este $\set {0}$ 
 \end{dfn}
 
 \begin{dfn}
-Fie $L$ un corp. Un \textit{subcorp} a lui $L$ este o submultime $K$ a lui $L$ care isi pastreaza proprietatea de corp, operatiile aditive respectiv multiplicative fiind mostenite de la $L$. In aceasta situatie, corpul mare, $L$, se numeste o \textit{extensie} a corpului $K$.
+Fie $L$ un corp. Un \textit{subcorp} a lui $L$ este o submulțime $K$ a lui $L$ care iși păstrează proprietatea de corp, operațiile aditive respectiv multiplicative fiind moștenite de la $L$. În această situație, corpul mare, $L$, se numește o \textit{extensie} a corpului $K$.
 \end{dfn}
 \subsection{Corpuri Finite}
 \label{subsec:subsec01}
 
-In sistemele criptografice bazate pe curbe eliptice este important sa implementam eficient operatii pe corpuri finite. Trei tipuri de corpuri finite reprezinta canditati potriviti pentru implementarea acestor operatii, respectiv corpurile prime, corpurile binare si corpurile de extensie optimale. In randurile care urmeaza vom introduce pe rand aceste concepte.
+În sistemele criptografice bazate pe curbe eliptice, este important să implementăm eficient operații pe corpuri finite. Trei tipuri de corpuri finite reprezintă canditați potriviți pentru implementarea acestor operații, respectiv corpurile prime, corpurile binare si corpurile de extensie optimale. În randurile care urmează vom introduce pe rând aceste concepte.
 
 \begin{dfn}
-Un corp finit este un corp, conform definitiei 1.12, care are multimea elementelor finita. Pe langa cele doua operatii aritmetice de baza, putem defini scaderea si impartirea pe baza operatiilor de adunare si inmultire. Astfel avem, pentru un corp $K$: $a, b\in K, a-b = a + (-b)$, unde $-b$ este inversul aditiv a lui $b$ si respectiv $a, b\in K, a/b = a \times b^{-1}$, unde $b^{-1}$ este inversul multiplicativ a lui $b$, garantat sa existe intr-un corp. 
+Un corp finit este un corp, conform definiției 1.12, care are mulțimea elementelor finită. Pe lângă cele două operații aritmetice de bază, putem defini scăderea și împărțirea pe baza operațiilor de adunare si înmulțire. Astfel avem, pentru un corp $K$: $a, b\in K, a-b = a + (-b)$, unde $-b$ este inversul aditiv a lui $b$ și respectiv $a, b\in K, a/b = a \times b^{-1}$, unde $b^{-1}$ este inversul multiplicativ a lui $b$, garantat să existe într-un corp. 
 \end{dfn}
 
 \begin{teo}
-Fie $q$ ordinul unui corp finit $\mathbb{F}$. Exista si este unic(pana la un isomorfism) un astfel de corp, daca si numai daca $q=p^{m}$, unde $p$ este caracteristica corpului $\mathbb{F}$. Daca $m=1$, atunci corpul este prim, iar daca $p\geq 2$ este corp de extensie.
+Fie $q$ ordinul unui corp finit $\mathbb{F}$. Există și este unic(până la un isomorfism) un astfel de corp, dacă și numai dacă $q=p^{m}$, unde $p$ este caracteristica corpului $\mathbb{F}$. Dacă $m=1$, atunci corpul este prim, iar daca $p\geq 2$ este corp de extensie.
 \end{teo}
 
 \begin{dfn}
-Fie \textit{p} un numar prim. Numerele naturale in multimea $\set {0, 1, 2, ... , p-1 }$ impreuna cu operatiile de inmultire si adunare modulo \textit{p} formeaza un corp finit cu ordinul p. Vom nota acest corp cu $F_p$. Pentru orice numar $a\in\mathbb{Z}$, \textit{a} mod \textit{p} reprezinta restul impartirii lui \textit{a} la \textit{p}, numar unic in intervalul $[0, p-1]$. Aceasta operatie mai poarta denumirea de reductie modulara.
+Fie \textit{p} un număr prim. Numerele naturale în mulțimea $\set {0, 1, 2, ... , p-1 }$ împreună cu operațiile de înmulțire și adunare modulo \textit{p} formează un corp finit cu ordinul p. Vom nota acest corp cu $F_p$. Pentru orice numar $a\in\mathbb{Z}$, \textit{a} mod \textit{p} reprezintă restul împarțirii lui \textit{a} la \textit{p}, număr unic în intervalul $[0, p-1]$. Această operație mai poartă denumirea de reducție modulară.
 \end{dfn}
 
 \begin{dfn}
-Corpuri binare au caracteristica 2 si deci ordinul $2^{m}$. O metoda de a construi $F_{2^m}$ este considerarea fiecare element ca un polinom cu coeficienti 0 sau 1 si cu gradul cel mult $m-1$. Avem astfel : 
+Corpurile binare au caracteristica 2 și deci ordinul $2^{m}$. O metodă de a construi $F_{2^m}$ este considerarea fiecărui element ca un polinom cu coeficienți 0 sau 1 și cu gradul cel mult $m-1$. Avem astfel : 
  $F_{2^m} = \set {a_{m-1}z^{m-1} + a_{m-2}z^{m-2} + ... + a_{1}z + a_{0}\mid a_{i}\in {0,1}}$
 \end{dfn}
 
---Ar fi bine sa introduc o sectiune speciala pentru operatii eficiente in corpuri finite?--
 
 
 %=========================================================
