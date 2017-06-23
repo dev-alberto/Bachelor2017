@@ -1,6 +1,6 @@
 from util import w_NAF, right_to_left_scalar_mul
 from DataStructures.interfaces import AbstractPoint
-
+from FastArithmetic.scalar_multiplication import FastScalarMultiplier
 
 class JointMultiplication:
 
@@ -11,6 +11,9 @@ class JointMultiplication:
         self.point1 = point1
         self.point2 = point2
 
+        self.multiplier1 = FastScalarMultiplier(point1)
+        self.multiplier2 = FastScalarMultiplier(point2)
+
         self.w1 = w1
         self.w2 = w2
 
@@ -19,9 +22,9 @@ class JointMultiplication:
 
         # precom stage
         for i in range(1, 2 ** (w1 - 1), 2):
-            self._P[i] = right_to_left_scalar_mul(point1, i)
+            self._P[i] = self.multiplier1.sliding_window_left_to_right_scalar_mul(i)
         for j in range(1, 2 ** (w2 - 1), 2):
-            self._Q[j] =right_to_left_scalar_mul(point2, j)
+            self._Q[j] = self.multiplier2.sliding_window_left_to_right_scalar_mul(j)
 
         self.precom = (
             (None, self.point2, self.point2.inverse()),
@@ -30,10 +33,10 @@ class JointMultiplication:
         )
 
     def brute_joint_multiplication(self, k, l):
-        result1 = right_to_left_scalar_mul(self.point1, k)
-        print(result1)
-        result2 = right_to_left_scalar_mul(self.point2, l)
-        print(result2)
+        result1 = self.multiplier1.sliding_window_left_to_right_scalar_mul(k)
+        #print(result1)
+        result2 = self.multiplier2.sliding_window_left_to_right_scalar_mul(l)
+        #print(result2)
         return result1.add(result2)
 
     @staticmethod

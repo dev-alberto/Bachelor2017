@@ -2,8 +2,6 @@ from DataStructures.interfaces import EllipticCurve
 from DataStructures.Points import AffinePoint
 from curve import get_curve
 from util import isProbablePrime
-from random import SystemRandom, randrange
-from FastArithmetic.scalar_multiplication import FastScalarMultiplier
 
 
 class PrimeCurves(EllipticCurve):
@@ -37,7 +35,6 @@ class NistPrimeCurve(PrimeCurves):
     def __init__(self, bits):
         params = get_curve(bits)
         self.bits = bits
-        self.cryptogen = SystemRandom()
         super().__init__(params[1], params[2], -3, n=params[3], g=[params[4], params[5]])
 
     def __str__(self):
@@ -46,10 +43,6 @@ class NistPrimeCurve(PrimeCurves):
     def __eq__(self, other):
         return self.bits == other.bits
 
-    def generate_random(self):
-        multiplier = FastScalarMultiplier(self.g)
-        k = self.cryptogen.randrange(1, self.n - 1)
-        return k, multiplier.sliding_window_left_to_right_scalar_mul(k)
 
 P192 = NistPrimeCurve(192)
 P224 = NistPrimeCurve(224)

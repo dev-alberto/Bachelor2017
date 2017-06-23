@@ -2,19 +2,27 @@ from DataStructures.PrimeCurves import NistPrimeCurve
 from ECDSA.Message import FormatMessage
 from util import inv
 from FastArithmetic.joint_multiplication import FastJointMultiplier
+from FastArithmetic.scalar_multiplication import FastScalarMultiplier
+from random import SystemRandom
 
 
 class GenerateKeyPair:
     def __init__(self, bits):
         self.curve = NistPrimeCurve(bits)
+        self.cryptogen = SystemRandom()
+
+    def generate_random(self):
+        multiplier = FastScalarMultiplier(self.curve.g)
+        k = self.cryptogen.randrange(1, self.curve.n - 1)
+        return k, multiplier.sliding_window_left_to_right_scalar_mul(k)
 
     def generate_key(self):
-        keypair = self.curve.generate_random()
-        #assert keypair[1].get_X() != 0
-        #return self.curve.generate_secure_random()
-        while keypair[1].get_X() == 0:
-            keypair = self.curve.generate_random()
-        return keypair
+        multiplier = FastScalarMultiplier(self.curve.g)
+        k = self.cryptogen.randrange(1, self.curve.n - 1)
+        point = multiplier.sliding_window_left_to_right_scalar_mul(k)
+        if point.get_X() == 0:
+            raise ValueError("Please Generate Keu pair Again")
+        return k, point
 
 
 class GenerateSignature:
