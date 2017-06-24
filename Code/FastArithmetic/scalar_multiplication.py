@@ -16,6 +16,10 @@ class ScalarMultiplication:
         for i in range(1, 2**(w-1), 2):
             self.window_naf_precom[i] = self.right_to_left_scalar_mul(i)
 
+        self.Q = {}
+        for i in range(1, 2 ** (self.w - 1), 2):
+            self.Q[i] = None
+
         for _i in range(1, m + 1, 2):
             self._P[_i] = self.left_to_right_scalar_mul(_i)
 
@@ -84,7 +88,7 @@ class ScalarMultiplication:
     #Algorithm 3.36 Window NAF method for point multiplication, Menezez
     def window_NAF_multiplication(self, d):
         d = w_NAF(d, self.w)
-        print(d)
+       # print(d)
         #_P = {}
         #for i in range(1, 2**(w-1), 2):
            # _P[i] = self.right_to_left_scalar_mul(i)
@@ -101,6 +105,27 @@ class ScalarMultiplication:
                     Q = self.window_naf_precom[-d[i]].inverse().add(Q)
         return Q
 
+        ### Algorithm 7, Mechanics and Crypto ###
+
+        ### Algorithm 7, Mechanics and Crypto ###
+    def window_NAF_right_to_left(self, k):
+        R = self.point
+        while k >= 1:
+            if k % 2 == 1:
+                t = mods(k, self.w)
+                if t > 0:
+                    self.Q[t] = R.add(self.Q[t])
+                if t < 0:
+                    self.Q[-t] = R.inverse().add(self.Q[-t])
+                k -= t
+            R = R.point_double()
+            k //= 2
+        for i in range(3, 2 ** (self.w - 1), 2):
+            if self.Q[i] is not None:
+                # Q[1] = self.l_t_r(Q[i], i).add(Q[1])
+                #Q[1] = Q[i].right_to_left_scalar_mul(i).add(Q[1])
+                self.Q[1] = right_to_left_scalar_mul(self.Q[i], i).add(self.Q[1])
+        return self.Q[1]
 
     ### Left to right sliding window NAF, Algorithm 6, Mechanics and Crypyto ### --> posibil sa fie de la dreapta la stanga, ups...
     def sliding_window_left_to_right_scalar_mul(self, d):
@@ -147,28 +172,6 @@ class ScalarMultiplication:
                 i = 1 + s
         return Q
 
-    ### Algorithm 7, Mechanics and Crypto ###
-    def sliding_window_right_to_left_on_the_fly_scalar_mul(self, k):
-        R = self.point
-        m = 2**(self.w-1) - 1
-        Q = {}
-        for i in range(1, m + 1, 2):
-            Q[i] = None
-        while k >= 1:
-            if k % 2 == 1:
-                t = mods(k, self.w)
-                if t > 0:
-                    Q[t] = R.add(Q[t])
-                if t < 0:
-                    Q[-t] = R.inverse().add(Q[-t])
-                k -= t
-            R = R.point_double()
-            k //= 2
-        for i in range(3, m + 1, 2):
-            if Q[i] is not None:
-                #Q[1] = self.l_t_r(Q[i], i).add(Q[1])
-                Q[1] = Q[i].right_to_left_scalar_mul(i).add(Q[1])
-        return Q[1]
 
 
 class FastScalarMultiplier:

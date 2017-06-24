@@ -7,10 +7,8 @@ from PerformanceComparison.PerformanceTestInterface import AbstractPerformanceTe
 class ScalarMuliplicationPerformanceTest(AbstractPerformanceTest):
     def __init__(self, iterations, curve, interval, w, jacobi=False):
         super().__init__(iterations, curve, interval, jacobi=jacobi)
-        if jacobi:
-            self.scalar_mul = ScalarMultiplication(curve.generate_random_point().transform_to_Jacobi(), w)
-        else:
-            self.scalar_mul = ScalarMultiplication(curve.generate_random_point(), w)
+        point = self.generate_random_point()
+        self.scalar_mul = ScalarMultiplication(point, w)
         #super().__init__(iterations, curve, interval, jacobi=jacobi)
 
     def binary_scalar_mul_test(self):
@@ -41,18 +39,18 @@ class ScalarMuliplicationPerformanceTest(AbstractPerformanceTest):
             self.scalar_mul.window_NAF_multiplication(scalar)
         return time() - start
 
+    def window_naf_right_to_left_test(self):
+        start = time()
+        for i in range(self.iterations):
+            scalar = randint(self.interval[0], self.interval[1])
+            self.scalar_mul.window_NAF_right_to_left(scalar)
+        return time() - start
+
     def sliding_window_left_to_right_test(self):
         start = time()
         for i in range(self.iterations):
             scalar = randint(self.interval[0], self.interval[1])
             self.scalar_mul.sliding_window_left_to_right_scalar_mul(scalar)
-        return time() - start
-
-    def sliding_window_right_to_left_test(self):
-        start = time()
-        for i in range(self.iterations):
-            scalar = randint(self.interval[0], self.interval[1])
-            self.scalar_mul.sliding_window_right_to_left_on_the_fly_scalar_mul(scalar)
         return time() - start
 
 
