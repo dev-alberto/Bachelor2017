@@ -173,7 +173,6 @@ class ScalarMultiplication:
         return Q
 
 
-
 class FastScalarMultiplier:
     def __init__(self, point, w=4):
         self.w = w

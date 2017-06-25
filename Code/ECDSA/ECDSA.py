@@ -11,11 +11,6 @@ class GenerateKeyPair:
         self.curve = NistPrimeCurve(bits)
         self.cryptogen = SystemRandom()
 
-    def generate_random(self):
-        multiplier = FastScalarMultiplier(self.curve.g)
-        k = self.cryptogen.randrange(1, self.curve.n - 1)
-        return k, multiplier.sliding_window_left_to_right_scalar_mul(k)
-
     def generate_key(self):
         multiplier = FastScalarMultiplier(self.curve.g)
         k = self.cryptogen.randrange(1, self.curve.n - 1)
@@ -34,38 +29,7 @@ class GenerateSignature:
         self.pubKey = keypair[1]
 
     def generate_signature(self):
-        #r, s = None, None
-  #      print("Curve order is ")
-   #     print(self.curve.n)
-        # while r is None or s is None:
-        #     # pasul 4 --> calculam punctul de pe curba eliptica (x1, y1) = k G
-        #     #k, point = self.curve.generate_secure_random()
-        #     print("k is ")
-        #     print(k)
-        #
-        #     r = point.get_X()
-        #     # pasul 5 --> verificam daca r = point.x == 0. Daca e, ne intoarcem la pasul 3
-        #     if r == 0:
-        #         r = None
-        #
-        #     print("k^-1")
-        #     print(inv(k, self.curve.n))
-        #
-        #     # pasul 6 --> calculam s = k^-1 ( z + rd_a) mod n
-        #     s = (inv(k, self.curve.n) * (self.z + r * self.prvKey)) % self.curve.n
-        #     #s = (inv(self.prvKey, self.curve.n) * (self.z + r * self.prvKey)) % self.curve.n
-        #     if s == 0:
-        #         s = None
-        #pasul 4 --> calculam punctul de pe curba eliptica (x1, y1) = k G
-
- #       print("k is ")
-#        print(self.prvKey)
-
-       # print("k^-1")
-        #print(inv(self.prvKey, self.curve.n))
-
         r = self.pubKey.get_X()
-        # pasul 6 --> calculam s = k^-1 ( z + rd_a) mod n
         s = (inv(self.prvKey, self.curve.n) * (self.z + r * self.prvKey)) % self.curve.n
         if s == 0:
             raise ValueError("Generate key pair again")
