@@ -42,7 +42,7 @@ Justifici clasele ScalarMultiplier, zici ca prezinti  atat aritmetica de grup ca
 
 Operațiile care țin de structura de grup au o importanță deosebită, întrucât sunt folosite în fiecare algoritm de înmulțire cu scalar și implicit de înmulțire multiplă. Din acest motiv, ne dorim o implementare cât mai eficientă, orice înbunătățire la acest nivel aducând sporuri de performanță peste tot în aplicație. În coordonate afine, apare algoritmul lui Euclid Extins în calculul unor inverși modulari, astfel justificând folosirea coordonatelor jacobiene, care prin introducerea unui set de redundanțe în reprezentarea unui punct, elimină nevoia de a calcula inverși modulari. În continuare vom prezenta implementarea adunării și dublării unui punct în coordonate jacobiene. 
 
-\begin{lstlisting}
+\begin{lstlisting}[language=Python]
 def add(self, other):
     if self is None:
         return other
@@ -68,7 +68,7 @@ def add(self, other):
            pow(z3, 3, self.curve.prime)], self.curve)
 \end{lstlisting}
 
-\begin{lstlisting}
+\begin{lstlisting}[language=Python]
 def point_double(self):
     if self is None:
         return None
@@ -86,7 +86,7 @@ def point_double(self):
 Atât în coordonate afine, cât și în cele jacobiene, inversul unui punct este foarte simplu de calculat, prin negarea componentei a doua din reprezentarea punctului. Singurul dezavantaj al folosirii coordonatelor jacobiene îl constituie operația de trecere înapoi în coordonate afine, operație care necesită calcului a doi inverși modulari.
 
 \begin{lstlisting}
-def transform_to_affine(self):
+def transform_to_affine(self):[language=Python]
        return AffinePoint([self.coordinates[0] * inv(self.coordinates[2] ** 2, 	    self.curve.prime) % self.curve.prime, (self.coordinates[1] * inv(self.coordinates[2] ** 3  3, self.curve.prime)) % self.curve.prime], self.curve)
 \end{lstlisting}
 
@@ -94,11 +94,13 @@ def transform_to_affine(self):
 
 Putem aborda problema înmulțirii cu un scalar în diferite feluri, de la cele mai ineficiente metode(apelararea functiei de adunare de cate ori este nevoie) până la metode sofisticate și eficiente, cum ar fi înmulțirea cu fereastră glisantă.
 
+Cel mai eficient algoritm, rezultat în urma Studiului Comparativ, a fost încapsulat în clasa \textit{FastScalarMultiplier}. 
+
 \subsubsection{Metoda Binară}
 
 Prima metodă pe care am implementat-o este cea binară. Algoritmul constă în procesarea reprezentării binare a scalarului de la cel mai nesimnificativ bit la cel mai semnificativ.
 
-\begin{lstlisting}
+\begin{lstlisting}[language=Python]
 def binary_scalar_multiplication(self, d):
     P = self.point
     if d == 0:
@@ -122,7 +124,7 @@ Un avantaj major al grupului punctelor de pe o curbă eliptică îl reprezintă 
 
 În continuare voi prezenta un algoritm pentru calculul reprezentării $NAF$. \\
 
-\begin{lstlisting}
+\begin{lstlisting}[language=Python]
 def naf(d):
     i = 0
     res = []
@@ -141,7 +143,7 @@ Cifrele care formează reprezentarea  $NAF$ sunt generate de resturile împărț
 
 Având la dispoziție metoda pentru aflarea reprezentării cu semn a unui numar natural, putem eficientiza metoda binară. Algoritmul de la stânga la dreapta pentru calculul lui $dP$, unde d este scalarul si $P$ este un punct de pe o curba eliptica, apelează funcția pentru reprezentare cu semn. Parcurgem aceasta, dublând cantitatea din variabila \textit{result} după fiecare bit parcurs, iar la bitul de 1 adunăm punctul $P$, la bitul $-1$ scadem $P$ din rezultat. Urmează implementarea acestui algoritm.
 
-\begin{lstlisting}
+\begin{lstlisting}[language=Python]
 def left_to_right_scalar_mul(self, d):
     signed_d = naf(d)
     result = None
@@ -159,7 +161,7 @@ def left_to_right_scalar_mul(self, d):
 
 Algoritmul de la dreapta la stânga funcționează în același mod, singura diferență fiind faptul că NAF-ul este calculat în aceași buclă while în care calculăm rezultatul final. În acea buclă descompunem scalarul, ținem bit-ul curent într-o variabilă, $u$, iar apoi în funcție de valoarea acestuia modificăm rezultatul. Cei doi algoritmi au aceași complexitate asimtotică.
 
-\begin{lstlisting}
+\begin{lstlisting}[language=Python]
 def right_to_left_scalar_mul(self, d):
     result = None
     R = self.point
@@ -181,7 +183,7 @@ def right_to_left_scalar_mul(self, d):
 Metoda cu fereastră poate fi privită ca o generalizare a metodei cu semn, aceasta aducând plusuri de performanță în schimbul folosirii unui plus de memorie. Această metodă se folosește de reprezentarea $w-NAF$ a scalarului.
 Un algoritm eficient pentru calculul $w-NAF$ va fi prezentat în continuare. Funcția mods este modulo cu semn, adica pentru un scalar $d$, avem $d$ mods $2^w=u$, unde u este un numar intreg care satisface $u\equiv d$ mod $2^w$ si $-2^{w-1}\leq u\leq 2^{w-1}$.
 
-\begin{lstlisting}
+\begin{lstlisting}[language=Python]
 def w_NAF(d, w):
     i = 0
     res = []
@@ -200,7 +202,7 @@ Se observă că cifrele din $w-NAF$ sunt de fapt restul împărțirii cu semn a 
  
 Metoda cu fereastră aduce un plus de performanță prin reducerea numărului de adunări necesare în calculul multiplului unui punct oarecare $P$ de pe o curbă eliptică. Aici vom folosi reprezentarea $w-NAF$ in loc de $NAF$. Vom precalcula și stoca valorile pentru $iP$ si $i\in\set{1, 2^{w-1}}$. Astfel, când parcurgem $w-NAF$ -ul numarului, în funcție de cifra gasită vom aduna sau scădea din rezultat valorile potrivite din multimea de valori precalculate, dublând variabila acumulator la fiecare iterație.
 
-\begin{lstlisting}
+\begin{lstlisting}[language=Python]
 def window_NAF_multiplication(self, d, w):
     d = w_NAF(d, w)
     Q = None
@@ -221,7 +223,7 @@ Valorile precalculate sunt stocate într-un dicționar \textit{P}. Dicționarul 
 
 O versiune ușor modificată a algoritmului precedent este propusă în \cite{sliding2}. Acesta este un algoritm de la dreapta la stânga, care calculează $w-NAF$ pentru scalar în aceași buclă în care este calculat și rezultatul. Valorile diferite de zero din reprezentare sunt stocate intr-un Hash Map si rezultatul este calculat la final, prin adunarea valorilor stocate și returnat.
 
-\begin{lstlisting}
+\begin{lstlisting}[language=Python]
 def window_NAF_on_the_fly_scalar_mul(self, k, w):
     R = self.point
     m = 2**(w-1) - 1
@@ -250,7 +252,7 @@ Diferența dintre metoda prezentată anterior și aceasta constă în faptul că
 
 Algoritmul apelează funcția pentru $w-NAF$ si parcurge în bucla while această reprezentare. Când găsim prima cifră diferită de zero, o procesăm, adăugam la rezultat valoarea corespunzătoare din dicționarul de valori precalculate, apoi "glisăm" fereastra peste cifrele care sunt zero.
 
-\begin{lstlisting}
+\begin{lstlisting}[language=Python]
 def sliding_window_left_to_right_scalar_mul(self, d, w):
     d = w_NAF(d, w)
     Q = None
@@ -284,9 +286,13 @@ def sliding_window_left_to_right_scalar_mul(self, d, w):
 \subsection{Înmulțirea multiplă}
 \label{subsec:subsec04}
 
-\subsection{Metoda Naivă}
+A doua operație specială implementată în aplicație este cea a înmulțirii multiple, care constă în înmulțirea unor puncte cu scalari și apoi adunarea lor. O abordare naivă ar fi să folosim metodele de la secțiunea precedentă pentru înmultirea fiecărui punct, separat apoi adunarea rezultatelor. Aceasta este explicitată în rândurile care urmează.
 
-\begin{lstlisting}
+\subsubsection{Metoda Naivă}
+
+Această metodă, folosește cel mai rapid algoritm de înmulțire, cel cu fereastră glisantă, pentru a înmulții punctele cu doi scalari, $k, l$. Apoi adunăm rezultatele și găsim soluția.  
+
+\begin{lstlisting}[language=Python]
 def brute_joint_multiplication(self, k, l):
     result1 = self.multiplier1.sliding_window_left_to_right_scalar_mul(k)
     result2 = self.multiplier2.sliding_window_left_to_right_scalar_mul(l)
@@ -295,22 +301,14 @@ def brute_joint_multiplication(self, k, l):
 
 \subsubsection{Metoda cu Joint Sparse Form}
 
-\begin{lstlisting}
+Un dezavantaj major al metodei naive este calculul separat al înmulțirii cu un scalar. Metoda Joint Sparse Form, folosește reprezentarea combinată a scalarilor, definită în Capitolul 2, Secțiunea Aritmetică Eficientă. În continuare, vom prezenta implementarea metodei care folosește această reprezentare, așa numitul "Shamir's Trick".
+
+\begin{lstlisting}[language=Python]
 def JSF_Multiplication(self, k, l):
     """Add using Shamir Trick, variation of algorithm 3.48, Menezez Book"""
     jsf = self.JSF(k, l)
-    assert len(jsf[0]) == len(jsf[1])
-
-    P = self.point1
-    Q = self.point2
-
+    
     R = None
-
-    precom = (
-              (None, Q, Q.inverse()),
-              (P, P.add(Q), P.add(Q.inverse())),
-              (P.inverse(), Q.add(P.inverse()), P.inverse().add(Q.inverse()))
-    )
 
     for i, j in zip(jsf[0], jsf[1]):
         if R is None:
@@ -322,9 +320,13 @@ def JSF_Multiplication(self, k, l):
         return R
 \end{lstlisting}
 
-\subsubsection{Metoda cu fereastră glisantă intercalată}
+De data aceasta, ținem într-o structura de tip static valorile precalculate, de tip matrice, $3x3$, pe care am construit-o, în așa fel încât, să acoperim toate combinațiile posibile de cifre, care pot apărea într-o coloană din reprezentare.
 
-\begin{lstlisting}
+\subsubsection{Metoda cu fereastră intercalată, w-NAF}
+
+Pentru această metoda, vom considera reprezentările $w-NAF$ ale scalarilor. Vom pada cu 0, reprezentarea mai scurtă, pentru a avea ambele $w-NAF$ de aceași lungime. Vom ține valorile precalculate în Hash Maps, pe care le accesăm când facem calculul propriuzis.
+
+\begin{lstlisting}[language=Python]
 def interleaving_sliding_window(self, k, l, w1, w2):
     """Algorithm 3.5.1 menezez, 'Interleaving with NAF' """
 
@@ -333,13 +335,7 @@ def interleaving_sliding_window(self, k, l, w1, w2):
     R = None
     naf = [w_NAF(k, w1), w_NAF(l, w2)]
     _l = max([len(naf[0]), len(naf[1])])
-
-    #precom stage
-    for i in range(1, 2**(w1 - 1), 2):
-        _P[i] = self.point1.right_to_left_scalar_mul(i)
-    for j in range(1, 2**(w2 - 1), 2):
-        _Q[j] = self.point2.right_to_left_scalar_mul(j)
- 
+    
     #padding stage
     for i in range(_l - len(naf[0])):
         naf[0].insert(i, 0)
@@ -367,14 +363,80 @@ def interleaving_sliding_window(self, k, l, w1, w2):
 
 \end{lstlisting}
 
+Am creat o matrice de $2\times l$, unde $l$ este lungimea $w-NAF$. Astfel, în matrice avem reprezentările celor doi scalari. Parcurgem cu două bucle \textit{for} matricea, și în funcție de valorile coloanelor adunăm sau scădem din variabila acumulator $R$. După fiecare coloană parcursă, dublăm valoarea din acumulator.
+
 \section{ECDSA}
 
-\section{Eficiența implementării, Studiu Comparativ}
+ECDSA este un protocol de semnare digitală, folosit cu succes pentru securizarea monedei virtuale \textit{Bitcoin}, sau în protocololul \textit{SSL/TLS}. Se asigură integritatea datelor, autentificarea originii și non-repudierea. Protocolul se desfășoară în trei etape, Generarea cheilor, semnarea mesajului și verificarea semnăturii. Funcționalitatea necesară desfășurării celor trei etape este încapsulată în 3 clase, \textit{GenerateKeyPair}, \textit{GenerateSignature} și \textit{VerifySignature}. Curbele eliptice folosite în protocol sunt curbele Nist, astfel parametrii sunt cunoscuți.
 
-Nu uita sa faci un tabel cu ECDSA, eficient/ineficient... 
+\subsection{Generarea cheilor}
 
+Perechea cheie privată, cheie publică în acest protocol se generează astfel. Cheia privată reprezintă un număr, $k$, ales random intre $[1, n-1]$, unde $n$ este ordinul punctului generator, $G$. Cheia publică este $kG$. Operația de înmulțire cu un scalar se realizează cu ajutorul algoritmului cu fereastră glisantă, implementat în clasa \textit{FastScalarMultiplier}, prezentat în secțiunea precedentă. Metoda care generează cheile, din clasa \textit{GenerateKeyPair}, este implementată astfel:
+\begin{lstlisting}[language=Python]
+ def generate_key(self):
+     multiplier = FastScalarMultiplier(self.curve.g)
+     k = self.cryptogen.randrange(1, self.curve.n - 1)
+     point = multiplier.sliding_window_left_to_right_scalar_mul(k)
+     if point.get_X() == 0:
+        raise ValueError("Please Generate Key pair Again")
+     return k, point
+\end{lstlisting}
+Astfel, după crearea unei instanțe din această clasa și apelul funcției de mai sus, avem cheile necesare desfășurării protocolului.
 
-In continuare, vom face o comparatie intre cele doua metode de adunare, cea cu coordonate afine si cea in coordonate Jacobiene. In teste am am generat random doua numere pe o curba eliptica si le-am adunat. Am cronometrat 1000 de iteratii la fiecare test. Se poate observa per total ca adunarea in coordonate Jacobiene este de doua ori mai rapida decat cea in coordonate afine.
+\subsection{Generarea semnăturii}
+Semnătura este derivată din perechea cheie privată, cheie publică și este formată din numerele întregi, $r$ și $s$. Metoda din clasa \textit{GenerateKeyPair} care generează semnătura, este implementată astfel:
+
+\begin{lstlisting}[language=Python]
+def generate_signature(self):
+    r = self.pubKey.get_X()
+    s = (inv(self.prvKey, self.curve.n) * (self.z + r * self.prvKey)) % self.curve.n
+    if s == 0:
+        raise ValueError("Generate key pair again")
+    return r, s
+\end{lstlisting}
+
+Pentru calcului inversului modulo $n$ a cheii private se folosește algoritmul lui Euclid Extins. Clasa \textit{GenerateKeyPair} primește în constructor, atât perechea de chei generată, cât și mesajul care se dorește a fi semnat, în format \textit{string}.
+
+\subsection{Verificarea semnăturii}
+
+Avem nevoie de trei lucruri pentru a verifica semnătura, acestea fiind semnătura, cheia publică și mesajul. Astfel, aceste trei lucruri se găsesc în constructorul clasei \textit{VerifySignature}. Algoritmul de verificare a semnăturii este implementat astfel:
+
+\begin{lstlisting}[language=Python]
+def verify(self):
+    # pasul 1 --> Check to see signature numbers are in range
+    if 1 > self.sig[0] or self.sig[0] >= self.curve.n or 1 > self.sig[0] or self.sig[0] >= self.curve.n:
+        return False
+
+    # pasul 4 --> calculam w = s^-1
+    w = inv(self.sig[1], self.curve.n)
+    #print("w is " + str(w))
+
+    # pasul 5 --> calculam u1 = zw mod n si u2 = rw mod n
+    u1 = (self.z * w) % self.curve.n
+    u2 = (self.sig[0] * w) % self.curve.n
+    #print("u_1 is " + str(u1))
+    #print("u_2 is " + str(u2))
+
+    pasul 6 --> calculam punctul de pe curba eliptica
+    muliplier = FastJointMultiplier(self.curve.g, self.pubKey)
+    p = muliplier.interleaving_sliding_window(u1, u2)
+    #print("(x1, y1) is " + str(p))
+
+    # pasul 7 --> check signature
+    if self.sig[0] == p.get_X():
+        return True
+    return False
+\end{lstlisting}
+
+Pașii din acest algoritm sunt cei descriși în Capitolul 3, Secțiunea ECDSA. Se observă folosirea algoritmului eficient de înmulțire multiplă la pasul 6, încapsulat în clasa \textit{FastJointMultiplier}. Astfel, în acest protocol, am aplicat algoritmii eficienți, explicitați în secțiunea precedentă.
+
+\section{Studiu Comparativ}
+
+Nu uita sa faci un tabel cu ECDSA, eficient/ineficient... Poate numele sa ramana doar studiu comparativ.
+
+În acestă secțiune vom face o comparație între algoritmii prezentați la secțiunea Aritmetică. Vom testa impactul folosirii coordonatelor jacobiene și vom vedea de asemenea cum diferite implementări afectează performanța unui protocol foarte folosit, precum este ECDSA. Hardware-ul folosit în tabelele de test este: Quad Core CPU, i7-4700HQ, 2.4 GHz, 64 bit OS, 16 GB RAM.
+
+Primele operații testate sunt adunarea și dublarea. Vom face o comparație între cele două metode tipuri de reprezentări, cea cu coordonate afine si cea în coordonate jacobiene. Pentru testare am generat random două numere pe o curba eliptică si le-am adunat. Am cronometrat 1000 de adunări, de fiecare dată cu puncte diferite. Nu am cronometrat generarea random a punctelor.
 
 \begin{tabular}{ |p{3cm}||p{3cm}|p{3cm}|p{3cm}|  }
  \hline
@@ -382,24 +444,23 @@ In continuare, vom face o comparatie intre cele doua metode de adunare, cea cu c
  \hline
  Curba NIST& Coordonate &Metoda &Timp de executie(secunde)\\
  \hline
- P192   & Afine    &Adunare& 5.22\\
- P192&Afine  & Dublare & 5.19\\
- P192 &Jacobiene & Adunare& 2.6\\
- P192&Jacobiene & Dublare & 2.61\\
- P224& Afine & Adunare & 6.66\\
- P224& Jacobiene & Adunare   &3.32\\
- P256& Afine  & Adunare& 8.47\\
- P256& Jacobiene  & Adunare& 4.52\\
- P384& Afine  & Adunare& 18.06\\
- P384& Jacobiene  & Adunare& 8.96\\
+ P192   & Afine    &Adunare& 0.052\\
+ P192&Afine  & Dublare & 0.0513\\
+ P192 &Jacobiene & Adunare& 0.0114\\
+ P192&Jacobiene & Dublare & 0.0083\\
+ P224& Afine & Adunare & 0.061\\
+ P224& Jacobiene & Adunare   & 0.0123\\
+ P256& Jacobiene  & Adunare& 0.01474\\
+ P256& Jacobiene  & Dublare& 0.0103 \\
+ P384& Afine  & Adunare& 0.11\\
+ P384& Jacobiene  & Adunare& 0.0212\\
+ P384& Jacobiene  & Dublare& 0.0139\\
  \hline
 \end{tabular}
 
-Pentru teste am decis sa aleg diferite intervale pentru marimea scalarului. Pentru fiecare test sunt rulate 1000 de iteratii cu scalari alesi random in intervalul $5-32$ biti respectiv $128-198$ si $300-384$ pentru curbele $P192$ si respectiv $P384$. Se observa eficienta metodelor cu fereastra pentru numere mari, algoritmul de inmultire care foloseste reprezentarea cu semn fiind foarte eficient pentru numere mici. De asemenea nu se observa o inbunatatirea a eficientei algoritmilor daca procesam de la stanga la dreapta sau de la dreapta la stanga sau la fereastra glisanta, cand facem calculul $w-NAF$-ului in aceasi bucla while in care calculam rezultatul.
+Observăm ca implementarea în coordonate jacobiene aduce un spor serios de performanță, operațiile de adunare și dublare fiind de aproximativ cinci ori mai rapide cu această reprezentare.
 
-Pentru scalari mari, cele mai bune rezultate au fost obtinute cu o fereastra glisanta de latime 4, algoritmul pierzand din eficienta pentru ferestre de latime mai mare din cauza costului mare din punct de vedere computational al precalculului. 
-
-De asemenea putem observa beneficiul impresionant adus de folosirea coordonatelor Jacobiene, acestea aducand inbunatatiri consistente de performanta, algoritmii fiind de aproximativ cinci ori mai rapizi in aceste coordonate. 
+Pentru testarea operației de înmulțire cu un scalar am decis să aleg diferite intervale pentru mărimea scalarului, aceastea depinzând de curba selectată. Pentru fiecare test sunt rulate 1000 de iterații cu scalari aleși random, în intervalul $5-32$ biti, respectiv $128-198$ si $330-384$ pentru curbele $P192$ și respectiv $P384$. Ne vom concentra în special pe coordonate jacobiene în testele care urmează.
 
 
 \begin{tabular}{ |p{5cm}||p{3cm}|p{3cm}|p{2cm}|p{1cm}|  }
@@ -408,26 +469,35 @@ De asemenea putem observa beneficiul impresionant adus de folosirea coordonatelo
  \hline
  Algoritm& Coordonate &Intervalul &Fereastra &Timp\\
  \hline
- Alg Binar & Afine  &$[2^{5},2^{32}]$& - & 2.48\\
- Alg Binar&Jacobiene  & $[2^{5},2^{32}]$ & - & 0.6\\
- Alg Binar&Jacobiene  & $[2^{128},2^{192}]$ & - & 3.88\\
- Inmultire de st. la dr. & Jacobian & $[2^{5},2^{32}]$& - & 0.39\\
- Inmultire de st. la dr. & Afine & $[2^{128},2^{192}]$& - & 14.04\\
- Inmultire de st. la dr. & Jacobian & $[2^{128},2^{192}]$& - & 2.49\\
- Inmultire de dr. la st. &Afine & $[2^{128},2^{192}]$ & - & 14.33\\
- Inmultire de dr. la st. &Jacobiene & $[2^{5},2^{32}]$ & - & 0.41\\
- Inmultire de dr. la st. &Jacobiene & $[2^{128},2^{192}]$ & - & 2.52\\
- Metoda cu fereastra& Jacobiene & $[2^{5},2^{32}]$ & 3 & 0.42\\
- Metoda cu fereastra& Jacobiene & $[2^{128},2^{192}]$ & 3 & 2.38\\
- Metoda cu fereastra& Jacobiene & $[2^{128},2^{192}]$ & 4 & 2.32\\
- Fereastra glisanta st. la dr.& Jacobiene  & $[2^{5},2^{32}]$& 3 & 0.51\\
- Fereastra glisanta st. la dr.& Jacobiene  & $[2^{128},2^{192}]$& 3 & 2.68\\
-  Fereastra glisanta st. la dr.& Jacobiene  & $[2^{128},2^{192}]$& 4 & 2.04\\
- Fereastra glisanta dr. la st.& Jacobiene  & $[2^{128},2^{192}]$& 3 & 2.47\\
- Fereastra glisanta dr. la st.& Jacobiene  & $[2^{128},2^{192}]$& 4 & 2.41\\
- Fereastra glisanta dr. la st.& Jacobiene  & $[2^{128},2^{192}]$& 5 & 2.58\\
+ Alg Binar & Afine  &$[2^{5},2^{32}]$& - & 2.38\\
+ Alg Binar&Jacobiene  & $[2^{5},2^{32}]$ & - & 0.58\\
+ Alg Binar&Jacobiene  & $[2^{128},2^{192}]$ & - & 3.44\\
+ Inmultire de st. la dr. & Jacobian & $[2^{5},2^{32}]$& - & 0.4\\
+ Inmultire de st. la dr. & Afine & $[2^{128},2^{192}]$& - & 13.8\\
+ Inmultire de st. la dr. & Jacobian & $[2^{128},2^{192}]$& - & 2.55\\
+ Inmultire de dr. la st. &Afine & $[2^{128},2^{192}]$ & - & 13.69\\
+ Inmultire de dr. la st. &Jacobiene & $[2^{5},2^{32}]$ & - & 0.406\\
+ Inmultire de dr. la st. &Jacobiene & $[2^{128},2^{192}]$ & - & 2.43\\
+ Metoda cu fereastra& Jacobiene & $[2^{5},2^{32}]$ & 3 & 0.365\\
+ Metoda cu fereastra& Jacobiene & $[2^{128},2^{192}]$ & 3 & 2.31\\
+ Metoda cu fereastra& Jacobiene & $[2^{128},2^{192}]$ & 4 & 2.14\\
+ Metoda cu fereastra& Jacobiene & $[2^{128},2^{192}]$ & 5 & 2.07\\
+ Metoda cu fereastra dr la st& Jacobiene & $[2^{5},2^{32}]$ & 3 & 0.43\\
+ Metoda cu fereastra dr la st& Jacobiene & $[2^{128},2^{192}]$ & 3 & 2.35\\
+ Metoda cu fereastra dr la st& Jacobiene & $[2^{128},2^{192}]$ & 3 & 2.29\\
+ Metoda cu fereastra dr la st& Jacobiene & $[2^{128},2^{192}]$ & 5 & 2.47\\
+ Fereastra glisanta st. la dr.& Jacobiene  & $[2^{5},2^{32}]$& 3 & 0.37\\
+ Fereastra glisanta st. la dr.& Jacobiene  & $[2^{128},2^{192}]$& 4 & 2.11\\
+ Fereastra glisanta st. la dr.& Jacobiene  & $[2^{128},2^{192}]$& 5 & 1.98\\
+ Fereastra glisanta st. la dr.& Afine  & $[2^{128},2^{192}]$& 5 & 10.93 \\
  \hline
 \end{tabular}
+
+Se observă eficiența metodelor cu fereastră pentru numere mari, algoritmul de înmulțire care folosește reprezentarea cu semn fiind foarte eficient pentru numere mici. Algoritmii cu fereastra sunt însă cu aproximativ $15\%$ mai eficienți decât metodele care folosesc reprezentarea cu semn a scalarului. De asemenea nu se observă o înbunătățire a eficienței algoritmilor dacă procesam de la stânga la dreapta sau de la dreapta la stânga în nici o metodă testată. 
+
+Pentru scalarii mari, cele mai bune rezultate au fost obținute cu o fereastră glisantă de lățime 5. Algoritmii devin din ce în ce mai buni, odată cu mărirea ferestrelor, dar costul din punct de vedere al memoriei devine unul ridicat.
+
+De asemenea putem observa beneficiul impresionant adus de folosirea coordonatelor Jacobiene, acestea aducând îmbunătățiri consistente de performanta, algoritmii fiind de aproximativ $5-6$ ori mai rapizi in aceste coordonate.
 
 \begin{tabular}{ |p{5cm}||p{3cm}|p{3cm}|p{2cm}|p{1cm}|  }
  \hline
@@ -435,26 +505,32 @@ De asemenea putem observa beneficiul impresionant adus de folosirea coordonatelo
  \hline
  Algoritm& Coordonate &Intervalul &Fereastra &Timp\\
  \hline
- Alg Binar & Afine  &$[2^{5},2^{32}]$& - & 5.5\\
- Alg Binar&Jacobiene  & $[2^{5},2^{32}]$ & - & 1.12\\
- Alg Binar&Jacobiene  & $[2^{300},2^{384}]$ & - & 13.98\\
- Inmultire de st. la dr. & Jacobian & $[2^{5},2^{32}]$& - & 0.66\\
- Inmultire de st. la dr. & Afine & $[2^{300},2^{384}]$& - & 59.62\\
- Inmultire de st. la dr. & Jacobian & $[2^{128},2^{192}]$& - & 8.33\\
- Inmultire de dr. la st. &Afine & $[2^{300},2^{384}]$ & - & 59.58\\
- Inmultire de dr. la st. &Jacobiene & $[2^{5},2^{32}]$ & - & 0.69\\
- Inmultire de dr. la st. &Jacobiene & $[2^{300},2^{384}]$ & - & 8.69\\
- Metoda cu fereastra& Jacobiene & $[2^{5},2^{32}]$ & 3 & 0.68\\
- Metoda cu fereastra& Jacobiene & $[2^{300},2^{384}]$ & 3 & 8.2\\
- Metoda cu fereastra& Jacobiene & $[2^{300},2^{384}]$ & 4 & 7.89\\
- Fereastra glisanta st. la dr.& Jacobiene  & $[2^{5},2^{32}]$& 3 & 0.85\\
- Fereastra glisanta st. la dr.& Jacobiene  & $[2^{300},2^{384}]$& 3 & 8.73\\
-  Fereastra glisanta st. la dr.& Jacobiene  & $[2^{300},2^{384}]$& 4 & 6.46\\
- Fereastra glisanta dr. la st.& Jacobiene  & $[2^{300},2^{384}]$& 3 & 8.17\\
- Fereastra glisanta dr. la st.& Jacobiene  & $[2^{300},2^{384}]$& 4 & 7.93\\
- Fereastra glisanta dr. la st.& Jacobiene  & $[2^{300},2^{384}]$& 5 & 8.33\\
+ Alg Binar & Afine  &$[2^{5},2^{32}]$& - & 5.25\\
+ Alg Binar&Jacobiene  & $[2^{5},2^{32}]$ & - & 0.99\\
+  Alg Binar&Jacobiene  & $[2^{128},2^{192}]$ & - & 12.36\\
+ Inmultire de st. la dr. & Jacobian & $[2^{5},2^{32}]$& - & 0.68\\
+ Inmultire de st. la dr. & Afine & $[2^{330},2^{384}]$& - & 58.25\\
+ Inmultire de st. la dr. & Jacobian & $[2^{330},2^{384}]$& - & 8.25\\
+ Inmultire de dr. la st. &Afine & $[2^{330},2^{384}]$ & - & 58\\
+ Inmultire de dr. la st. &Jacobiene & $[2^{5},2^{32}]$ & - & 0.65\\
+ Inmultire de dr. la st. &Jacobiene & $[2^{330},2^{384}]$ & - & 8.02\\
+ Metoda cu fereastra& Jacobiene & $[2^{5},2^{32}]$ & 3 & 0.58\\
+ Metoda cu fereastra& Jacobiene & $[2^{330},2^{384}]$ & 3 & 7.45\\
+ Metoda cu fereastra& Jacobiene &$[2^{330},2^{384}]$ & 4 & 7.05\\
+ Metoda cu fereastra& Jacobiene & $[2^{330},2^{384}]$ & 5 & 6.80\\
+ Metoda cu fereastra dr la st& Jacobiene & $[2^{5},2^{32}]$ & 3 & 0.7\\
+ Metoda cu fereastra dr la st& Jacobiene & $[2^{330},2^{384}]$ & 3 & 7.7\\
+ Metoda cu fereastra dr la st& Jacobiene & $[2^{330},2^{384}]$ & 4 & 7.33\\
+ Metoda cu fereastra dr la st& Jacobiene & $[2^{330},2^{384}]$ & 5 & 7.55\\
+ Fereastra glisanta st. la dr.& Jacobiene  & $[2^{5},2^{32}]$& 3 & 0.6\\
+ Fereastra glisanta st. la dr.& Jacobiene  &$[2^{330},2^{384}]$& 4 & 7.08 \\
+ Fereastra glisanta st. la dr.& Jacobiene  & $[2^{330},2^{384}]$& 5 & 6.55\\
+ Fereastra glisanta st. la dr.& Afine  & $[2^{330},2^{384}]$& 5 & 47.2\\
  \hline
 \end{tabular}	
+
+Pentru testarea operației de înmulțire multiplă am considerat de asemenea $1000$ de iterații, împreună cu două ordine de mărime pentru scalari. Se observă ca metoda cu Joint Sparse Form aduce o înbunătățire cu aproximativ $50\%$ fată de abordarea naivă. Metoda cu fereastră intercalată aduce înbunătățiri de aproximativ $20\%$ cu ferestrele $6, 6$ față de metoda JSF. Consistent cu 
+observațiile de la Adunare și Înmulțirea cu scalar, coordonatele jacobiene aduc înbunătățiri de aproximativ $500\%$. Așadar este de aproximativ $10-12$ ori mai eficientă operația de înmulțire multiplă în coordonate jacobiene cu metoda ferestrei intercalate, decât aceași operație în coordonate afine, cu metoda naivă.
 
 \begin{tabular}{ |p{5cm}||p{3cm}|p{3cm}|p{2cm}|p{1cm}|  }
  \hline
@@ -462,21 +538,26 @@ De asemenea putem observa beneficiul impresionant adus de folosirea coordonatelo
  \hline
   Algoritm& Coordonate &Intervalul &Ferestre &Timp\\
  \hline
- Alg Brut & Afine  &$[2^{5},2^{32}]$& - & 4.85\\
- Alg Brut & Afine  &$[2^{128},2^{198}]$& - & 26.18 \\
- Alg Brut & Jacobiene  &$[2^{5},2^{32}]$& - & 1.04 \\
- Alg Brut & Jacobiene  &$[2^{128},2^{198}]$& - & 4.89 \\
- Inmultire cu JSF & Afine  &$[2^{5},2^{32}]$& - & 2.72 \\
- Inmultire cu JSF & Jacobiene  &$[2^{5},2^{32}]$& - & 0.56 \\
- Inmultire cu JSF & Jacobiene  &$[2^{128},2^{198}]$& - & 2.35 \\
- Interleaving & Jacobiene  &$[2^{5},2^{32}]$& 3, 4 & 0.66 \\
- Interleaving & Jacobiene  &$[2^{128},2^{198}]$& 3, 3 & 3.39\\
- Interleaving & Jacobiene  &$[2^{128},2^{198}]$& 3, 4 &  3.29\\
- Interleaving & Jacobiene  &$[2^{128},2^{198}]$& 4, 4 & 3.15 \\
- Interleaving & Jacobiene  &$[2^{128},2^{198}]$& 4, 5 & 3.4 \\
- Interleaving & Jacobiene  &$[2^{128},2^{198}]$& 5, 5 & 3.55 \\
+ Alg Brut & Afine  &$[2^{5},2^{32}]$& - & 3.7\\
+ Alg Brut & Afine  &$[2^{128},2^{198}]$& - & 24 \\
+ Alg Brut & Jacobiene  &$[2^{5},2^{32}]$& - & 0.73 \\
+ Alg Brut & Jacobiene  &$[2^{128},2^{198}]$& - & 4.47 \\
+ Inmultire cu JSF & Afine  &$[2^{5},2^{32}]$& - & 2.45 \\
+ Inmultire cu JSF & Afine  &$[2^{128},2^{198}]$& - & 15.54 \\
+ Inmultire cu JSF & Jacobiene  &$[2^{5},2^{32}]$& - & 0.49 \\
+ Inmultire cu JSF & Jacobiene  &$[2^{128},2^{198}]$& - & 3.08 \\
+ Interleaving & Jacobiene  &$[2^{5},2^{32}]$& 3, 3 & 0.52 \\
+ Interleaving & Jacobiene  &$[2^{128},2^{198}]$& 3, 3 & 3.17\\
+ Interleaving & Jacobiene  &$[2^{128},2^{198}]$& 3, 4 &  2.95\\
+ Interleaving & Jacobiene  &$[2^{128},2^{198}]$& 4, 4 & 2.83 \\
+ Interleaving & Jacobiene  &$[2^{128},2^{198}]$& 4, 5 & 2.77 \\
+ Interleaving & Jacobiene  &$[2^{128},2^{198}]$& 5, 5 & 2.7 \\
+ Interleaving & Afine  &$[2^{128},2^{198}]$& 6, 6 & 12.8 \\
+ Interleaving & Jacobiene  &$[2^{128},2^{198}]$& 6, 6 & 2.53 \\
  \hline
 \end{tabular}
+
+Rulăm aceleași teste și pentru curba $P384$, obținând aproximativ aceleași diferențe între algoritmi. Se observă că, algoritmii în coordonate afine, sunt de aproximativ $4. 3$ ori mai ineficienți pentru curba aceasta, față de curba $P192$. În coordonate jacobiene lucrurile stau mai bine, diferențele de timp fiind mai mici, de aproximativ $3, 2$ ori mai lenți pentru $P384$, față de $P192$. Așadar, pentru curba $P384$, folosirea coordonatelor afine aduce un dezavantaj foarte pronunțat de performanță.
 
 \begin{tabular}{ |p{5cm}||p{3cm}|p{3cm}|p{2cm}|p{1cm}|  }
  \hline
@@ -484,21 +565,147 @@ De asemenea putem observa beneficiul impresionant adus de folosirea coordonatelo
   \hline
   Algoritm& Coordonate &Intervalul &Ferestre &Timp\\
  \hline
- Alg Brut & Afine  &$[2^{5},2^{32}]$& - & 10.81\\
- Alg Brut & Afine  &$[2^{128},2^{198}]$& - & 54.17 \\
- Alg Brut & Jacobiene  &$[2^{5},2^{32}]$& - & 1.69 \\
- Alg Brut & Jacobiene  &$[2^{128},2^{198}]$& - & 8.25 \\
- Inmultire cu JSF & Afine  &$[2^{5},2^{32}]$& - & 5.92 \\
- Inmultire cu JSF & Jacobiene  &$[2^{5},2^{32}]$& - & 0.9 \\
- Inmultire cu JSF & Jacobiene  &$[2^{128},2^{198}]$& - & 3.84\\
- Interleaving & Jacobiene  &$[2^{5},2^{32}]$& 3, 4 & 1.09 \\
- Interleaving & Jacobiene  &$[2^{128},2^{198}]$& 3, 3 & 5.31 \\
- Interleaving & Jacobiene  &$[2^{128},2^{198}]$& 3, 4 & 5.41 \\
- Interleaving & Jacobiene  &$[2^{128},2^{198}]$& 4, 4 & 5.23 \\
- Interleaving & Jacobiene  &$[2^{128},2^{198}]$& 4, 5 & 5.61 \\
- Interleaving & Jacobiene  &$[2^{128},2^{198}]$& 5, 5 & 5.83	 \\
+  Alg Brut & Afine  &$[2^{5},2^{32}]$& - & 8.18\\
+ Alg Brut & Afine  &$[2^{330},2^{384}]$& - & 104.27 \\
+ Alg Brut & Jacobiene  &$[2^{5},2^{32}]$& - & 1.12 \\
+ Alg Brut & Jacobiene  &$[2^{330},2^{384}]$& - & 14.39 \\
+ Inmultire cu JSF & Afine  &$[2^{5},2^{32}]$& - & 5.5 \\
+ Inmultire cu JSF & Afine  &$[2^{330},2^{384}]$& - & 65.4 \\
+ Inmultire cu JSF & Jacobiene  &$[2^{5},2^{32}]$& - & 0.79 \\
+ Inmultire cu JSF & Jacobiene  &$[2^{330},2^{384}]$& - & 9.78 \\
+ Interleaving & Jacobiene  &$[2^{5},2^{32}]$& 3, 3 & 0.79 \\
+ Interleaving & Jacobiene  &$[2^{330},2^{384}]$& 3, 3 & 9.86\\
+ Interleaving & Jacobiene  &$[2^{330},2^{384}]$& 3, 4 &  9.47\\
+ Interleaving & Jacobiene  &$[2^{330},2^{384}]$& 4, 4 & 8.99 \\
+ Interleaving & Jacobiene  &$[2^{330},2^{384}]$& 4, 5 & 8.69 \\
+ Interleaving & Jacobiene  &$[2^{330},2^{384}]$& 5, 5 & 8.52 \\
+ Interleaving & Afine  &$[2^{330},2^{384}]$& 6, 6 & 56.15 \\
+ Interleaving & Jacobiene  &$[2^{330},2^{384}]$& 6, 6 & 8.19 \\
  \hline
 \end{tabular}
 
 \section{Testare}
-Unit teste, sper sa am timp.. 
+
+Pentru a ne asigura de funcționarea corectă a aplicației, am decis să implementăm o suită de \textit{unit teste}, cu ajutorul framework-ului \cite{unit}. Au fost testate toate operațiile de grup, aritmetica specială și protocolul ECDSA.
+
+\subsection{Testarea Operațiilor de grup}
+Pentru a testa aceste operații, am creat doua clase de test,\textit{AffinePointTest}, \textit{JacobiPointTest}, pentru cele două tipuri de puncte. Am considerat o curbă eliptică de dimensiuni foarte mici, $E: y^2 = x^3 + 2x + 3$ mod $97$. Implementarea clasei de test arată în felul următor:
+
+\begin{lstlisting}[language=Python]
+class AffinePointTest(TestCase):
+
+    def test_add(self):
+        curve, point1, point2 = self.createSUT()
+        result = point1.add(point2)
+        expected_result = AffinePoint([1, 54], curve)
+        self.assertEqual(result, expected_result)
+
+    def test_point_double(self):
+        curve, point1, point2 = self.createSUT()
+        result = point1.point_double()
+        expected_result = AffinePoint([32, 90], curve)
+        self.assertEqual(result, expected_result)
+
+    def test_inverse(self):
+        curve, point1, point2 = self.createSUT()
+        result = point1.inverse()
+        expected_result = AffinePoint([17, 87], curve)
+        self.assertEqual(result, expected_result)
+
+    def test_transform_to_Jacobi(self):
+        curve, point1, point2 = self.createSUT()
+        result = point1.transform_to_Jacobi()
+        expected_result = JacobiPoint([17, 10, 1], curve)
+        self.assertEqual(result, expected_result)
+
+    @staticmethod
+    def createSUT():
+        curve = PrimeCurves(97, 3, 2)
+        point1 = AffinePoint([17, 10], curve)
+        point2 = AffinePoint([95, 31], curve)
+        return curve, point1, point2
+\end{lstlisting}
+
+Avem o metodă statică care creează datele necesare testelor. Fiecare test este independent. O clasă construită analog testează funcționalitatea operațiilor în coordonate jacobiene.
+
+\subsection{Testarea aritmeticii speciale}
+
+Pentru testarea înmulțirii cu un scalar, am păstrat curba $E: y^2 = x^3 + 2x + 3$ mod $97$. Am ales punctul $point1 = (73, 14)\in E$ și scalarul $6$. Am creat o instanță a clasei \textnormal{ScalarMultiplication} și am testat pe rând fiecare algoritm. Un exemplu de unit test arată în felul următor:
+
+\begin{lstlisting}[language=Python]
+def test_sliding_window_left_to_right_scalar_mul(self):
+    curve, instance, scalar, expected_result = self.createSUT()
+    result = instance.binary_scalar_multiplication(scalar)
+    self.assertEqual(result, expected_result)
+\end{lstlisting}
+
+Metoda statică care crează datele pentru teste, este:
+
+\begin{lstlisting}[language=Python]
+@staticmethod
+def createSUT():
+    curve = PrimeCurves(97, 3, 2)
+    point1 = AffinePoint([73, 14], curve)
+    instance = ScalarMultiplication(point1, 5)
+    scalar = 6
+    expected_result = AffinePoint([3, 91], curve)
+    return curve, instance, scalar, expected_result
+\end{lstlisting}
+
+Testarea înmulțirii multiple are loc în condiții similare. De data aceasta, alegem punctele $(73, 14), (55, 6)$, împreună cu scalarii $7, 8$. Metoda care crează instanța de test este:
+
+\begin{lstlisting}[language=Python]
+@staticmethod
+def createSUT():
+    curve = PrimeCurves(97, 3, 2)
+    point1 = AffinePoint([73, 14], curve)
+    point2 = AffinePoint([55, 6], curve)
+    instance = JointMultiplication(point1, point2, 5, 4)
+    scalar1, scalar2 = 7, 8
+    expected_result = AffinePoint([28, 34], curve)
+    return instance, expected_result, scalar1, scalar2
+\end{lstlisting}
+
+Testăm fiecare algoritm cu aceste date, un exemplu ar fi:
+\begin{lstlisting}[language=Python]
+def test_nterleaving_sliding_window(self):
+    instance, expected_result, scalar1, scalar2 = self.createSUT()
+    result = instance.interleaving_sliding_window(scalar1, scalar2)
+    self.assertEqual(result, expected_result)
+\end{lstlisting}
+
+\subsection{Testarea ECDSA}
+Pentru testarea protocolului ECDSA, am ales să mă concentrez pe verificarea semnăturii. Mai întâi am testat condițiile normale de funcționare, adică semnătura este verificată pentru mesajul original și pentru semnătura corecta, apoi am modificat acești doi parametrii, verificând faptul ca verificarea returnează fals. Astfel, am creat clasa de test pentru ECDSA.
+
+\begin{lstlisting}[language=Python]
+class EcdsaTest(TestCase):
+    def test_sig_with_correct_parameters(self):
+        bits, sig, message, pub = self.createSut()
+        verifier = VerifySignature(bits, pub, sig, message)
+        result = verifier.verify()
+        self.assertEqual(result, True)
+
+    def test_wrong_message_should_not_verify(self):
+        bits, sig, message, pub = self.createSut()
+        altered_mes = "Wrong message"
+        verifier = VerifySignature(bits, pub, sig, altered_mes)
+        result = verifier.verify()
+        self.assertEqual(result, False)
+
+    def test_wrong_sig_shoud_not_verify(self):
+        bits, sig, message, pub = self.createSut()
+        altered_sig = [131223132131, 132131231231]
+        verifier = VerifySignature(bits, pub, altered_sig, message)
+        result = verifier.verify()
+        self.assertEqual(result, False)
+
+    @staticmethod
+    def createSut():
+        bits = 192
+        priv, pub = GenerateKeyPair(bits).generate_key()
+        message = "ECDSA Test"
+        sig = GenerateSignature(bits, [priv, pub], "ECDSA Test").generate_signature()
+        return bits, sig, message, pub
+\end{lstlisting}
+
+
