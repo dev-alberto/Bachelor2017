@@ -15,27 +15,39 @@ class GenerateKeysWrapper:
         return str(self.public)
 
     def serialize_key(self):
-        serKey = open('keyPair.pk', 'w')
-        with open('keyPair.pk', 'wb') as f:
-            dump([self.private, self.public], f)
-
+        #serKey = open('keyPair.pk', 'w')
+        with open('private.pk', 'wb') as f:
+            dump(self.private, f)
+        with open('public.pk', 'wb') as f:
+            dump(self.public, f)
 
 
 class GenerateSigWrapper:
 
-    def __init__(self, bits, path, mes):
-        with open(path, 'rb') as f:
-            keypair = load(f)
-        self.gen = GenerateSignature(bits, keypair, mes)
+    def __init__(self, bits, pub_path, priv_path, mes):
+        with open(pub_path, 'rb') as f:
+            pubK = load(f)
+        with open(priv_path, 'rb') as f:
+            privK = load(f)
+
+        self.gen = GenerateSignature(bits, [privK, pubK], mes)
 
     def sig_wrapper(self):
-        return str(self.gen.generate_signature())
+        #return str(self.gen.generate_signature())
+        with open('sig.pk', 'wb') as f:
+            dump(self.gen.generate_signature(), f)
 
 
 class VerifySigWrapper:
 
-    def __init__(self, bits, pubk, sig, mes):
-        self.verifier = VerifySignature(bits, pubk, sig, mes)
+    def __init__(self, bits, pub_path, sig_path, mes):
+        with open(pub_path, 'rb') as f:
+            pubK = load(f)
+
+        with open(sig_path, 'rb') as f:
+            sig = load(f)
+
+        self.verifier = VerifySignature(bits, pubK, sig, mes)
 
     def verify_wrapper(self):
         return str(self.verifier.verify())
