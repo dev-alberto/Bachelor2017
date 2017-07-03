@@ -19,10 +19,10 @@ class GenerateKeysWrapper:
          #   dump(self.private, f)
         #with open('public.pk', 'wb') as f:
         #    dump(self.public, f)
-        priv = open('private.pk', 'wb')
+        priv = open('keys/private.pk', 'wb')
         dump(self.private, priv)
-        pub = open('public.pk', 'wb')
-        dump(self.public, pub)
+        pub = open('keys/public.pk', 'wb')
+        dump(self.private, pub)
         return priv, pub
 
 
@@ -41,6 +41,7 @@ class GenerateSigWrapper:
         sig = open('sig.pk', 'wb')
         dump(self.gen.generate_signature(), sig)
         return sig
+
 
 class VerifySigWrapper:
 
