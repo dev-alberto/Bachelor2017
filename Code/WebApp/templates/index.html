@@ -98,14 +98,14 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.3/jquery.min.js"></script>
 
     <script type="text/javascript">
-        function add_handler(){
-          $.ajax({
-              type: "GET",
-              url: "/add",
-              success: function (data) { 
-                  $("#add").html(data)
-            }
-          });                
+        function add_handler() {
+            $.ajax({
+                type: "GET",
+                url: "/add",
+                success: function (data) {
+                    $("#add").html(data)
+                }
+            });
         }
      </script>
   </body>

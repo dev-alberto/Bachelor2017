@@ -16,5 +16,5 @@ class AbstractPerformanceTest(metaclass=ABCMeta):
         super(AbstractPerformanceTest, self).__init__()
 
     def generate_random_point(self):
-        k = randint(1, self.curve.n-1)
+        k = randint(1, self.curve.n-1   )
         return self.multiplier.sliding_window_left_to_right_scalar_mul(k)

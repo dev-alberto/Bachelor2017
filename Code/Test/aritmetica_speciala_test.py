@@ -2,7 +2,7 @@ from FastArithmetic.scalar_multiplication import ScalarMultiplication
 from FastArithmetic.joint_multiplication import JointMultiplication
 from DataStructures.Points import JacobiPoint
 from DataStructures.PrimeCurves import NistPrimeCurve
-
+from util import w_NAF
 from random import randint
 
 P192 = NistPrimeCurve(192)
@@ -65,3 +65,4 @@ verify = VerifySignature(192, keypair[1], sige, "ECDSA Test")
 
 print(verify.verify())
 
+print(w_NAF(31, 2))
