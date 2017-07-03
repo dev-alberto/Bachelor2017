@@ -15,11 +15,15 @@ class GenerateKeysWrapper:
         return str(self.public)
 
     def serialize_key(self):
-        #serKey = open('keyPair.pk', 'w')
-        with open('private.pk', 'wb') as f:
-            dump(self.private, f)
-        with open('public.pk', 'wb') as f:
-            dump(self.public, f)
+        #with open('private.pk', 'wb') as f:
+         #   dump(self.private, f)
+        #with open('public.pk', 'wb') as f:
+        #    dump(self.public, f)
+        priv = open('private.pk', 'wb')
+        dump(self.private, priv)
+        pub = open('public.pk', 'wb')
+        dump(self.public, pub)
+        return priv, pub
 
 
 class GenerateSigWrapper:
@@ -34,9 +38,9 @@ class GenerateSigWrapper:
 
     def sig_wrapper(self):
         #return str(self.gen.generate_signature())
-        with open('sig.pk', 'wb') as f:
-            dump(self.gen.generate_signature(), f)
-
+        sig = open('sig.pk', 'wb')
+        dump(self.gen.generate_signature(), sig)
+        return sig
 
 class VerifySigWrapper:
 

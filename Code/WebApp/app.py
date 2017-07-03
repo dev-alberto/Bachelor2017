@@ -1,7 +1,8 @@
 from flask import Flask
-from flask import render_template, request
+from flask import render_template, request, make_response
 
 from WebApp.Wrappers.addition import AddWrapeer, DoubleWrapper, ScalarMulWrapper, JointMulWrapper
+from WebApp.Wrappers.ecdsa import GenerateSigWrapper, GenerateKeysWrapper, VerifySigWrapper
 
 app = Flask(__name__)
 
@@ -41,9 +42,20 @@ def scalar_mul_wrapper():
 
 
 @app.route('/arithmetic/joint', methods=['POST'])
-def scalar_mul_wrapper():
+def scalar_joint_wrapper():
     x1, y1, x2, y2, a, b, p, scalar1, scalar2, w1, w2, nist, bits = request.get_json()
     wrapper = JointMulWrapper(int(x1), int(y1), int(x2), int(y2), int(a), int(b),
                               int(p), int(scalar1), int(scalar2), int(w1), int(w2),
                               nist=nist, bits=int(bits))
     return str(wrapper.joint_mul_wrapper())
+
+
+#does not work...
+@app.route('/ecdsa/keys')
+def generate_keys():
+    genW = GenerateKeysWrapper(192)
+    priv, pub = genW.serialize_key()
+    response = make_response(priv)
+    response.headers["Content-Disposition"] = "attachment; filename=private.pk"
+    return response
+
