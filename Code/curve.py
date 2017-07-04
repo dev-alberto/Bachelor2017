@@ -1,4 +1,4 @@
-from OldCode.ECC import Curve
+from Code.OldCode.ECC import Curve
 CURVES = {
     # Bits : (p, order of E(GF(P)), parameter b, base point x, base point y)
     192: (0xfffffffffffffffffffffffffffffffeffffffffffffffff,

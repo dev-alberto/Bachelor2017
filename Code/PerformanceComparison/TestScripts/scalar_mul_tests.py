@@ -1,5 +1,5 @@
-from DataStructures.PrimeCurves import P192, P384
-from PerformanceComparison.scalar_mul import ScalarMuliplicationPerformanceTest
+from Code.DataStructures.PrimeCurves import P192, P384
+from Code.PerformanceComparison.scalar_mul import ScalarMuliplicationPerformanceTest
 
 
 scalar_mul_affine_test192 = ScalarMuliplicationPerformanceTest(1000, P192, [2**5, 2**32], 3)

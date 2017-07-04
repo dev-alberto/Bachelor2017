@@ -1,7 +1,7 @@
-from DataStructures.interfaces import EllipticCurve
-from DataStructures.Points import AffinePoint
-from curve import get_curve
-from util import isProbablePrime
+from Code.DataStructures.interfaces import EllipticCurve
+from Code.DataStructures.Points import AffinePoint
+from Code.curve import get_curve
+from Code.util import isProbablePrime
 
 
 class PrimeCurves(EllipticCurve):

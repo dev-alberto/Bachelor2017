@@ -1,5 +1,5 @@
 from time import time
-from PerformanceComparison.PerformanceTestInterface import AbstractPerformanceTest
+from Code.PerformanceComparison.PerformanceTestInterface import AbstractPerformanceTest
 
 
 class AdditionPerformanceTest(AbstractPerformanceTest):

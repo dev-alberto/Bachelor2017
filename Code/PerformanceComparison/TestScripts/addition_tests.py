@@ -1,5 +1,6 @@
-from DataStructures.PrimeCurves import P192, P224, P256, P384
-from PerformanceComparison.addition import AdditionPerformanceTest
+from Code.DataStructures.PrimeCurves import P192, P224, P256, P384
+from Code.PerformanceComparison.addition import AdditionPerformanceTest
+
 
 addTest192 = AdditionPerformanceTest(1000, P192)
 addTest192J = AdditionPerformanceTest(1000, P192, jacobi=True)

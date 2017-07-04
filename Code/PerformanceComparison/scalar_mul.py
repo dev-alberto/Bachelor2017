@@ -1,7 +1,7 @@
-from FastArithmetic.scalar_multiplication import ScalarMultiplication
+from Code.FastArithmetic.scalar_multiplication import ScalarMultiplication
 from random import randint
 from time import time
-from PerformanceComparison.PerformanceTestInterface import AbstractPerformanceTest
+from Code.PerformanceComparison.PerformanceTestInterface import AbstractPerformanceTest
 
 
 class ScalarMuliplicationPerformanceTest(AbstractPerformanceTest):

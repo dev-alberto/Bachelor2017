@@ -1,6 +1,5 @@
-from util import w_NAF, NAF, mods, right_to_left_scalar_mul
-from DataStructures.interfaces import AbstractPoint
-
+from Code.util import w_NAF, NAF, mods, right_to_left_scalar_mul
+from Code.DataStructures.interfaces import AbstractPoint
 
 class ScalarMultiplication:
     def __init__(self, point, w):

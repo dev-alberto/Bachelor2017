@@ -1,7 +1,7 @@
-from FastArithmetic.joint_multiplication import JointMultiplication
+from Code.FastArithmetic.joint_multiplication import JointMultiplication
 from time import time
 from random import randint
-from PerformanceComparison.PerformanceTestInterface import AbstractPerformanceTest
+from Code.PerformanceComparison.PerformanceTestInterface import AbstractPerformanceTest
 
 
 class JointMultiplicationScalarPerformanceTest(AbstractPerformanceTest):

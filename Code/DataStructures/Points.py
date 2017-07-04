@@ -1,5 +1,5 @@
-from DataStructures.interfaces import AbstractPoint
-from util import inv
+from Code.DataStructures.interfaces import AbstractPoint
+from Code.util import inv
 
 
 class AffinePoint(AbstractPoint):

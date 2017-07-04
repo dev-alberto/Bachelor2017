@@ -1,5 +1,5 @@
 from abc import ABCMeta
-from FastArithmetic.scalar_multiplication import FastScalarMultiplier
+from Code.FastArithmetic.scalar_multiplication import FastScalarMultiplier
 from random import randint
 
 

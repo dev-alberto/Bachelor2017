@@ -1,6 +1,6 @@
-from util import w_NAF, right_to_left_scalar_mul
-from DataStructures.interfaces import AbstractPoint
-from FastArithmetic.scalar_multiplication import FastScalarMultiplier
+from Code.util import w_NAF, right_to_left_scalar_mul
+from Code.DataStructures.interfaces import AbstractPoint
+from Code.FastArithmetic.scalar_multiplication import FastScalarMultiplier
 
 class JointMultiplication:
 
