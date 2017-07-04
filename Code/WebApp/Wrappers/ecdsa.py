@@ -21,7 +21,7 @@ class GenerateKeysWrapper:
         #    dump(self.public, f)
         priv = open('keys/private.pk', 'wb')
         dump(self.private, priv)
-        pub = open('keys/public.pk', 'wb')
+        pub = open('keys/public.pk', 'wb')sudo apt-get remove pycharmc
         dump(self.private, pub)
         return priv, pub
 

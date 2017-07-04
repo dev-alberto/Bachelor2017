@@ -1,5 +1,5 @@
 from flask import Flask
-from flask import render_template, request, make_response, send_file
+from flask import render_template, request, make_response, send_file, redirect, url_for
 import os
 
 from WebApp.Wrappers.addition import AddWrapeer, DoubleWrapper, ScalarMulWrapper, JointMulWrapper
@@ -7,6 +7,9 @@ from WebApp.Wrappers.ecdsa import GenerateSigWrapper, GenerateKeysWrapper, Verif
 import zipfile
 
 app = Flask(__name__)
+
+# This is the path to the uploads directory
+app.config['UPLOAD_FOLDER'] = 'uploads/'
 
 
 @app.route('/')
@@ -52,10 +55,9 @@ def scalar_joint_wrapper():
     return str(wrapper.joint_mul_wrapper())
 
 
-#does not work...
-@app.route('/ecdsa/keys')
+@app.route('/ecdsa/keys', methods=['GET'])
 def generate_keys():
-    bits = request.get_json()
+    #bits = request.get_json()
     genW = GenerateKeysWrapper(192)
     priv, pub = genW.serialize_key()
     zipf = zipfile.ZipFile('Name.zip', 'w', zipfile.ZIP_DEFLATED)
@@ -68,4 +70,25 @@ def generate_keys():
                      attachment_filename='Name.zip',
                      as_attachment=True)
 
+# For a given file, return whether it's an allowed type or not
+def allowed_file(filename):
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1] in app.config['ALLOWED_EXTENSIONS']
+
+
+@app.route('/ecdsa/uploads', methods=['POST'])
+def upload():
+    # Get the name of the uploaded file
+    file = request.files['file']
+    # Check if the file is one of the allowed types/extensions
+    if file:
+        # Make the filename safe, remove unsupported chars
+        # Move the file form the temporal folder to
+        # the uploads folder we setup
+        # This is the path to the upload directory
+        file.save(os.path.join(app.config['UPLOAD_FOLDER'], file.filename))
+        # Redirect the user to the uploaded_file route, which
+        # will basicaly show on the browser the uploaded file
+        return redirect(url_for('uploaded_file',
+                                filename=file.filename))
 

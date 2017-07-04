@@ -88,9 +88,14 @@
                 <label class="mdl-textfield__label" for="bits">bits </label>
              </div>
             <br/>
-            <button type="submit" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent" onclick="generate_key_handler()"> Calculate </button>
+            <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent" onclick="javascript:generate_key_handler()"> Generate </button>
 
             <h4><i class="material-icons">bookmark</i> Generate Signature </h4>
+             <form action="ecdsa/uploads" method="post" enctype="multipart/form-data">
+                <input type="file" name="file"><br /><br />
+               <input type="submit" value="Upload">
+             </form>
+
 
             <h4><i class="material-icons">bookmark</i> Verify Signature </h4>
           </div>
@@ -105,20 +110,27 @@
     <script type="text/javascript">
        function generate_key_handler(){
           $("#pre-svd-eigen").html("Generate Keys: ");
-          var payload = {
-            "bits": $("#bits").val()
-          };
-          console.log(payload);
+          alert("caca");
+          //var payload = {
+          //  "bits": $("#bits").val()
+          //};
+          //console.log(payload);
           $.ajax({
-              method: "POST",
-              contentType: "application/json",
+              method: "GET",
+              //contentType: "application/json",
               url: "/ecdsa/keys",
-              data: JSON.stringify(payload),
-              success: function (data) {
-                  $("#svd-eigen").html(data);
-                  $("#post-svd-eigen").html("Eigenvalues found !");
+              //data: JSON.stringify(payload),
+              success: function () {
+                  //$("#svd-eigen").html(data);
+                  $("#post-svd-eigen").html("Downloaded keys");
               }
           });
+        }
+        function upload_file_handler() {
+            $.ajax({
+               method: "POST",
+                url:"ecdsa/upload"
+            })
         }
      </script>
   </body>
